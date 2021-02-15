@@ -1,7 +1,6 @@
 import { firebase } from "./config";
 import { User } from "../interfaces/iUser";
 
-
 export class FirebaseController {
 
     public static async signUp(user: User) {
@@ -26,10 +25,9 @@ export class FirebaseController {
         }
     }
 
-    public static async signOut(user: User) {
+    public static async signOut() {
         try {
             await firebase.auth().signOut();
-            user.uid = '';
         } catch (err) {
             return (err as Error).message;
         }
