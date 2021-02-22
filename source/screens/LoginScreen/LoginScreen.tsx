@@ -1,3 +1,5 @@
+import { useScrollToTop } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -5,12 +7,13 @@ import { Login, GetUserData } from '../../firebase/auth';
 import styles from './styles';
 
 // Bad Any Type
-export default function LoginScreen({navigation}: any) {
+export default function LoginScreen({navigation}: StackScreenProps<RouteList,'Login'>) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errorText,setErrorText] = useState('');
 
     const onFooterLinkPress = () => {
-        navigation.navigate('Signup')
+        navigation.replace('Signup')
     }
 
     const onLoginPress = async () => {
@@ -18,10 +21,11 @@ export default function LoginScreen({navigation}: any) {
         try {
             const userCredential = await Login(email, password);
             const user = await GetUserData(userCredential);
-            navigation.navigate('Home', {user});
+            if(user) navigation.navigate('Home',user);
+            console.log(navigation)
         } catch (error) {
             // Do something with error here
-            alert(error);
+            setErrorText((error as Error).message)
         }
     }
 
@@ -34,6 +38,7 @@ export default function LoginScreen({navigation}: any) {
                     style={styles.logo}
                     source={require('../../../assets/icon.png')}
                 />
+                <Text style={styles.errorText}>{errorText}</Text>
                 <TextInput
                     style={styles.input}
                     placeholder='E-mail'
