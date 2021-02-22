@@ -1,31 +1,11 @@
-
-import { useNavigation } from '@react-navigation/core'
-import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react'
-import { Button, Text, View } from 'react-native'
-import { Logout } from '../../firebase/auth';
+import { Text, View } from 'react-native'
 
-
-
-
-export default function HomeScreen(props: StackScreenProps<RouteList,'Home'>) {
-    const user = props.route.params;
-    console.log(user);
-    const navigation = props.navigation;
+// Bad Any Type
+export default function HomeScreen(props: any) {
     return (
         <View>
-            
-            <Text>{user.name}</Text>
-               
-            
-            <Button
-            title="Logout"
-            onPress={
-                async()=>{
-                    await Logout();
-                    navigation.replace('Login')
-                }
-            }></Button>
+            <Text>Home Screen</Text>
         </View>
     )
 }

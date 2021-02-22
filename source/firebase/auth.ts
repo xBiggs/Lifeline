@@ -1,5 +1,5 @@
 import { User } from '../interfaces/user';
-import firebase from './config';
+import { firebase } from './config';
 
 const COLLECTION: string = 'users';
 
@@ -13,6 +13,7 @@ export async function SignUp(firstName: string, lastName: string, email: string,
         firstName: firstName,
         lastName: lastName,
         email: email,
+        password: password,
         id: uid
     }
     return {user, userCredential};

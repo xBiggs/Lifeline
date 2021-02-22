@@ -13,7 +13,7 @@ export default function SignupScreen({navigation}: any) {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const onFooterLinkPress = () => {
-        navigation.replace('Login')
+        navigation.navigate('Login')
     }
 
     const onRegisterPress = async () => {
@@ -25,7 +25,7 @@ export default function SignupScreen({navigation}: any) {
         try {
             const {user, userCredential} = await SignUp(firstName, lastName, email, password);
             await SetUserData(user, userCredential);
-            navigation.replace('Home', user);
+            navigation.navigate('Home', {user: user});
         } catch (error) {
             // Do something with error here
             alert(error);

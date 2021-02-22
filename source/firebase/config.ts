@@ -18,7 +18,4 @@ if (!firebase.apps.length) {
 //firebase.analytics();
 // const firestore = firebase.firestore();
 
-// makes firebase current user local
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-export default firebase
+export { firebase };
