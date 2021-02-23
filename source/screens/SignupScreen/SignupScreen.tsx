@@ -1,22 +1,26 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Screens } from '..';
 import { SignUp, SetUserData } from '../../firebase/auth';
 import styles from './styles';
 
-// Bad Any Type
-export default function SignupScreen({navigation}: any) {
+
+export default function SignupScreen({navigation}:StackScreenProps<Screens,'Signup'>) {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading,setLoading] = useState(false);
 
     const onFooterLinkPress = () => {
         navigation.navigate('Login')
     }
 
     const onRegisterPress = async () => {
+        setLoading(true);
         if (password !== confirmPassword) {
             alert("Passwords don't match.")
             return
@@ -29,7 +33,12 @@ export default function SignupScreen({navigation}: any) {
         } catch (error) {
             // Do something with error here
             alert(error);
+        }finally
+        {
+            setLoading(false);
+
         }
+        
     }
 
     return (
@@ -93,6 +102,7 @@ export default function SignupScreen({navigation}: any) {
                     onPress={() => onRegisterPress()}>
                     <Text style={styles.buttonTitle}>Create account</Text>
                 </TouchableOpacity>
+                {loading?<ActivityIndicator color='blue' size='large'></ActivityIndicator>:<></>}
                 <View style={styles.footerView}>
                     <Text style={styles.footerText}>Already got an account? <Text onPress={onFooterLinkPress} style={styles.footerLink}>Log in</Text></Text>
                 </View>

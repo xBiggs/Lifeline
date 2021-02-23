@@ -3,56 +3,56 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { firebase } from './source/firebase/config';
-import { LoginScreen, HomeScreen, SignupScreen } from './source/screens';
+import { LoginScreen, HomeScreen, SignupScreen, Screens } from './source/screens';
 import { User } from './source/interfaces/user';
-import {decode, encode} from 'base-64';
-if (!global.btoa) {  global.btoa = encode }
+import { decode, encode } from 'base-64';
+import { ActivityIndicator, LogBox, Text, View } from 'react-native';
+if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<Screens>();
+LogBox.ignoreLogs(["Setting a timer"])
 
 export default function App() {
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    // TODO: Fix this to use Async Await
-    const usersRef = firebase.firestore().collection('users');
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        usersRef
-          .doc(user.uid)
-          .get()
-          .then((document) => {
-            const userData: User = document.data() as User;
-            if (userData) {
-              setLoading(false)
-              setUser(userData)
-            }
-          })
-          .catch((error) => {
-            setLoading(false)
-          });
-      } else {
-        setLoading(false)
-      }
-    });
-  }, []);
+  const userChanged = async (user: firebase.User | null) => {
 
-  if (loading) {
-    return (
-      <></>
-    )
+    const usersRef = firebase.firestore().collection('users');
+    if (user) {
+      const userData: User = (await usersRef.doc(user.uid).get()).data() as User;
+      if (userData) {
+        setLoading(false)
+        setUser(userData)
+      }
+    } else {
+      
+      setLoading(false)
+      //changed on logout to render login screen
+      setUser(null)
+    }
   }
 
+  useEffect(() => {
+    const userListener = firebase.auth().onAuthStateChanged(userChanged);
+   return userListener;
+  }, [])
+
+  // shows loading indicator while checking for auth
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator></ActivityIndicator>
+      </View>
+    )
+  }
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        { user ? (
-          <Stack.Screen name="Home">
-            {props => <HomeScreen {...props} extraData={user} />}
-          </Stack.Screen>
+        {user ? (
+          <Stack.Screen name="Home" component={HomeScreen} initialParams={{user}}></Stack.Screen>
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
