@@ -11,7 +11,7 @@ if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 
 const Stack = createStackNavigator<Screens>();
-LogBox.ignoreLogs(["Setting a timer"])
+//LogBox.ignoreLogs(["Setting a timer"])
 
 export default function App() {
 
@@ -52,7 +52,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
-          <Stack.Screen name="Home" component={HomeScreen} initialParams={{user}}></Stack.Screen>
+          <Stack.Screen name="Home"  component={HomeScreen} initialParams={{user}}></Stack.Screen>
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
