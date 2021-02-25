@@ -13,6 +13,8 @@ export default function HomeScreen(props:StackScreenProps<Screens,'Home'>) {
             <Text>Hello {`${user.firstName} ${user.lastName}`}</Text>
             <Button
             title="Logout" onPress={async ()=>{await Logout();}}></Button>
+            <Button
+            title="Info Form" onPress={async ()=>{props.navigation.navigate('PersonalInfo',{user})}}></Button>
         </View>
     )
 }

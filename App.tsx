@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { firebase } from './source/firebase/config';
-import { LoginScreen, HomeScreen, SignupScreen, Screens } from './source/screens';
+import { LoginScreen, HomeScreen, SignupScreen, Screens, PersonalInfoScreen } from './source/screens';
 import { User } from './source/interfaces/user';
 import { decode, encode } from 'base-64';
 import { ActivityIndicator, LogBox, Text, View } from 'react-native';
@@ -52,7 +52,11 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
+          <>
           <Stack.Screen name="Home"  component={HomeScreen} initialParams={{user}}></Stack.Screen>
+          <Stack.Screen name='PersonalInfo' component={PersonalInfoScreen} initialParams={{user}}></Stack.Screen>
+          </>
+          
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
