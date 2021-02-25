@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor:'#219EBC',
     },
     title: {
 
@@ -11,7 +12,7 @@ export default StyleSheet.create({
     logo: {
         flex: 1,
         height: 120,
-        width: 90,
+        width: 300,
         alignSelf: "center",
         margin: 30
     },
@@ -27,7 +28,7 @@ export default StyleSheet.create({
         paddingLeft: 16
     },
     button: {
-        backgroundColor: '#788eec',
+        backgroundColor: '#023047',
         marginLeft: 30,
         marginRight: 30,
         marginTop: 20,
@@ -48,10 +49,10 @@ export default StyleSheet.create({
     },
     footerText: {
         fontSize: 16,
-        color: '#2e2e2d'
+        color: 'white'
     },
     footerLink: {
-        color: "#788eec",
+        color: "#023047",
         fontWeight: "bold",
         fontSize: 16
     }

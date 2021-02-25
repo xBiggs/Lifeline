@@ -4,7 +4,8 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor:'#219EBC',
+        backgroundColor:'#FB8500',
+        paddingTop:40,
     },
     title: {
 
@@ -12,11 +13,11 @@ export default StyleSheet.create({
     logo: {
         flex: 1,
         height: 120,
-        width: 300,
+        width: 90,
         alignSelf: "center",
         margin: 30
     },
-    input: {
+   input: {
         height: 48,
         borderRadius: 5,
         overflow: 'hidden',
@@ -25,22 +26,26 @@ export default StyleSheet.create({
         marginBottom: 10,
         marginLeft: 30,
         marginRight: 30,
-        paddingLeft: 16
+        paddingLeft: 16,
+        width:350,
     },
     button: {
-        backgroundColor: '#023047',
-        marginLeft: 30,
-        marginRight: 30,
-        marginTop: 20,
+        
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 10,
         height: 48,
+        width:200,
         borderRadius: 5,
         alignItems: "center",
-        justifyContent: 'center'
+        justifyContent: 'center',
+       
     },
     buttonTitle: {
         color: 'white',
-        fontSize: 16,
-        fontWeight: "bold"
+        fontSize: 25,
+        fontWeight: "bold",
+        marginBottom:10,
     },
     footerView: {
         flex: 1,
@@ -49,11 +54,20 @@ export default StyleSheet.create({
     },
     footerText: {
         fontSize: 16,
-        color: 'white'
+        color: '#2e2e2d'
     },
     footerLink: {
-        color: "#023047",
+        color: "#788eec",
         fontWeight: "bold",
         fontSize: 16
+    },
+    buttonLabel:{
+        color: 'white',
+        fontSize: 20,
+        fontWeight: "bold"
+    },
+    view:{
+        marginLeft:5,
+        marginRight:5,
     }
 })

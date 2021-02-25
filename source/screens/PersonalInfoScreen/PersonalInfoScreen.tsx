@@ -1,8 +1,11 @@
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useReducer, useState } from 'react';
 import { Button, Text, View } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { TextInput,TouchableOpacity } from 'react-native-gesture-handler';
 import { Screens } from '..';
+import styles from './styles';
+import Icon from "react-native-vector-icons/FontAwesome5"
 
 
 
@@ -22,11 +25,8 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
                 {
                     return (
                         <>
-                            <Text>City?</Text>
-                            <TextInput style={{
-                                borderWidth: 3,
-                                borderColor: 'black'
-                            }}
+                            <Text style={styles.buttonTitle}>City?</Text>
+                            <TextInput  style={styles.input}
                             onChangeText={(text)=>city=text}
                             ></TextInput>
                         </>
@@ -37,12 +37,8 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
                 {
                     return (
                         <>
-                            <Text>State?</Text>
-                            <TextInput style={{
-                                borderWidth: 3,
-                                borderColor: 'black'
-
-                            }}></TextInput>
+                            <Text style={styles.buttonTitle}> State?</Text>
+                            <TextInput style={styles.input}></TextInput>
                         </>
                     )
                 }
@@ -50,12 +46,8 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
                 {
                     return (
                         <>
-                            <Text>Country?</Text>
-                            <TextInput style={{
-                                borderWidth: 3,
-                                borderColor: 'black'
-
-                            }}></TextInput>
+                            <Text style={styles.buttonTitle}>Country?</Text>
+                            <TextInput style={styles.input}></TextInput>
                         </>
                     )
 
@@ -73,15 +65,19 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
 
     // render full form
     return (
-        <View>
-            <Text>{props.route.params.user.firstName}</Text>
+        <View style={styles.container}>
+            {/* <Text style={styles.buttonTitle}>{props.route.params.user.firstName}</Text> */}
             <CurrentStep></CurrentStep>
-            <Button title="Go Back" onPress={() => {
+            <View style={{flexDirection:'row'}}>
+            <TouchableOpacity  style={styles.button} onPress={() => {
                 setStep(step - 1 == 0 ? 1 : step - 1)
-            }}></Button>
-            <Button title={step == STEPS ? 'Submit' : 'Next'} onPress={() => {
+            }} ><Icon name="arrow-left" size={40} color="white" /></TouchableOpacity>
+            <TouchableOpacity style={styles.button}onPress={() => {
                 setStep((step + 1 > STEPS ? STEPS : step + 1))
-            }}></Button>
+            }}><Text style={styles.buttonLabel}> {step == STEPS ? 'Submit' : <Icon name="arrow-right" size={40} color="white" />} </Text></TouchableOpacity>
+           
+           
+           </View>
         </View>
-    )
+    ) 
 }

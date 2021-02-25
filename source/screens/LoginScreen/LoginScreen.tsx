@@ -70,7 +70,7 @@ export default function LoginScreen({navigation}:StackScreenProps<Screens,'Login
                     onPress={() => onLoginPress()}>
                     <Text style={styles.buttonTitle}>Log in</Text>
                 </TouchableOpacity>
-                {loading?<ActivityIndicator color='blue' size='large'></ActivityIndicator>:<></>}
+                {loading?<ActivityIndicator color='white' size='large'></ActivityIndicator>:<></>}
                 <View style={styles.footerView}>
                     <Text style={styles.footerText}>Don't have an account? <Text onPress={onFooterLinkPress} style={styles.footerLink}>Sign up</Text></Text>
                 </View>
