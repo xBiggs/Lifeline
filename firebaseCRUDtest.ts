@@ -1,26 +1,43 @@
 import {PersInfo} from "./source/interfaces/PersonalInfo"
+import {MedicationInfo} from "./source/interfaces/MedicalInfo"
 import { User } from './source/interfaces/user';
-import {AddPersonalData} from "./source/firebase/PersonalDetails"
+import {AddPersonalData, AddUserData, AddMedicalData} from "./source/firebase/UserDataHandler"
 import firebase from "firebase";
 
-function dataAddTest(info: PersInfo, user: User){
-    AddPersonalData(user, info);
+function dataAddTest(user: User, perInfo: PersInfo, medInfo: MedicationInfo){ // info: PersInfo, 
+    AddUserData(user);
+    // AddMedicalData(user, medInfo);
 }
 
-let infoTest = {
-    age : 500,
+let personalInfoTest = {
+    age : "50",
     race : "N/A",
     gender: "Male",
-    sexual_orienation: "Straight",
+    sexualOrientation: "Straight",
     religion: "Christian",
-    military_status: "N/A"
+    militaryStatus: "N/A"
 };
+
+
+let medInfoTest = {
+    diagnose: "Anxiety and Depression",
+    medication: {
+        name: "Xanax",
+        dose: "25ml",
+        numTimesDay: 1,
+        usageInstructions: "Once a day daily by mouth.",
+    },
+    regiments: "Meditation",
+    familyMedicalHistory: "None",
+}
 
 let usrTest = {
-    firstName: "User2",
-    lastName: "Test",
-    email: "user2@test.com",
-    id: "zhsl0t5ASpdPvloTBCAttXZUK8y2",
+    firstName: "User3",
+    lastName: "Test3",
+    email: "user3@test.com",
+    id: "PlFWiLE0IlUhO2l6pXEr87BNoZS2",
+    personalInfo: personalInfoTest,
+    medInfo: medInfoTest
 };
 
-dataAddTest(infoTest, usrTest);
+dataAddTest(usrTest, personalInfoTest, medInfoTest);

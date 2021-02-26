@@ -1,8 +1,14 @@
 
-export interface MedInfo {
+export interface MedicationInfo {
     diagnose: string;
-    medication: string;
-    dose: number;
+    medication: Medication;
     regiments: string;
-    family_medical_history: string;
+    familyMedicalHistory: string;
+}
+
+export interface Medication{
+    name: string;
+    dose: number;
+    numTimesDay: number;
+    usageInstructions: string;
 }

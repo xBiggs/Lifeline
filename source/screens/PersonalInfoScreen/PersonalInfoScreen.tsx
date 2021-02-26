@@ -6,7 +6,7 @@ import { Screens } from '..';
 import styles from './styles';
 import Icon from "react-native-vector-icons/FontAwesome5"
 import { PersInfo } from '../../interfaces/PersonalInfo';
-import { AddPersonalData } from '../../firebase/PersonalDetails';
+import { AddPersonalData } from '../../firebase/UserDataHandler';
 
 
 
