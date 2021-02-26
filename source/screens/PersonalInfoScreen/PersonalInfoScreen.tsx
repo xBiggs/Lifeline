@@ -134,7 +134,7 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
                 //1. validate fields
 
                 //2. pass data and user to backend   
-                await AddPersonalData(user,formFields);
+                //await AddPersonalData(user,formFields);
 
                 // waiting
 
