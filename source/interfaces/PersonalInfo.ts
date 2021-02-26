@@ -1,10 +1,10 @@
 export interface PersInfo {
-    age: number;
+    age: string;
     race: string;
     gender: string;
-    sexual_orienation: string;
+    sexualOrientation: string;
     religion: string;
-    military_status: string;
+    militaryStatus: string;
 }
 // race: string; => ["American Indian or Alaska Native", "Asian", "Black or African American", "Hispanic or Latino", "Native Hawaiian or Other Pacific Islander", "White"];
 // gender: string; => ["Male", "Female", "Transgender"]

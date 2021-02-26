@@ -1,3 +1,4 @@
+
 export interface MedInfo {
     diagnose: string;
     medication: string;
