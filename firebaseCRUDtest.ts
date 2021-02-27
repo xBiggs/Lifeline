@@ -1,10 +1,10 @@
 import {PersInfo} from "./source/interfaces/PersonalInfo"
 import {MedicationInfo} from "./source/interfaces/MedicalInfo"
-import { User } from './source/interfaces/user';
+import { User } from './source/interfaces/User';
 import {AddPersonalData, AddUserData, AddMedicalData} from "./source/firebase/UserDataHandler"
 import firebase from "firebase";
 
-function dataAddTest(user: User, perInfo: PersInfo, medInfo: MedicationInfo){ // info: PersInfo, 
+function dataAddTest(user: User, perInfo: PersInfo, medInfo: MedicationInfo){ // info: PersInfo,
     AddUserData(user);
     // AddMedicalData(user, medInfo);
 }

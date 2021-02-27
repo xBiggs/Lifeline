@@ -4,11 +4,9 @@ import { Text, View } from 'react-native';
 import { TextInput,TouchableOpacity } from 'react-native-gesture-handler';
 import { Screens } from '..';
 import styles from './styles';
-import Icon from "react-native-vector-icons/FontAwesome5"
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { PersInfo } from '../../interfaces/PersonalInfo';
 import { AddPersonalData } from '../../firebase/UserDataHandler';
-
-
 
 const formFields = {
     age:'',
@@ -17,15 +15,12 @@ const formFields = {
     sexualOrientation:'',
     religion:'',
     militaryStatus:'',
-    
 }
-
 
 export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'PersonalInfo'>) {
     const user = props.route.params.user;
     const STEPS = Object.keys(formFields).length; // number of screens / questions
     const [step, setStep] = useState(1); //used to keep track of which screen to render
-    
 
     // component to render current step
     const CurrentStep = () => {
@@ -103,12 +98,11 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
 
                             <TextInput style={styles.input}
                             onChangeText={(text)=>formFields.militaryStatus=text}
-                            ></TextInput>                        
+                            ></TextInput>
                         </>
                     )
 
                 }
-            
             default: // case should never happen
                 {
                     return <Text>{step}</Text>
@@ -116,9 +110,6 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
         }
 
     }
-
-
-
 
     // render full form
     return (
@@ -133,7 +124,7 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
 
                 //1. validate fields
 
-                //2. pass data and user to backend   
+                //2. pass data and user to backend
                 //await AddPersonalData(user,formFields);
 
                 // waiting
@@ -149,7 +140,7 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
                 {
 
                     // ADD VALIDATION TO FIELDS
-                   
+
                    try
                    {
                     user.personalInfo = formFields as PersInfo;
@@ -158,17 +149,15 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
                    }catch(err)
                    {
                        alert(err)
-                   }       
+                   }
                 }
                 else
                 {
                  setStep((step + 1 > STEPS ? STEPS : step + 1))
                 }
-                
+
             }}><Text style={styles.buttonLabel}> {step == STEPS ? 'Submit' : <Icon name="arrow-right" size={40} color="white" />} </Text></TouchableOpacity>
-           
-           
            </View>
         </View>
-    ) 
+    )
 }

@@ -1,12 +1,11 @@
 import { StackScreenProps, } from '@react-navigation/stack';
-import React from 'react'
-import { Text, View, Image, TouchableOpacity } from 'react-native'
+import React from 'react';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { Screens } from '..';
-import { Logout } from '../../firebase/auth'
-import { User } from '../../interfaces/user';
+import { Logout } from '../../firebase/auth';
+import { User } from '../../interfaces/User';
 import styles from './styles';
-import { Card, ListItem, Button, Icon } from 'react-native-elements'
-
+import { Card, ListItem, Button, Icon } from 'react-native-elements';
 
 // borderRadius={15}
 export default function HomeScreen(props: StackScreenProps<Screens, 'Home'>) {

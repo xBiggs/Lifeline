@@ -11,3 +11,12 @@ web-build/
 
 # macOS
 .DS_Store
+
+# Compiled JS files
+config.js
+MedicalInfo.js
+PersonalInfo.js
+QuestionResponse.js
+User.js
+UserDataHandler.js
+firebaseCRUDtest.js

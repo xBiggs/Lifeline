@@ -4,9 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { firebase } from './source/firebase/config';
 import { LoginScreen, HomeScreen, SignupScreen, Screens, PersonalInfoScreen } from './source/screens';
-import { User } from './source/interfaces/user';
+import { User } from './source/interfaces/User';
 import { decode, encode } from 'base-64';
 import { ActivityIndicator, LogBox, Text, View } from 'react-native';
+
 if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 
@@ -28,7 +29,6 @@ export default function App() {
         setUser(userData)
       }
     } else {
-      
       setLoading(false)
       //changed on logout to render login screen
       setUser(null)
@@ -56,7 +56,6 @@ export default function App() {
           <Stack.Screen name="Home"  component={HomeScreen} initialParams={{user}}></Stack.Screen>
           <Stack.Screen name='PersonalInfo' component={PersonalInfoScreen} initialParams={{user}}></Stack.Screen>
           </>
-          
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />

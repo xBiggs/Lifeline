@@ -4,9 +4,8 @@ import { ActivityIndicator, Image, Text, TextInput, TouchableOpacity, View } fro
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Screens } from '..';
 import { Login, GetUserData } from '../../firebase/auth';
-import { User } from '../../interfaces/user';
+import { User } from '../../interfaces/User';
 import styles from './styles';
-
 
 export default function LoginScreen({navigation}:StackScreenProps<Screens,'Login'>) {
     const [email, setEmail] = useState('')
@@ -29,10 +28,7 @@ export default function LoginScreen({navigation}:StackScreenProps<Screens,'Login
         }finally{
             setLoading(false);
         }
-      
     }
-
-    
 
     return (
         <View style={styles.container}>
@@ -62,8 +58,6 @@ export default function LoginScreen({navigation}:StackScreenProps<Screens,'Login
                     underlineColorAndroid="transparent"
                     autoCapitalize="none"
                 />
-
-             
 
                 <TouchableOpacity
                     style={styles.button}

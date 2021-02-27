@@ -1,4 +1,4 @@
-import { User } from '../interfaces/user'
+import { User } from '../interfaces/User'
 
 export { default as LoginScreen } from './LoginScreen/LoginScreen'
 
@@ -8,9 +8,13 @@ export { default as SignupScreen } from './SignupScreen/SignupScreen'
 
 export {default as PersonalInfoScreen} from './/PersonalInfoScreen/PersonalInfoScreen'
 
-export type Screens={
+export type Screens = {
     Login: undefined;
     Signup: undefined;
-    Home: {user:User}
-    PersonalInfo:{user:User}
+    Home: {
+        user: User
+    };
+    PersonalInfo: {
+        user: User
+    };
 }

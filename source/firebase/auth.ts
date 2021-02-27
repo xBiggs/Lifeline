@@ -1,4 +1,4 @@
-import { User } from '../interfaces/user';
+import { User } from '../interfaces/User';
 import { firebase } from './config';
 
 const COLLECTION: string = 'users';

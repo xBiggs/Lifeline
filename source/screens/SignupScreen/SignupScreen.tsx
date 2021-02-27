@@ -38,7 +38,6 @@ export default function SignupScreen({navigation}:StackScreenProps<Screens,'Sign
             setLoading(false);
 
         }
-        
     }
 
     return (
