@@ -69,10 +69,8 @@ function AddUserData(user) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    // since I'm updating the user object, it made sence to me to override the info. So using .set()
                     return [4 /*yield*/, config_1.firebase.firestore().collection('users').doc(user.id).update(user)];
                 case 1:
-                    // since I'm updating the user object, it made sence to me to override the info. So using .set()
                     _a.sent(); // .set(user);
                     return [3 /*break*/, 3];
                 case 2:
