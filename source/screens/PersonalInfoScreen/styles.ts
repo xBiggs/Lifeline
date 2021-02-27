@@ -6,6 +6,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         backgroundColor:'#FB8500',
         paddingTop:40,
+        textAlign:'left',
     },
     title: {
 
@@ -18,16 +19,17 @@ export default StyleSheet.create({
         margin: 30
     },
    input: {
-        height: 48,
+        height: 35,
         borderRadius: 5,
         overflow: 'hidden',
         backgroundColor: 'white',
         marginTop: 10,
-        marginBottom: 10,
+      
         marginLeft: 30,
         marginRight: 30,
         paddingLeft: 16,
         width:350,
+        marginBottom:30,
     },
     button: {
         
@@ -39,13 +41,27 @@ export default StyleSheet.create({
         borderRadius: 5,
         alignItems: "center",
         justifyContent: 'center',
+        
        
     },
     buttonTitle: {
         color: 'white',
-        fontSize: 25,
+        fontSize: 22,
         fontWeight: "bold",
-        marginBottom:10,
+        alignSelf:'stretch',
+        marginLeft:40,
+      
+        
+    },
+  pageTitle: {
+        color: 'white',
+        fontSize: 30,
+        marginBottom:20,
+        fontWeight: "bold",
+       
+       
+      
+        
     },
     footerView: {
         flex: 1,

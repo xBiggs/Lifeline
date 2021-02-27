@@ -7,6 +7,7 @@ import styles from './styles';
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { PersInfo } from '../../interfaces/PersonalInfo';
 import { AddPersonalData } from '../../firebase/UserDataHandler';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 const formFields = {
     age:'',
@@ -16,67 +17,58 @@ const formFields = {
     religion:'',
     militaryStatus:'',
 }
+const medicalFields={
+    diagnose: '',
+    medication: '',
+    dose: '',
+    regiments: '',
+    family_medical_history: '',
+}
+
+var genderProps = [
+    {label: 'Male', value: "Male" },
+    {label: 'Female', value: "Female" },
+    {label: 'Other', value: "Other" },
+  ];
 
 export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'PersonalInfo'>) {
     const user = props.route.params.user;
     const STEPS = Object.keys(formFields).length; // number of screens / questions
     const [step, setStep] = useState(1); //used to keep track of which screen to render
-
     // component to render current step
     const CurrentStep = () => {
+       
         switch (step) {
             case 1: //render age question
                 {
                     return (
-                        <>
-                            <Text style={styles.buttonTitle}>Age?</Text>
+                        <> 
+                             <Text style= {styles.pageTitle}>Personal Information</Text>
+                            <Text style={styles.buttonTitle}>Age</Text>
                             <TextInput  style={styles.input}
                             onChangeText={(text)=>formFields.age=text}
                             ></TextInput>
-                        </>
-                    )
-
-                }
-            case 2: //render race question
-                {
-                    return (
-                        <>
-                            <Text style={styles.buttonTitle}> Race?</Text>
+                            <Text style={styles.buttonTitle}> Race</Text>
                             <TextInput style={styles.input}
                             onChangeText={(text)=>formFields.race=text}
                             ></TextInput>
-                        </>
-                    )
-                }
-            case 3: //render gender question
-                {
-                    return (
-                        <>
-                            <Text style={styles.buttonTitle}>Gender?</Text>
+                                   <Text style={styles.buttonTitle}>Gender</Text>
                             <TextInput style={styles.input}
                             onChangeText={(text)=>formFields.gender=text}
                             ></TextInput>
-                        </>
-                    )
+                            
 
-                }
-                case 4: //render sexual orientation question
-                {
-                    return (
-                        <>
-                            <Text style={styles.buttonTitle}>Sexual Orientation?</Text>
+                             {/* <ButtonGroup
+                onPress={(selectedIndex : number)=>formFields.gender=buttons[selectedIndex]}
+           
+                buttons={buttons}
+                containerStyle={{height: 100}}
+    /> */}
+                             <Text style={styles.buttonTitle}>Sexual Orientation</Text>
                             <TextInput style={styles.input}
                             onChangeText={(text)=>formFields.sexualOrientation=text}
                             ></TextInput>
-                        </>
-                    )
-
-                }
-                case 5: //render religion question
-                {
-                    return (
-                        <>
-                            <Text style={styles.buttonTitle}> Religion?</Text>
+                              <Text style={styles.buttonTitle}> Religion</Text>
                             <TextInput style={styles.input}
                             defaultValue={user.personalInfo?.religion}
                             onChangeText={(text)=>{
@@ -86,6 +78,72 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
                                 }
                             }}
                             ></TextInput>
+                              
+                            <Text style={styles.buttonTitle}>Millitary Status?</Text>
+
+                            <TextInput style={styles.input}
+                            onChangeText={(text)=>formFields.militaryStatus=text}
+                            ></TextInput>                        
+                      
+                        </>
+                    )
+
+                }
+            case 2: //render race question
+                {
+                    return (
+                        <>
+                             <Text style= {styles.pageTitle}>Medical Information</Text>
+                            <Text style={styles.buttonTitle}>Diagnoses</Text>
+                            <TextInput  style={styles.input}
+                            onChangeText={(text)=>medicalFields.diagnose=text}
+                            ></TextInput>
+                            <Text style={styles.buttonTitle}> Medication</Text>
+                            <TextInput style={styles.input}
+                            onChangeText={(text)=>medicalFields.medication=text}
+                            ></TextInput>
+                                   <Text style={styles.buttonTitle}>Dose</Text>
+                            <TextInput style={styles.input}
+                            onChangeText={(text)=>medicalFields.dose=text}
+                            ></TextInput>
+                             <Text style={styles.buttonTitle}>Regiments</Text>
+                            <TextInput style={styles.input}
+                            onChangeText={(text)=>medicalFields.regiments=text}
+                            ></TextInput>
+                              <Text style={styles.buttonTitle}> Family Medical History</Text>
+                            <TextInput style={styles.input}
+                            
+                            defaultValue={user.personalInfo?.religion}
+                            onChangeText={(text)=>medicalFields.family_medical_history=text}
+                            ></TextInput>
+                              
+                         
+                        </>
+                    )
+                }
+            case 3: //render gender question
+                {
+                    return (
+                        <>
+                     
+                        </>
+                    )
+
+                }
+                case 4: //render sexual orientation question
+                {
+                    return (
+                        <>
+                           
+                        </>
+                    )
+
+                }
+                case 5: //render religion question
+                {
+                    return (
+                        <>
+                          
                         </>
                     )
 
@@ -114,6 +172,7 @@ export default function PersonalInfoScreen(props: StackScreenProps<Screens, 'Per
     // render full form
     return (
         <View style={styles.container}>
+          
             {/* <Text style={styles.buttonTitle}>{props.route.params.user.firstName}</Text> */}
             <CurrentStep></CurrentStep>
             <View style={{flexDirection:'row'}}>
