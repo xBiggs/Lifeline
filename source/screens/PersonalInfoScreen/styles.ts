@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { withTheme } from 'react-native-elements';
 
 export default StyleSheet.create({
     container: {
@@ -81,6 +82,16 @@ export default StyleSheet.create({
         color: 'white',
         fontSize: 20,
         fontWeight: "bold"
+    },
+    buttonLabelAdd:{
+        color: '#006400',
+        fontSize: 20,
+        backgroundColor:'white',
+        fontWeight: "bold",
+        padding:10,
+        width:350,
+        textAlign:"center",
+        marginTop:-30,
     },
     view:{
         marginLeft:5,
