@@ -1,23 +1,29 @@
 import { StackScreenProps, } from '@react-navigation/stack';
 import React from 'react';
-import { Text, View, Image, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { Screens } from '..';
 import { Logout } from '../../firebase/auth';
 import { User } from '../../interfaces/User';
 import styles from './styles';
-import { Card, ListItem, Button, Icon } from 'react-native-elements';
+import { Card } from 'react-native-elements';
 
 // borderRadius={15}
 export default function HomeScreen(props: StackScreenProps<Screens, 'Home'>) {
   const user: User = props.route.params.user;
+
+
+
+
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.buttonTitleMain}>Hello {`${user.firstName} ${user.lastName}`}</Text>
 
 
 
-
-      <Card borderRadius={15}>
+      <View style={{borderRadius:15}}>
+      <Card>
         <Card.Title style={{ color: '#FB8500', fontSize: 30, }}>Medical Information</Card.Title>
         <Card.Divider />
 
@@ -28,9 +34,15 @@ export default function HomeScreen(props: StackScreenProps<Screens, 'Home'>) {
         </Text>
 
         <TouchableOpacity style={styles.button} onPress={async () => { props.navigation.navigate('PersonalInfo', { user }) }}
-        ><Text style={styles.buttonLabel}>Edit Information</Text></TouchableOpacity>
 
-      </Card>
+        ><Text style={styles.buttonLabel}>Edit Information</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={async () => { props.navigation.navigate('Assessment', { user }) }}
+
+        ><Text style={styles.buttonLabel}>Take Assessment</Text></TouchableOpacity>
+
+      </Card>        
+      </View>
+      
       <TouchableOpacity style={styles.buttonLogout}
         onPress={async () => { await Logout(); }}><Text style={styles.buttonLabel}>Logout</Text></TouchableOpacity>
     </View>

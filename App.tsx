@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { firebase } from './source/firebase/config';
-import { LoginScreen, HomeScreen, SignupScreen, Screens, PersonalInfoScreen } from './source/screens';
+import { LoginScreen, HomeScreen, SignupScreen, Screens, PersonalInfoScreen, AssessmentScreen } from './source/screens';
 import { User } from './source/interfaces/User';
 import { decode, encode } from 'base-64';
-import { ActivityIndicator, LogBox, Text, View } from 'react-native';
+import { ActivityIndicator, LogBox, Text, useWindowDimensions, View } from 'react-native';
 
 if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
@@ -15,7 +15,8 @@ const Stack = createStackNavigator<Screens>();
 //LogBox.ignoreLogs(["Setting a timer"])
 
 export default function App() {
-
+  const width:number =useWindowDimensions().width;
+  const height:number = useWindowDimensions().height;
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<User | null>(null);
 
@@ -49,12 +50,15 @@ export default function App() {
     )
   }
   return (
-    <NavigationContainer>
+    
+       <NavigationContainer>
+         
       <Stack.Navigator>
         {user ? (
           <>
           <Stack.Screen name="Home"  component={HomeScreen} initialParams={{user}}></Stack.Screen>
           <Stack.Screen name='PersonalInfo' component={PersonalInfoScreen} initialParams={{user}}></Stack.Screen>
+          <Stack.Screen name='Assessment' component={AssessmentScreen} initialParams={{user}}></Stack.Screen>
           </>
         ) : (
           <>
@@ -64,5 +68,7 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    
+   
   );
 }
