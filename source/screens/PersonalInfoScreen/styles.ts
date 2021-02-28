@@ -39,9 +39,25 @@ export default StyleSheet.create({
         marginTop: 10,
         height: 48,
         width:200,
-        borderRadius: 5,
+        borderRadius: 15,
         alignItems: "center",
         justifyContent: 'center',
+        
+       
+    },
+    buttonAdd: {
+        
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0,
+        height: 48,
+        marginBottom:15,
+        width:350,
+        borderRadius: 15,
+        alignItems: "center",
+        justifyContent: 'center',
+        backgroundColor:'white',
+        
         
        
     },
@@ -86,12 +102,13 @@ export default StyleSheet.create({
     buttonLabelAdd:{
         color: '#006400',
         fontSize: 20,
-        backgroundColor:'white',
+     
         fontWeight: "bold",
         padding:10,
         width:350,
         textAlign:"center",
-        marginTop:-30,
+       
+    
     },
     view:{
         marginLeft:5,

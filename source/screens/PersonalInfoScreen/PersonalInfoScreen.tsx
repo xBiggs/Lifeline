@@ -215,7 +215,7 @@ export default function PersonalInfoScreen(
               }
             ></TextInput>
             <TouchableOpacity
-              style={styles.button}
+              style={styles.buttonAdd}
               onPress={() => addMedication()}
             >
               <Text style={styles.buttonLabelAdd}>Add Medication +</Text>
@@ -248,7 +248,7 @@ export default function PersonalInfoScreen(
                 }
               ></TextInput>
               <TouchableOpacity
-                style={styles.button}
+                style={styles.buttonAdd}
                 onPress={() => addAppointment()}
               >
                 <Text style={styles.buttonLabelAdd}>Add Appointment +</Text>
