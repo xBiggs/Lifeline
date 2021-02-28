@@ -20,9 +20,14 @@ let personalInfoTest = {
 
 // https://www.digitalocean.com/community/tutorials/understanding-date-and-time-in-javascript
 let date = new Date(2021, 3, 30, 20, 50, 23);
-let refilDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-let aptDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()-10);
-let aptTime = new Date(date.getTime()); // can't extract the time from date for whatever reason
+let refilDate = date.toDateString();
+
+date = new Date(date.getFullYear(), date.getMonth(), date.getDate()-10);
+
+let aptDate = date.toDateString()// new Date(date.getFullYear(), date.getMonth(), date.getDate()-10);
+// let aptTime = new Date(date.getTime()); // can't extract the time from date for whatever reason
+date = new Date(2021, 3, 30, 20, 50, 23);
+let aptTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
 
 let medInfoTest = {
     diagnose: "Anxiety and Depression",

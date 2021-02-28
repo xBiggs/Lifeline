@@ -12,10 +12,10 @@ export interface Medication{
     dose: string; // ex: can be milligrams or milliliter
     numTimesDay: number;
     usageInstructions: string;
-    refillDate?: Date;
+    refillDate?: string; // Date;
 }
 export interface Apointment{
-    date: Date;
-    time: Date; // have to extract time from date object
+    date: string; // Date;
+    time: string; // Date; // have to extract time from date object
     reason: string;
 }
