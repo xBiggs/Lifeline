@@ -37,7 +37,7 @@ export default StyleSheet.create({
         marginTop: 20,
         height: 48,
         width:350,
-        borderRadius: 5,
+        borderRadius: 10,
         alignItems: "center",
         justifyContent: 'center',
        
@@ -46,10 +46,10 @@ export default StyleSheet.create({
         backgroundColor: '#023047',
         marginLeft: 0,
         marginRight: 0,
-        marginTop: 30,
+        marginTop: 20,
         height: 48,
-        width:400,
-        borderRadius: 10,
+        width:390,
+        borderRadius: 15,
         alignItems: "center",
         justifyContent: 'center',
        

@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { Screens } from "..";
 import { Logout } from "../../firebase/auth";
 import { User } from "../../interfaces/User";
@@ -12,13 +12,13 @@ export default function HomeScreen(props: StackScreenProps<Screens, "Home">) {
   const user: User = props.route.params.user;
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.buttonTitleMain}>
         Hello {`${user.firstName} ${user.lastName}`}
       </Text>
 
-      <View style={{ borderRadius: 15 }}>
-        <Card>
+      <View>
+        <Card containerStyle={{ borderRadius: 30 }}>
           <Card.Title style={{ color: "#FB8500", fontSize: 30 }}>
             Medical Information
           </Card.Title>
@@ -67,6 +67,6 @@ export default function HomeScreen(props: StackScreenProps<Screens, "Home">) {
       >
         <Text style={styles.buttonLabel}>Logout</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
