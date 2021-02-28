@@ -52,21 +52,13 @@ export default StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
    
-        
-        
-       
-      
-        
     },
   pageTitle: {
         color: 'white',
         fontSize: 30,
         marginBottom:20,
         fontWeight: "bold",
-       
-       
-      
-        
+ 
     },
     footerView: {
         flex: 1,

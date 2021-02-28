@@ -1,7 +1,11 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useState } from "react";
-import { Button, Text, View } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { Button, SafeAreaView, Text, View } from "react-native";
+import {
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 import { Screens } from "..";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -16,9 +20,13 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel,
 } from "react-native-simple-radio-button";
-import { Medication, MedicationInfo } from "../../interfaces/MedicalInfo";
+import {
+  Apointment,
+  Medication,
+  MedicationInfo,
+} from "../../interfaces/MedicalInfo";
 
-const formFields = {
+var formFields = {
   age: "",
   race: "",
   gender: "",
@@ -32,29 +40,21 @@ const tempMedication: Medication = {
   dose: "", // ex: can be milligrams or milliliter
   numTimesDay: 0,
   usageInstructions: "",
-  refillDate: new Date(),
+  refillDate: "",
 };
 
-const medicalFields: MedicationInfo = {
+const tempAppointment: Apointment = {
+  date: "",
+  time: "",
+  reason: "",
+};
+
+var medicalFields: MedicationInfo = {
   diagnose: "",
-  medication: [
-    {
-      name: "",
-      dose: "", // ex: can be milligrams or milliliter
-      numTimesDay: 0,
-      usageInstructions: "",
-      refillDate: new Date(),
-    },
-  ],
+  medication: [],
   regiments: "",
   familyMedicalHistory: "",
-  nextApointment: [
-    {
-      date: new Date(),
-      time: new Date(), // have to extract time from date object
-      reason: "",
-    },
-  ],
+  nextApointment: [],
 };
 
 var genderProps = [
@@ -67,12 +67,27 @@ function addMedication() {
   medicalFields.medication.push(tempMedication);
   alert("Medication Added");
 }
+function addAppointment() {
+  medicalFields.nextApointment?.push(tempAppointment);
+  alert("Appointment Added");
+}
 
 export default function PersonalInfoScreen(
   props: StackScreenProps<Screens, "PersonalInfo">
 ) {
   const user = props.route.params.user;
-  const STEPS = 4; // number of screens / questions
+
+  if (user.personalInfo?.age) {
+    formFields = user.personalInfo;
+    if (user.medInfo?.diagnose)
+      medicalFields.diagnose = user?.medInfo?.diagnose;
+    if (user.medInfo?.familyMedicalHistory)
+      medicalFields.familyMedicalHistory = user?.medInfo?.familyMedicalHistory;
+    if (user.medInfo?.regiments)
+      medicalFields.regiments = user?.medInfo?.regiments;
+  }
+
+  const STEPS = 5; // number of screens / questions
   const [step, setStep] = useState(1); //used to keep track of which screen to render
   // component to render current step
   const CurrentStep = () => {
@@ -84,16 +99,20 @@ export default function PersonalInfoScreen(
             <Text style={styles.pageTitle}>Personal Information</Text>
             <Text style={styles.buttonTitle}>Age</Text>
             <TextInput
+              defaultValue={user.personalInfo?.age}
               style={styles.input}
               onChangeText={(text) => (formFields.age = text)}
             ></TextInput>
+
             <Text style={styles.buttonTitle}> Race</Text>
             <TextInput
+              defaultValue={user.personalInfo?.race}
               style={styles.input}
               onChangeText={(text) => (formFields.race = text)}
             ></TextInput>
             <Text style={styles.buttonTitle}>Gender</Text>
             <TextInput
+              defaultValue={user.personalInfo?.gender}
               style={styles.input}
               onChangeText={(text) => (formFields.gender = text)}
             ></TextInput>
@@ -109,11 +128,13 @@ export default function PersonalInfoScreen(
 
             <Text style={styles.buttonTitle}>Sexual Orientation</Text>
             <TextInput
+              defaultValue={user.personalInfo?.sexualOrientation}
               style={styles.input}
               onChangeText={(text) => (formFields.sexualOrientation = text)}
             ></TextInput>
             <Text style={styles.buttonTitle}> Religion</Text>
             <TextInput
+              defaultValue={user.personalInfo?.religion}
               style={styles.input}
               onChangeText={(text) => {
                 formFields.religion = text;
@@ -123,6 +144,7 @@ export default function PersonalInfoScreen(
             <Text style={styles.buttonTitle}>Millitary Status?</Text>
 
             <TextInput
+              defaultValue={user.personalInfo?.militaryStatus}
               style={styles.input}
               onChangeText={(text) => (formFields.militaryStatus = text)}
             ></TextInput>
@@ -136,17 +158,20 @@ export default function PersonalInfoScreen(
             <Text style={styles.pageTitle}>Medical Information</Text>
             <Text style={styles.buttonTitle}>Diagnoses</Text>
             <TextInput
+              defaultValue={user.medInfo?.diagnose}
               style={styles.input}
               onChangeText={(text) => (medicalFields.diagnose = text)}
             ></TextInput>
 
             <Text style={styles.buttonTitle}>Regiments</Text>
             <TextInput
+              defaultValue={user.medInfo?.regiments}
               style={styles.input}
               onChangeText={(text) => (medicalFields.regiments = text)}
             ></TextInput>
             <Text style={styles.buttonTitle}> Family Medical History</Text>
             <TextInput
+              defaultValue={user.medInfo?.familyMedicalHistory}
               style={styles.input}
               onChangeText={(text) =>
                 (medicalFields.familyMedicalHistory = text)
@@ -182,11 +207,11 @@ export default function PersonalInfoScreen(
               style={styles.input}
               onChangeText={(text) => (tempMedication.usageInstructions = text)}
             ></TextInput>
-            <Text style={styles.buttonTitle}>Refill Date (mm-dd-yyyy)</Text>
+            <Text style={styles.buttonTitle}>Refill Date (yyyy-mm-dd)</Text>
             <TextInput
               style={styles.input}
               onChangeText={(text) =>
-                (tempMedication.refillDate = new Date(Date.parse(text)))
+                (tempMedication.refillDate = Date.parse(text).toString())
               }
             ></TextInput>
             <TouchableOpacity
@@ -195,6 +220,40 @@ export default function PersonalInfoScreen(
             >
               <Text style={styles.buttonLabelAdd}>Add Medication +</Text>
             </TouchableOpacity>
+          </>
+        );
+      }
+      case 5: {
+        //render sexual orientation question
+        return (
+          <>
+            <>
+              <Text style={styles.pageTitle}>Next Appointments</Text>
+              <Text style={styles.buttonTitle}> Reason</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => (tempAppointment.reason = text)}
+              ></TextInput>
+              <Text style={styles.buttonTitle}>Time</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => (tempAppointment.time = text)}
+              ></TextInput>
+
+              <Text style={styles.buttonTitle}>Date (yyyy-mm-dd)</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) =>
+                  (tempAppointment.date = Date.parse(text).toString())
+                }
+              ></TextInput>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => addAppointment()}
+              >
+                <Text style={styles.buttonLabelAdd}>Add Appointment +</Text>
+              </TouchableOpacity>
+            </>
           </>
         );
       }
@@ -207,7 +266,7 @@ export default function PersonalInfoScreen(
 
   // render full form
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {/* <Text style={styles.buttonTitle}>{props.route.params.user.firstName}</Text> */}
       <CurrentStep></CurrentStep>
       <View style={{ flexDirection: "row" }}>
@@ -224,17 +283,52 @@ export default function PersonalInfoScreen(
           onPress={async () => {
             console.log(step, STEPS);
             if (step == STEPS) {
-              // ADD VALIDATION TO FIELDS
-
               try {
                 await AddPersonalData(user, formFields);
                 await AddMedicalData(user, medicalFields);
-                alert("Success");
+                alert("Thank You");
+                props.navigation.goBack();
               } catch (err) {
                 alert(err);
               }
             } else {
-              setStep(step + 1 > STEPS ? STEPS : step + 1);
+              var validated = true;
+              switch (step) {
+                case 1:
+                  {
+                    if (
+                      formFields.race == "" ||
+                      formFields.gender == "" ||
+                      formFields.age == ""
+                    ) {
+                      validated = false;
+                    }
+                  }
+                  break;
+                case 2: {
+                  if (
+                    formFields.sexualOrientation == "" ||
+                    formFields.religion == "" ||
+                    formFields.militaryStatus == ""
+                  ) {
+                    validated = false;
+                  }
+                  break;
+                }
+                case 3:
+                  {
+                    if (
+                      medicalFields.familyMedicalHistory == "" ||
+                      medicalFields.diagnose == "" ||
+                      medicalFields.regiments == ""
+                    ) {
+                      validated = false;
+                    }
+                  }
+                  break;
+              }
+              if (validated) setStep(step + 1 > STEPS ? STEPS : step + 1);
+              else alert("Fields cannot be blank");
             }
           }}
         >
@@ -248,6 +342,6 @@ export default function PersonalInfoScreen(
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
