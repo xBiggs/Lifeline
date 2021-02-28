@@ -63,11 +63,16 @@ var genderProps = [
   { label: "Other", value: "Other" },
 ];
 
+function addMedication() {
+  medicalFields.medication.push(tempMedication);
+  alert("Medication Added");
+}
+
 export default function PersonalInfoScreen(
   props: StackScreenProps<Screens, "PersonalInfo">
 ) {
   const user = props.route.params.user;
-  const STEPS = Object.keys(formFields).length; // number of screens / questions
+  const STEPS = 4; // number of screens / questions
   const [step, setStep] = useState(1); //used to keep track of which screen to render
   // component to render current step
   const CurrentStep = () => {
@@ -92,13 +97,16 @@ export default function PersonalInfoScreen(
               style={styles.input}
               onChangeText={(text) => (formFields.gender = text)}
             ></TextInput>
+          </>
+        );
+      }
 
-            {/* <ButtonGroup
-                onPress={(selectedIndex : number)=>formFields.gender=buttons[selectedIndex]}
-           
-                buttons={buttons}
-                containerStyle={{height: 100}}
-    /> */}
+      case 2: {
+        //render race question
+        return (
+          <>
+            <Text style={styles.pageTitle}>Personal Information</Text>
+
             <Text style={styles.buttonTitle}>Sexual Orientation</Text>
             <TextInput
               style={styles.input}
@@ -121,8 +129,8 @@ export default function PersonalInfoScreen(
           </>
         );
       }
-      case 2: {
-        //render race question
+      case 3: {
+        //render gender question
         return (
           <>
             <Text style={styles.pageTitle}>Medical Information</Text>
@@ -147,8 +155,8 @@ export default function PersonalInfoScreen(
           </>
         );
       }
-      case 3: {
-        //render gender question
+      case 4: {
+        //render sexual orientation question
         return (
           <>
             <Text style={styles.pageTitle}>Medication</Text>
@@ -178,44 +186,15 @@ export default function PersonalInfoScreen(
             <TextInput
               style={styles.input}
               onChangeText={(text) =>
-                (tempMedication.refillDate = new Date(text))
+                (tempMedication.refillDate = new Date(Date.parse(text)))
               }
             ></TextInput>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => medicalFields.medication.push(tempMedication)}
+              onPress={() => addMedication()}
             >
               <Text style={styles.buttonLabelAdd}>Add Medication +</Text>
             </TouchableOpacity>
-          </>
-        );
-      }
-      case 4: {
-        //render sexual orientation question
-        return (
-          <>
-            {/* <Text style= {styles.pageTitle}>Next Appointment</Text>
-                           <Text style={styles.buttonTitle}>Refill Date (mm-dd-yyyy)</Text>
-                            <TextInput style={styles.input}
-                            onChangeText={(text)=>medicalFields?.nextApointment?[0] = Number(test)}
-                            ></TextInput> */}
-          </>
-        );
-      }
-      case 5: {
-        //render religion question
-        return <></>;
-      }
-      case 6: {
-        //render military status question
-        return (
-          <>
-            <Text style={styles.buttonTitle}>Millitary Status?</Text>
-
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => (formFields.militaryStatus = text)}
-            ></TextInput>
           </>
         );
       }
@@ -243,15 +222,6 @@ export default function PersonalInfoScreen(
         <TouchableOpacity
           style={styles.button}
           onPress={async () => {
-            //1. validate fields
-
-            //2. pass data and user to backend
-            //await AddPersonalData(user,formFields);
-
-            // waiting
-
-            // if success next sceeen show error
-
             console.log(step, STEPS);
             if (step == STEPS) {
               // ADD VALIDATION TO FIELDS
