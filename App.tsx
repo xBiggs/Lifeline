@@ -12,7 +12,8 @@ if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 
 const Stack = createStackNavigator<Screens>();
-//LogBox.ignoreLogs(["Setting a timer"])
+LogBox.ignoreLogs(["Setting a timer"])
+
 
 export default function App() {
   const width:number =useWindowDimensions().width;

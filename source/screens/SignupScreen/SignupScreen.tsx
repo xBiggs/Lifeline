@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Screens } from "..";
-import { SignUp, SetUserData } from "../../firebase/auth";
+import { SignUp, SetUserData, Login } from "../../firebase/auth";
 import styles from "./styles";
 
 export default function SignupScreen(
@@ -32,6 +32,7 @@ export default function SignupScreen(
     setLoading(true);
     if (password !== confirmPassword) {
       alert("Passwords don't match.");
+      setLoading(false)
       return;
     }
 
@@ -43,13 +44,16 @@ export default function SignupScreen(
         password
       );
       await SetUserData(user, userCredential);
-      props.navigation.navigate("PersonalInfo", { user: user });
+      await Login(email,password);
+    
+      
     } catch (error) {
       // Do something with error here
       alert(error);
     } finally {
       setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
