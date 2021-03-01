@@ -46,7 +46,6 @@ export async function AddMedicalData(user: User,data: MedicationInfo) { //  cred
 
     try
     {
-       
         // map the data to local user object
         user.medInfo = data;
 

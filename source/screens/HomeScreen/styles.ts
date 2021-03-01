@@ -40,7 +40,6 @@ export default StyleSheet.create({
         borderRadius: 10,
         alignItems: "center",
         justifyContent: 'center',
-       
     },
     buttonLogout: {
         backgroundColor: '#023047',
@@ -52,7 +51,6 @@ export default StyleSheet.create({
         borderRadius: 15,
         alignItems: "center",
         justifyContent: 'center',
-       
     },
     buttonTitle: {
         color: 'white',

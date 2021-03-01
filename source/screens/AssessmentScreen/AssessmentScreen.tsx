@@ -90,11 +90,11 @@ export default (props: StackScreenProps<Screens, "Assessment">) => {
 
   const AllQuestionComponents = RiskFactorQuestionComponents.concat(MitigatingFactorQuestionComponents);
   console.log(AllQuestionComponents.length)
-  
+
   const CurrentQuestion = AllQuestionComponents[questionNum];
 
   useEffect(() => {
-    
+
     if (questionNum == NUM_RISK_FACTOR_QUESTIONS+NUM_MITIGATING_FACTOR_QUESTIONS) {
       try {
         user.riskFactors = riskFactorQuestions;

@@ -37,47 +37,6 @@ export const riskFactorQuestions: QuestionResponse[] = [
         choices: ['Yes', 'No'],
         points: 2,
     },
-    {
-        question: 'Do you have a sense of belonging?',
-        choices: ['Yes', 'No'],
-        points: 2,
-    },
-    {
-        question: 'Are you close with your family?',
-        choices: ['Yes', 'No'],
-        points: 2,
-    },
-    {
-        question: 'Do you feel like anyone supports you?',
-        choices: ['Yes', 'No'],
-        points: 2,
-    },
-    {
-        question: 'Do you play an active role in your community?',
-        choices: ['Yes', 'No'],
-        points: 2,
-    },
-    {
-        question: 'Do you have anything to live for?',
-        choices: ['Yes', 'No'],
-        points: 2,
-    },
-    // Low Mitigating Factors Here
-    {
-        question: 'Do you have a sense of resilience?',
-        choices: ['Yes', 'No'],
-        points: 1,
-    },
-    {
-        question: 'Are you persistent?',
-        choices: ['Yes', 'No'],
-        points: 1,
-    },
-    {
-        question: 'Do you have any future goals in life?',
-        choices: ['Yes', 'No'],
-        points: 1,
-    },
     // Low Risk Factors Here
 ];
 

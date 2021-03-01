@@ -125,7 +125,6 @@ export default function PersonalInfoScreen(
               formFields.gender =GENDERS[value];
               console.log(formFields.gender);
             }}>
-              
             </RadioForm>
           </>
         );

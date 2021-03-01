@@ -25,7 +25,6 @@ export default StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: 'white',
         marginTop: 10,
-      
         marginLeft: 30,
         marginRight: 30,
         paddingLeft: 16,
@@ -33,7 +32,6 @@ export default StyleSheet.create({
         marginBottom:30,
     },
     button: {
-        
         marginLeft: 0,
         marginRight: 0,
         marginTop: 40,
@@ -43,23 +41,18 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: 'center',
         backgroundColor:'white',
-       
-        
-       
     },
     buttonTitle: {
         color: 'white',
         fontSize: 22,
         fontWeight: "bold",
-        justifyContent:'center'
-   
+        justifyContent:'center',
     },
   pageTitle: {
         color: 'white',
         fontSize: 30,
         marginBottom:20,
         fontWeight: "bold",
- 
     },
     footerView: {
         flex: 1,

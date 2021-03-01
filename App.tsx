@@ -26,7 +26,6 @@ export default function App() {
     const usersRef = firebase.firestore().collection('users');
     if (user) {
       const userData: User = (await usersRef.doc(user.uid).get()).data() as User;
-      
       if (userData) {
         setLoading(false)
         setUser(userData)
@@ -52,9 +51,7 @@ export default function App() {
     )
   }
   return (
-    
        <NavigationContainer>
-         
       <Stack.Navigator>
         {user ? (
           <>
@@ -70,7 +67,5 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
-    
-   
   );
 }

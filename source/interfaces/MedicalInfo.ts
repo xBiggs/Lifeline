@@ -1,4 +1,3 @@
-
 export interface MedicationInfo {
     diagnose: string;
     medication: Medication[];
