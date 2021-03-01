@@ -98,6 +98,7 @@ export default (props: StackScreenProps<Screens, "Assessment">) => {
     if (questionNum == NUM_RISK_FACTOR_QUESTIONS+NUM_MITIGATING_FACTOR_QUESTIONS) {
       try {
         user.riskFactors = riskFactorQuestions;
+        user.mitigatingFactors = mitigatingFactorQuestions;
         AddUserData(user);
         alert("Thank You!");
         props.navigation.goBack();
