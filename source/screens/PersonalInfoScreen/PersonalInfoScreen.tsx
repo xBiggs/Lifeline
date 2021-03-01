@@ -57,33 +57,49 @@ var medicalFields: MedicationInfo = {
   nextApointment: [],
 };
 
-
-const GENDERS = ['Male','Female','Other']
-const genderProp = GENDERS.map(gender=>{
-  return {label:gender,value:GENDERS.indexOf(gender)}
-})
-
+const GENDERS = ["Male", "Female", "Other"];
+const genderProp = GENDERS.map((gender) => {
+  return { label: gender, value: GENDERS.indexOf(gender) };
+});
 
 var genderProps = [
-  { label: "Male", value: "Male", },
+  { label: "Male", value: "Male" },
   { label: "Female", value: "Female" },
   { label: "Other", value: "Other" },
 ];
 
 function addMedication() {
-  medicalFields.medication.push(tempMedication);
-  alert("Medication Added");
+  if (
+    tempMedication.name == "" ||
+    tempMedication.dose == "" ||
+    tempMedication.numTimesDay == 0 ||
+    tempMedication.refillDate == "" ||
+    tempMedication.usageInstructions == ""
+  ) {
+    alert("Fields cannot be blank");
+  } else {
+    medicalFields.medication.push(tempMedication);
+    alert("Medication Added");
+  }
 }
 function addAppointment() {
-  medicalFields.nextApointment?.push(tempAppointment);
-  alert("Appointment Added");
+  if (
+    tempAppointment.date == "" ||
+    tempAppointment.reason == "" ||
+    tempAppointment.time == ""
+  )
+    alert("Fields cannot be blank");
+  else {
+    medicalFields.nextApointment?.push(tempAppointment);
+    alert("Appointment Added");
+  }
 }
 
 export default function PersonalInfoScreen(
   props: StackScreenProps<Screens, "PersonalInfo">
 ) {
   const user = props.route.params.user;
-  if(user.personalInfo) formFields = user.personalInfo;
+  if (user.personalInfo) formFields = user.personalInfo;
 
   if (user.personalInfo?.age) {
     formFields.age = user.personalInfo.age;
@@ -97,7 +113,7 @@ export default function PersonalInfoScreen(
 
   const STEPS = 5; // number of screens / questions
   const [step, setStep] = useState(1); //used to keep track of which screen to render
-  const [radio,setRadio] =useState(0);
+  const [radio, setRadio] = useState(0);
   // component to render current step
   const CurrentStep = () => {
     switch (step) {
@@ -120,12 +136,16 @@ export default function PersonalInfoScreen(
               onChangeText={(text) => (formFields.race = text)}
             ></TextInput>
             <Text style={styles.buttonTitle}>Gender</Text>
-            <RadioForm radio_props={genderProp} formHorizontal={true} initial={radio} onPress={value=>{
-              setRadio(value)
-              formFields.gender =GENDERS[value];
-              console.log(formFields.gender);
-            }}>
-            </RadioForm>
+            <RadioForm
+              radio_props={genderProp}
+              formHorizontal={true}
+              initial={radio}
+              onPress={(value) => {
+                setRadio(value);
+                formFields.gender = GENDERS[value];
+                console.log(formFields.gender);
+              }}
+            ></RadioForm>
           </>
         );
       }

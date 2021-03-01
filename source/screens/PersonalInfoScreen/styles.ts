@@ -8,6 +8,7 @@ export default StyleSheet.create({
         backgroundColor:'#FB8500',
         paddingTop:40,
         textAlign:'left',
+        paddingBottom:800,
     },
     title: {
 

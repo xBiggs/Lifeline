@@ -7,6 +7,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         backgroundColor:'#219ebc',
         paddingTop:30,
+        paddingBottom:800,
     },
     title: {
 
