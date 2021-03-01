@@ -71,12 +71,30 @@ var genderProps = [
 ];
 
 function addMedication() {
-  medicalFields.medication.push(tempMedication);
-  alert("Medication Added");
+  if (
+    tempMedication.name == "" ||
+    tempMedication.dose == "" ||
+    tempMedication.numTimesDay == 0 ||
+    tempMedication.refillDate == "" ||
+    tempMedication.usageInstructions == ""
+  ) {
+    alert("Fields cannot be blank");
+  } else {
+    medicalFields.medication.push(tempMedication);
+    alert("Medication Added");
+  }
 }
 function addAppointment() {
-  medicalFields.nextApointment?.push(tempAppointment);
-  alert("Appointment Added");
+  if (
+    tempAppointment.date == "" ||
+    tempAppointment.reason == "" ||
+    tempAppointment.time == ""
+  )
+    alert("Fields cannot be blank");
+  else {
+    medicalFields.nextApointment?.push(tempAppointment);
+    alert("Appointment Added");
+  }
 }
 
 export default function PersonalInfoScreen(
@@ -123,7 +141,7 @@ export default function PersonalInfoScreen(
             <RadioForm radio_props={genderProp} formHorizontal={true} initial={radio} onPress={value=>{
               setRadio(value)
               formFields.gender =GENDERS[value];
-              console.log(formFields.gender);
+             // console.log(formFields.gender);
             }}>
             </RadioForm>
           </>
