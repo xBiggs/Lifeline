@@ -29,7 +29,7 @@ import {
 var formFields = {
   age: "",
   race: "",
-  gender: "",
+  gender: "Male",
   sexualOrientation: "",
   religion: "",
   militaryStatus: "",
@@ -57,8 +57,15 @@ var medicalFields: MedicationInfo = {
   nextApointment: [],
 };
 
+
+const GENDERS = ['Male','Female','Other']
+const genderProp = GENDERS.map(gender=>{
+  return {label:gender,value:GENDERS.indexOf(gender)}
+})
+
+
 var genderProps = [
-  { label: "Male", value: "Male" },
+  { label: "Male", value: "Male", },
   { label: "Female", value: "Female" },
   { label: "Other", value: "Other" },
 ];
@@ -76,9 +83,10 @@ export default function PersonalInfoScreen(
   props: StackScreenProps<Screens, "PersonalInfo">
 ) {
   const user = props.route.params.user;
+  if(user.personalInfo) formFields = user.personalInfo;
 
   if (user.personalInfo?.age) {
-    formFields = user.personalInfo;
+    formFields.age = user.personalInfo.age;
     if (user.medInfo?.diagnose)
       medicalFields.diagnose = user?.medInfo?.diagnose;
     if (user.medInfo?.familyMedicalHistory)
@@ -89,6 +97,7 @@ export default function PersonalInfoScreen(
 
   const STEPS = 5; // number of screens / questions
   const [step, setStep] = useState(1); //used to keep track of which screen to render
+  const [radio,setRadio] =useState(0);
   // component to render current step
   const CurrentStep = () => {
     switch (step) {
@@ -99,23 +108,25 @@ export default function PersonalInfoScreen(
             <Text style={styles.pageTitle}>Personal Information</Text>
             <Text style={styles.buttonTitle}>Age</Text>
             <TextInput
-              defaultValue={user.personalInfo?.age}
+              defaultValue={formFields.age}
               style={styles.input}
               onChangeText={(text) => (formFields.age = text)}
             ></TextInput>
 
             <Text style={styles.buttonTitle}> Race</Text>
             <TextInput
-              defaultValue={user.personalInfo?.race}
+              defaultValue={formFields.race}
               style={styles.input}
               onChangeText={(text) => (formFields.race = text)}
             ></TextInput>
             <Text style={styles.buttonTitle}>Gender</Text>
-            <TextInput
-              defaultValue={user.personalInfo?.gender}
-              style={styles.input}
-              onChangeText={(text) => (formFields.gender = text)}
-            ></TextInput>
+            <RadioForm radio_props={genderProp} formHorizontal={true} initial={radio} onPress={value=>{
+              setRadio(value)
+              formFields.gender =GENDERS[value];
+              console.log(formFields.gender);
+            }}>
+              
+            </RadioForm>
           </>
         );
       }
@@ -284,8 +295,11 @@ export default function PersonalInfoScreen(
             console.log(step, STEPS);
             if (step == STEPS) {
               try {
+                user.personalInfo = formFields;
                 await AddPersonalData(user, formFields);
                 await AddMedicalData(user, medicalFields);
+                console.log(user.personalInfo)
+                console.log(user.medInfo);
                 alert("Thank You");
                 props.navigation.goBack();
               } catch (err) {

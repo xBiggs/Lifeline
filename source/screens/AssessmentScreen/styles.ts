@@ -51,6 +51,7 @@ export default StyleSheet.create({
         color: 'white',
         fontSize: 22,
         fontWeight: "bold",
+        justifyContent:'center'
    
     },
   pageTitle: {

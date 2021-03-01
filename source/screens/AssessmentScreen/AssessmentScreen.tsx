@@ -31,7 +31,7 @@ const RiskFactorQuestionComponent = (
           onPress={() => {
             questionResponse.response = choice;
             setQuestionNum(
-              questionNum + 1 == NUM_RISK_FACTOR_QUESTIONS
+              questionNum + 1 == NUM_RISK_FACTOR_QUESTIONS +NUM_MITIGATING_FACTOR_QUESTIONS
                 ? questionNum + 1
                 : questionNum + 1
             );
@@ -51,7 +51,7 @@ const MitigatingFactorQuestionComponent = (
   setQuestionNum: React.Dispatch<React.SetStateAction<number>>
 ) => {
   return (
-    <View key={questionResponse.question}>
+    <View style={styles.container} key={questionResponse.question}>
       <Text style={styles.buttonTitle}>{questionResponse.question}</Text>
       {questionResponse.choices.map((choice) => (
         <TouchableOpacity
@@ -60,14 +60,14 @@ const MitigatingFactorQuestionComponent = (
           onPress={() => {
             questionResponse.response = choice;
             setQuestionNum(
-              questionNum + 1 == NUM_MITIGATING_FACTOR_QUESTIONS
+              questionNum + 1 == NUM_MITIGATING_FACTOR_QUESTIONS + NUM_RISK_FACTOR_QUESTIONS
                 ? questionNum + 1
                 : questionNum + 1
             );
-            console.log(questionNum);
+          //  console.log(questionNum);
           }}
         >
-          <Text>{choice}</Text>
+          <Text style={styles.buttonLabel}>{choice}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -87,10 +87,15 @@ export default (props: StackScreenProps<Screens, "Assessment">) => {
     (question) =>
       MitigatingFactorQuestionComponent(question, questionNum, setQuestionNum)
   );
-  const CurrentQuestion = RiskFactorQuestionComponents[questionNum];
+
+  const AllQuestionComponents = RiskFactorQuestionComponents.concat(MitigatingFactorQuestionComponents);
+  console.log(AllQuestionComponents.length)
+  
+  const CurrentQuestion = AllQuestionComponents[questionNum];
 
   useEffect(() => {
-    if (questionNum == NUM_RISK_FACTOR_QUESTIONS) {
+    
+    if (questionNum == NUM_RISK_FACTOR_QUESTIONS+NUM_MITIGATING_FACTOR_QUESTIONS) {
       try {
         user.riskFactors = riskFactorQuestions;
         AddUserData(user);
