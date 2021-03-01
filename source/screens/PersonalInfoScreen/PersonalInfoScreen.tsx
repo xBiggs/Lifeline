@@ -276,84 +276,83 @@ export default function PersonalInfoScreen(
 
   // render full form
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* <Text style={styles.buttonTitle}>{props.route.params.user.firstName}</Text> */}
-      <CurrentStep></CurrentStep>
-      <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            setStep(step - 1 == 0 ? 1 : step - 1);
-          }}
-        >
-          <Icon name="arrow-left" size={40} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={async () => {
-            console.log(step, STEPS);
-            if (step == STEPS) {
-              try {
-                user.personalInfo = formFields;
-                await AddPersonalData(user, formFields);
-                await AddMedicalData(user, medicalFields);
-                console.log(user.personalInfo)
-                console.log(user.medInfo);
-                alert("Thank You");
-                props.navigation.goBack();
-              } catch (err) {
-                alert(err);
-              }
-            } else {
-              var validated = true;
-              switch (step) {
-                case 1:
-                  {
-                    if (
-                      formFields.race == "" ||
-                      formFields.gender == "" ||
-                      formFields.age == ""
-                    ) {
-                      validated = false;
-                    }
-                  }
-                  break;
-                case 2: {
-                  if (
-                    formFields.sexualOrientation == "" ||
-                    formFields.religion == "" ||
-                    formFields.militaryStatus == ""
-                  ) {
-                    validated = false;
-                  }
-                  break;
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={styles.container}>
+        {/* <Text style={styles.buttonTitle}>{props.route.params.user.firstName}</Text> */}
+        <CurrentStep></CurrentStep>
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              setStep(step - 1 == 0 ? 1 : step - 1);
+            }}
+          >
+            <Icon name="arrow-left" size={40} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={async () => {
+              console.log(step, STEPS);
+              if (step == STEPS) {
+                try {
+                  await AddPersonalData(user, formFields);
+                  await AddMedicalData(user, medicalFields);
+                  alert("Thank You");
+                  props.navigation.goBack();
+                } catch (err) {
+                  alert(err);
                 }
-                case 3:
-                  {
+              } else {
+                var validated = true;
+                switch (step) {
+                  case 1:
+                    {
+                      if (
+                        formFields.race == "" ||
+                        formFields.gender == "" ||
+                        formFields.age == ""
+                      ) {
+                        validated = false;
+                      }
+                    }
+                    break;
+                  case 2: {
                     if (
-                      medicalFields.familyMedicalHistory == "" ||
-                      medicalFields.diagnose == "" ||
-                      medicalFields.regiments == ""
+                      formFields.sexualOrientation == "" ||
+                      formFields.religion == "" ||
+                      formFields.militaryStatus == ""
                     ) {
                       validated = false;
                     }
+                    break;
                   }
-                  break;
+                  case 3:
+                    {
+                      if (
+                        medicalFields.familyMedicalHistory == "" ||
+                        medicalFields.diagnose == "" ||
+                        medicalFields.regiments == ""
+                      ) {
+                        validated = false;
+                      }
+                    }
+                    break;
+                }
+                if (validated) setStep(step + 1 > STEPS ? STEPS : step + 1);
+                else alert("Fields cannot be blank");
               }
-              if (validated) setStep(step + 1 > STEPS ? STEPS : step + 1);
-              else alert("Fields cannot be blank");
-            }
-          }}
-        >
-          <Text style={styles.buttonLabel}>
-            {" "}
-            {step == STEPS ? (
-              "Submit"
-            ) : (
-              <Icon name="arrow-right" size={40} color="white" />
-            )}{" "}
-          </Text>
-        </TouchableOpacity>
+            }}
+          >
+            <Text style={styles.buttonLabel}>
+              {" "}
+              {step == STEPS ? (
+                "Submit"
+              ) : (
+                <Icon name="arrow-right" size={40} color="white" />
+              )}{" "}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
