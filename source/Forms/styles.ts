@@ -7,6 +7,7 @@ export default StyleSheet.create({
         backgroundColor:'#FB8500',
       
     },
+    modal:{backgroundColor:'#FB8500'},
     title: {
      
         marginBottom:20,
@@ -33,11 +34,13 @@ export default StyleSheet.create({
         
         marginRight: 30,
         paddingLeft: 16,
-        width:350,
+        width:300,
         marginBottom:30,
     },
     error:{
             color:'white',
+            marginTop:-25,
+            marginBottom:20,
     },
     button: {
   
@@ -111,6 +114,62 @@ export default StyleSheet.create({
             marginBottom:20,
             
     },
+    subTitle:{
+            fontSize:20,
+            marginBottom:10,
+    },
+    MainTitle:{
+        fontSize:30,
+        marginBottom:20,
+        backgroundColor:'#219ebc',
+        color:'white',
+        width:500,
+        marginLeft:-20,
+        paddingLeft:20,
+        paddingTop:10,
+        paddingBottom:10,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+     
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor:"#FB8500",
+        borderRadius: 40,
+        padding: 35,
+        alignItems: "center",
+      
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width:400,
+      },
+      
+      buttonOpen: {
+        backgroundColor: "#F194FF",
+      },
+      buttonClose: {
+        backgroundColor: "#2196F3",
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+      },
+  
     radioContainer:{
         
         backgroundColor:'#FB8500',

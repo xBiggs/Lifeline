@@ -4,6 +4,8 @@ import {PersInfo} from "../interfaces/PersonalInfo"
 import {MedicationInfo} from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
 
+
+
 export async function AddPersonalData(user: User,data:PersInfo) { //  credential: firebase.auth.UserCredential, info: PersInfo
 
     // firebase.firestore().collection('users').doc(user.id).set({
@@ -56,5 +58,6 @@ export async function AddMedicalData(user: User,data: MedicationInfo) { //  cred
     }
 
 }
+
 
 // commands to test a function: tsc & node firebaseCRUDtest.js

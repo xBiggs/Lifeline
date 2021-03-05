@@ -45,3 +45,9 @@ export async function SetUserData(user: User, credential: firebase.auth.UserCred
 export async function Logout() {
     await firebase.auth().signOut();
 }
+
+
+   
+
+  
+

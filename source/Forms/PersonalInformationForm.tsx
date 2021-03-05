@@ -30,7 +30,6 @@ const initialValues = {
 
 export default function PersonalInformation() {
   const buttonsGender = ["Male", "female", "Other"];
-
   const [americanIndian, setAmericanIndian] = useState();
   const [asian, setAsian] = useState();
   const [black, setBlack] = useState();
