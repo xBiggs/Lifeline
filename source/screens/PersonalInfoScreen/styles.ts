@@ -3,15 +3,20 @@ import { withTheme } from 'react-native-elements';
 
 export default StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: 'center',
+     
         backgroundColor:'#FB8500',
-        paddingTop:40,
-        textAlign:'left',
-        paddingBottom:800,
+      
     },
+    modal:{backgroundColor:'#FB8500'},
     title: {
-
+     
+        marginBottom:20,
+        color: 'white',
+        fontSize: 32,
+        fontWeight: "bold",
+        alignSelf:'stretch',
+        marginLeft:40,
+        marginTop:20,
     },
     logo: {
         flex: 1,
@@ -26,16 +31,19 @@ export default StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: 'white',
         marginTop: 10,
-        marginLeft: 30,
+        
         marginRight: 30,
         paddingLeft: 16,
-        width:350,
+        width:300,
         marginBottom:30,
     },
+    error:{
+            color:'white',
+            marginTop:-25,
+            marginBottom:20,
+    },
     button: {
-        marginLeft: 0,
-        marginRight: 0,
-        marginTop: 10,
+  
         height: 48,
         width:200,
         borderRadius: 15,
@@ -97,5 +105,88 @@ export default StyleSheet.create({
     view:{
         marginLeft:5,
         marginRight:5,
+    },
+    inputContainer:{
+        
+        backgroundColor:'#FB8500',
+            paddingLeft:40,
+            paddingTop:0,
+            marginBottom:20,
+            
+    },
+    subTitle:{
+            fontSize:20,
+            marginBottom:10,
+    },
+    MainTitle:{
+        fontSize:30,
+        marginBottom:20,
+        backgroundColor:'#219ebc',
+        color:'white',
+        width:500,
+        marginLeft:-20,
+        paddingLeft:20,
+        paddingTop:10,
+        paddingBottom:10,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+     
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor:"#FB8500",
+        borderRadius: 40,
+        padding: 35,
+        alignItems: "center",
+      
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width:400,
+      },
+      
+      buttonOpen: {
+        backgroundColor: "#F194FF",
+      },
+      buttonClose: {
+        backgroundColor: "#2196F3",
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center",
+      },
+  
+    radioContainer:{
+        
+        backgroundColor:'#FB8500',
+           
+            paddingTop:20,
+            paddingBottom:30,
+           
+    },
+    radioText:{
+        color: 'white',
+        fontSize: 20,
+        fontWeight: "bold",
+        paddingLeft:40,
+    }
+    ,containerCheck:{
+        width:150,
+backgroundColor:"#FB8500",
+borderWidth:0,
     }
 })

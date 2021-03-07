@@ -8,6 +8,7 @@ import styles from "./styles";
 import { Card, ListItem } from "react-native-elements";
 import { Notification } from "../../interfaces/Notification";
 import moment from "moment";
+import useFormal from "@kevinwolf/formal-native";
 
 // borderRadius={15}
 export default function HomeScreen(props: StackScreenProps<Screens, "Home">) {

@@ -14,7 +14,7 @@ import * as yup from "yup";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Divider, ListItem } from "react-native-elements";
-import PersonalInformation from "./PersonalInformationForm";
+
 import styles from "./styles";
 import useFormal from "@kevinwolf/formal-native";
 

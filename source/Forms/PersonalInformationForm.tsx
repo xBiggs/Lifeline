@@ -8,6 +8,7 @@ import {
   Button,
   NativeAppEventEmitter,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import useFormal from "@kevinwolf/formal-native";
 import * as yup from "yup";
 import {
@@ -19,13 +20,17 @@ import {
 } from "react-native-elements";
 import styles from "./styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { PersInfo } from "../interfaces/PersonalInfo";
+import { AddPersonalData } from "../firebase/UserDataHandler";
 
 const schema = yup.object().shape({
   age: yup.number().required(),
+  religion: yup.string().required(),
 });
 
 const initialValues = {
-  age: 0,
+  age: "Please Enter Age",
+  religion: "List N/A if prefer not to say",
 };
 
 export default function PersonalInformation() {
@@ -37,25 +42,61 @@ export default function PersonalInformation() {
   const [white, setWhite] = useState();
   const [nativeHawaiian, setNativeHawaiian] = useState();
   const [other, setOther] = useState();
-  const [radio, setRadio] = useState();
+  const [gender, setRadio] = useState(0);
 
-  const handleRadioInput = (e) => {
-    setRadio(e);
-    console.log(radio);
+  var tempPersonalInfo: PersInfo = {
+    age: "",
+    race: "",
+    gender: "",
+    sexualOrientation: "",
+    religion: "",
+    militaryStatus: "",
   };
 
-  const changeRace = (e) => {
+  const handleRadioInput = (e: React.SetStateAction<undefined>) => {
+    setRadio(e);
+  };
+
+  const changeRace = (e: React.SetStateAction<string>) => {
     setRace(e);
     setIsVisible(false);
   };
 
+  const changeMilitaryStatus = (e: React.SetStateAction<string>) => {
+    setMilitaryStatus(e);
+    setIsVisibleMilitaryStatus(false);
+  };
+  const changeSexualOrientation = (e: React.SetStateAction<string>) => {
+    setSexualOrientation(e);
+    setIsVisibleSexualOrientation(false);
+  };
+
   const formal = useFormal(initialValues, {
     schema,
-    onSubmit: (values) => Alert.alert(JSON.stringify(values)),
+    onSubmit: (values) => {
+      tempPersonalInfo.age = values.age;
+      tempPersonalInfo.gender = buttonsGender[gender];
+      tempPersonalInfo.militaryStatus = militaryStatus;
+      tempPersonalInfo.race = race;
+      tempPersonalInfo.religion = values.religion;
+      tempPersonalInfo.sexualOrientation = sexualOrientation;
+      AddPersonalData(user, tempPersonalInfo);
+      Alert.alert("Thank You!");
+    },
   });
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isVisibleSexualOrientation, setIsVisibleSexualOrientation] = useState(
+    false
+  );
+  const [isVisibleMilitaryStatus, setIsVisibleMilitaryStatus] = useState(false);
   const [race, setRace] = useState("Select Race");
+  const [sexualOrientation, setSexualOrientation] = useState(
+    "Select Sexual Orientation"
+  );
+  const [militaryStatus, setMilitaryStatus] = useState(
+    "Select Military Status"
+  );
 
   const list = [
     { title: "White", onPress: () => changeRace("White") },
@@ -72,226 +113,346 @@ export default function PersonalInformation() {
       onPress: () => setIsVisible(false),
     },
   ];
+  const listSexualOrientation = [
+    {
+      title: "Heterosexual",
+      onPress: () => changeSexualOrientation("Heterosexual"),
+    },
+    {
+      title: "Homosexual",
+      onPress: () => changeSexualOrientation("Homosexual"),
+    },
+    { title: "Bisexual", onPress: () => changeSexualOrientation("Bisexual") },
+    { title: "Asexual", onPress: () => changeSexualOrientation("Asexual") },
+    { title: "Other", onPress: () => changeSexualOrientation("Other") },
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: "red" },
+
+      titleStyle: { color: "white" },
+      onPress: () => setIsVisibleSexualOrientation(false),
+    },
+  ];
+  const listMilitaryStatus = [
+    {
+      title: "Not Indicated",
+      onPress: () => changeMilitaryStatus("Not Indicated"),
+    },
+    {
+      title: "No Military Status",
+      onPress: () => changeMilitaryStatus("No Military Status"),
+    },
+    {
+      title: "Vietnam Era Veteran",
+      onPress: () => changeMilitaryStatus("Vietnam Era Veteran"),
+    },
+    {
+      title: "Other Veteran",
+      onPress: () => changeMilitaryStatus("Other Veteran"),
+    },
+    {
+      title: "Active Reserve",
+      onPress: () => changeMilitaryStatus("Active Reserve"),
+    },
+    {
+      title: "Inactive Reserve",
+      onPress: () => changeMilitaryStatus("Inactive Reserve"),
+    },
+    {
+      title: "Retired",
+      onPress: () => changeMilitaryStatus("Retired"),
+    },
+    {
+      title: "Active Duty",
+      onPress: () => changeMilitaryStatus("Active Duty"),
+    },
+
+    {
+      title: "Cancel",
+      containerStyle: { backgroundColor: "red" },
+
+      titleStyle: { color: "white" },
+      onPress: () => setIsVisibleSexualOrientation(false),
+    },
+  ];
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.title}> Personal Information </Text>
-        <Divider
-          style={{
-            backgroundColor: "white",
-            width: 360,
-            height: 1,
-            alignSelf: "center",
-            marginBottom: 30,
-          }}
-        />
-        <View style={styles.inputContainer}>
-          <Text style={styles.buttonLabel}>Age</Text>
-          <TextInput style={styles.input} {...formal.getFieldProps("age")} />
-          {formal.errors.age && (
-            <Text style={styles.error}>{formal.errors.age}</Text>
-          )}
-        </View>
-        <Divider
-          style={{
-            backgroundColor: "white",
-            width: 360,
-            height: 1,
-            alignSelf: "center",
-            marginBottom: 30,
-          }}
-        />
-        <View style={styles.inputContainer}>
-          <Text style={styles.buttonLabel}>Gender</Text>
-
-          <ButtonGroup
-            onPress={handleRadioInput}
-            selectedIndex={radio}
-            buttons={buttonsGender}
-            textStyle={{ color: "white", fontSize: 20 }}
-            buttonStyle={{
-              borderRadius: 10,
-
-              height: 100,
+    <KeyboardAwareScrollView>
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.title}> Personal Information </Text>
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
             }}
-            innerBorderStyle={{
-              color: "white",
-              width: 0,
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.buttonLabel}>Age</Text>
+            <TextInput style={styles.input} {...formal.getFieldProps("age")} />
+            {formal.errors.age && (
+              <Text style={styles.error}>{formal.errors.age}</Text>
+            )}
+          </View>
+
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
             }}
-            selectedButtonStyle={{ backgroundColor: "#023047" }}
-            containerStyle={{
-              height: 50,
-              width: 330,
-              marginTop: 20,
-              backgroundColor: "#FB8500",
-              borderWidth: 0,
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.buttonLabel}>Religion</Text>
+            <TextInput
+              style={styles.input}
+              {...formal.getFieldProps("religion")}
+            />
+            {formal.errors.religion && (
+              <Text style={styles.error}>{formal.errors.religion}</Text>
+            )}
+          </View>
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
+            }}
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.buttonLabel}>Gender</Text>
+
+            <ButtonGroup
+              onPress={handleRadioInput}
+              selectedIndex={gender}
+              buttons={buttonsGender}
+              textStyle={{ color: "white", fontSize: 20 }}
+              buttonStyle={{
+                borderRadius: 10,
+
+                height: 100,
+              }}
+              innerBorderStyle={{
+                color: "white",
+                width: 0,
+              }}
+              selectedButtonStyle={{ backgroundColor: "#023047" }}
+              containerStyle={{
+                height: 50,
+                width: 330,
+                marginTop: 20,
+                backgroundColor: "#FB8500",
+                borderWidth: 0,
+              }}
+            />
+          </View>
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
             }}
           />
         </View>
-        <Divider
+        <View style={styles.inputContainer}>
+          <Text style={styles.buttonLabel}>Race</Text>
+        </View>
+
+        <TouchableOpacity
           style={{
+            marginBottom: 30,
+            alignSelf: "center",
             backgroundColor: "white",
-            width: 360,
-            height: 1,
-            alignSelf: "center",
-            marginBottom: 30,
-          }}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.buttonLabel}>Race</Text>
-        {/* <View style={{ flexDirection: "row" }}>
-          <View>
-            <CheckBox
-              containerStyle={styles.containerCheck}
-              title="White"
-              checked={white}
-              onPress={() => setWhite(!white)}
-              checkedColor="#023047"
-              textStyle={styles.buttonLabel}
-              uncheckedColor="white"
-            />
-          </View>
-
-          <View>
-            <CheckBox
-              containerStyle={styles.containerCheck}
-              title="Black"
-              checked={black}
-              onPress={() => setBlack(!black)}
-              checkedColor="#023047"
-              textStyle={styles.buttonLabel}
-              uncheckedColor="white"
-            />
-          </View>
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <View>
-            <CheckBox
-              containerStyle={styles.containerCheck}
-              title="Native American"
-              checked={americanIndian}
-              onPress={() => setAmericanIndian(!americanIndian)}
-              checkedColor="#023047"
-              textStyle={styles.buttonLabel}
-              uncheckedColor="white"
-            />
-          </View>
-          <View>
-            <CheckBox
-              containerStyle={styles.containerCheck}
-              title="Native Hawaiian"
-              checked={nativeHawaiian}
-              onPress={() => setNativeHawaiian(!nativeHawaiian)}
-              checkedColor="#023047"
-              textStyle={styles.buttonLabel}
-              uncheckedColor="white"
-            />
-          </View>
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <View>
-            <CheckBox
-              containerStyle={styles.containerCheck}
-              title="Hispanic"
-              checked={hispanic}
-              onPress={() => setHispanic(!hispanic)}
-              checkedColor="#023047"
-              textStyle={styles.buttonLabel}
-              uncheckedColor="white"
-            />
-          </View>
-          <View>
-            <CheckBox
-              containerStyle={styles.containerCheck}
-              title="Other"
-              checked={other}
-              onPress={() => setOther(!other)}
-              checkedColor="#023047"
-              textStyle={styles.buttonLabel}
-              uncheckedColor="white"
-            />
-          </View>
-        </View> */}
-      </View>
-
-      <TouchableOpacity
-        style={{
-          marginBottom: 30,
-          alignSelf: "center",
-          backgroundColor: "white",
-          width: 300,
-          borderRadius: 10,
-          alignContent: "center",
-
-          padding: 10,
-        }}
-        onPress={() => setIsVisible(true)}
-      >
-        <Text
-          style={{
-            color: "#023047",
-            fontSize: 25,
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
-        >
-          {race}
-        </Text>
-      </TouchableOpacity>
-      <Divider
-        style={{
-          backgroundColor: "white",
-          width: 360,
-          height: 1,
-          alignSelf: "center",
-          marginBottom: 30,
-        }}
-      />
-      <TouchableOpacity {...formal.getSubmitButtonProps()}>
-        <View
-          style={{
-            marginBottom: 30,
-            alignSelf: "center",
-            backgroundColor: "#023047",
             width: 300,
             borderRadius: 10,
             alignContent: "center",
 
             padding: 10,
           }}
+          onPress={() => setIsVisible(true)}
         >
           <Text
             style={{
-              color: "white",
+              color: "#023047",
               fontSize: 25,
               fontWeight: "bold",
               textAlign: "center",
             }}
           >
-            Submit
+            {race}
           </Text>
+        </TouchableOpacity>
+        <Divider
+          style={{
+            backgroundColor: "white",
+            width: 360,
+            height: 1,
+            alignSelf: "center",
+            marginBottom: 30,
+          }}
+        />
+        <View style={styles.inputContainer}>
+          <Text style={styles.buttonLabel}>Sexual Orientation</Text>
         </View>
-      </TouchableOpacity>
 
-      <BottomSheet
-        modalProps={{}}
-        isVisible={isVisible}
-        containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}
-      >
-        {list.map((l, i) => (
-          <ListItem
-            key={i}
-            containerStyle={l.containerStyle}
-            onPress={l.onPress}
+        <TouchableOpacity
+          style={{
+            marginBottom: 30,
+            alignSelf: "center",
+            backgroundColor: "white",
+            width: 300,
+            borderRadius: 10,
+            alignContent: "center",
+
+            padding: 10,
+          }}
+          onPress={() => setIsVisibleSexualOrientation(true)}
+        >
+          <Text
+            style={{
+              color: "#023047",
+              fontSize: 25,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
           >
-            <ListItem.Content>
-              <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-        ))}
-      </BottomSheet>
-    </View>
+            {sexualOrientation}
+          </Text>
+        </TouchableOpacity>
+        <Divider
+          style={{
+            backgroundColor: "white",
+            width: 360,
+            height: 1,
+            alignSelf: "center",
+            marginBottom: 30,
+          }}
+        />
+        <View style={styles.inputContainer}>
+          <Text style={styles.buttonLabel}>Military Status</Text>
+        </View>
+
+        <TouchableOpacity
+          style={{
+            marginBottom: 30,
+            alignSelf: "center",
+            backgroundColor: "white",
+            width: 300,
+            borderRadius: 10,
+            alignContent: "center",
+
+            padding: 10,
+          }}
+          onPress={() => setIsVisibleMilitaryStatus(true)}
+        >
+          <Text
+            style={{
+              color: "#023047",
+              fontSize: 25,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            {militaryStatus}
+          </Text>
+        </TouchableOpacity>
+        <Divider
+          style={{
+            backgroundColor: "white",
+            width: 360,
+            height: 1,
+            alignSelf: "center",
+            marginBottom: 30,
+          }}
+        />
+        <TouchableOpacity {...formal.getSubmitButtonProps()}>
+          <View
+            style={{
+              marginBottom: 30,
+              alignSelf: "center",
+              backgroundColor: "#023047",
+              width: 300,
+              borderRadius: 10,
+              alignContent: "center",
+
+              padding: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 25,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Submit
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        <BottomSheet
+          modalProps={{}}
+          isVisible={isVisible}
+          containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}
+        >
+          {list.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={l.onPress}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </BottomSheet>
+
+        <BottomSheet
+          modalProps={{}}
+          isVisible={isVisibleSexualOrientation}
+          containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}
+        >
+          {listSexualOrientation.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={l.onPress}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </BottomSheet>
+        <BottomSheet
+          modalProps={{}}
+          isVisible={isVisibleMilitaryStatus}
+          containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}
+        >
+          {listMilitaryStatus.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={l.onPress}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </BottomSheet>
+      </View>
+    </KeyboardAwareScrollView>
   );
 }
