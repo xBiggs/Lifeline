@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, ImageSourcePropType } from "react-native";
 import { Screens } from "..";
 import { Logout } from "../../firebase/auth";
 import { User } from "../../interfaces/User";
@@ -9,9 +9,11 @@ import { Card, ListItem } from "react-native-elements";
 import { Notification } from "../../interfaces/Notification";
 import moment from "moment";
 import useFormal from "@kevinwolf/formal-native";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { HomeDrawerParamList } from "../../types";
 
 // borderRadius={15}
-export default function HomeScreen(props: StackScreenProps<Screens, "Home">) {
+export default function HomeScreen(props: DrawerScreenProps<HomeDrawerParamList, "Home">) {
   const user: User = props.route.params.user;
 
   var testDate = new Date();

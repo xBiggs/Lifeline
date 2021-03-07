@@ -7,6 +7,8 @@ import { LoginScreen, HomeScreen, SignupScreen, Screens, PersonalInfoScreen, Ass
 import { User } from './source/interfaces/User';
 import { decode, encode } from 'base-64';
 import { ActivityIndicator, LogBox, Text, useWindowDimensions, View } from 'react-native';
+import UserStackNavigator from './source/navigation/UserStackNavigator';
+import AuthStackNavigator from './source/navigation/AuthStackNavigator';
 
 if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
@@ -25,12 +27,14 @@ export default function App() {
 
     const usersRef = firebase.firestore().collection('users');
     if (user) {
+      console.log(`${user.email} is logged in`)
       const userData: User = (await usersRef.doc(user.uid).get()).data() as User;
       if (userData) {
         setLoading(false)
         setUser(userData)
       }
     } else {
+      console.log('user logged out')
       setLoading(false)
       //changed on logout to render login screen
       setUser(null)
@@ -52,20 +56,10 @@ export default function App() {
   }
   return (
        <NavigationContainer>
-      <Stack.Navigator>
-        {user ? (
-          <>
-          <Stack.Screen name="Home"  component={HomeScreen} initialParams={{user}}></Stack.Screen>
-          <Stack.Screen name='PersonalInfo' component={PersonalInfoScreen} initialParams={{user}}></Stack.Screen>
-          <Stack.Screen name='Assessment' component={AssessmentScreen} initialParams={{user}}></Stack.Screen>
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Signup" component={SignupScreen} />
-          </>
-        )}
-      </Stack.Navigator>
+         {user? 
+         <UserStackNavigator user={user}></UserStackNavigator>
+        :
+        <AuthStackNavigator></AuthStackNavigator>}
     </NavigationContainer>
   );
 }

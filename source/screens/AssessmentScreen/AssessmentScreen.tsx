@@ -1,3 +1,4 @@
+import { DrawerScreenProps } from "@react-navigation/drawer";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -10,6 +11,7 @@ import {
   QuestionResponse,
   riskFactorQuestions,
 } from "../../interfaces/QuestionResponse";
+import { HomeDrawerParamList } from "../../types";
 import styles from "./styles";
 
 const NUM_RISK_FACTOR_QUESTIONS = riskFactorQuestions.length;
@@ -75,7 +77,7 @@ const MitigatingFactorQuestionComponent = (
 };
 
 //screen component
-export default (props: StackScreenProps<Screens, "Assessment">) => {
+export default (props: DrawerScreenProps<HomeDrawerParamList, "Assessment">) => {
   const user = props.route.params.user;
   const [questionNum, setQuestionNum] = useState(0);
 

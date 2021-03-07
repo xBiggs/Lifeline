@@ -21,7 +21,6 @@ export default function LoginScreen({navigation}:StackScreenProps<Screens,'Login
         try {
             const userCredential = await Login(email, password);
             const user = await GetUserData(userCredential) as User;
-            navigation.navigate('Home', {user});
         } catch (error) {
             // Do something with error here
             alert(error);

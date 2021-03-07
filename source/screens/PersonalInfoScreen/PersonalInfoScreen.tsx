@@ -25,6 +25,8 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { Screens } from "..";
 import { AddPersonalData } from "../../firebase/UserDataHandler";
 import { PersInfo } from "../../interfaces/PersonalInfo";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { HomeDrawerParamList } from "../../types";
 
 const schema = yup.object().shape({
   age: yup.number().required(),
@@ -37,7 +39,7 @@ const initialValues = {
 };
 
 export default function PersonalInfoScreen(
-  props: StackScreenProps<Screens, "PersonalInfo">
+  props: DrawerScreenProps<HomeDrawerParamList, 'Information'>
 ) {
   const user = props.route.params.user;
   const buttonsGender = ["Male", "female", "Other"];

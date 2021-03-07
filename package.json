@@ -14,6 +14,7 @@
     "@kevinwolf/formal-native": "^0.1.3",
     "@react-native-community/datetimepicker": "3.0.4",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-navigation/drawer": "^5.12.4",
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.14.2",
     "@types/base-64": "^0.1.3",
