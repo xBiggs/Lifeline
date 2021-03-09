@@ -7,8 +7,13 @@ import { SafetyPlanStackParamList } from '../../../types';
 export default (props:StackScreenProps<SafetyPlanStackParamList,'CopingStrategies'>)=>
 {
     const {user} = props.route.params
-    const nav = useNavigation();
+    const {navigation} = props
 
+    useEffect(()=>{
+        navigation.addListener('blur',e=>{
+            navigation.goBack();
+        })
+    })
     return (
         <View>
             {user.copingStrategies? <Text>Coping Strategies</Text>: <Text>No Coping Strategies</Text>}

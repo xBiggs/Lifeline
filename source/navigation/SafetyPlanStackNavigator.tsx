@@ -4,12 +4,18 @@ import SafetyPlanScreen from '../screens/SafetyPlanScreen/SafetyPlanScreen';
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
 import CopingStrategiesScreen from '../screens/SafetyPlanScreen/CopingStrategiesScreen/CopingStrategiesScreen';
 import { User } from '../interfaces/User';
-import { SafetyPlanStackParamList } from '../types';
+import { HomeDrawerParamList, SafetyPlanStackParamList } from '../types';
+import ContactAccessScreen from '../screens/ContactScreen/ContactAccessScreen';
+import { DrawerScreenProps } from '@react-navigation/drawer';
 
 const Stack = createStackNavigator<SafetyPlanStackParamList>();
-export default (props:{user:User})=>(
-    <Stack.Navigator>
-        <Stack.Screen name='Home' initialParams={{user:props.user}} component={SafetyPlanScreen}></Stack.Screen>
-        <Stack.Screen name='CopingStrategies' initialParams={{user:props.user}} component ={CopingStrategiesScreen}></Stack.Screen>
+export default (props:DrawerScreenProps<HomeDrawerParamList,'SafetyPlan'>)=>{
+    const {user} = props.route.params;
+    return (
+    <Stack.Navigator headerMode='none'>
+        <Stack.Screen name='Home' initialParams={{user}} component={SafetyPlanScreen}></Stack.Screen>
+        <Stack.Screen name='CopingStrategies' initialParams={{user}} component ={CopingStrategiesScreen}></Stack.Screen>
+        <Stack.Screen name='EmergencyContact' initialParams={{user}} component ={ContactAccessScreen}></Stack.Screen>
     </Stack.Navigator>
-)
+    )
+}

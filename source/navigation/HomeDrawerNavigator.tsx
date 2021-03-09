@@ -19,6 +19,7 @@ const Drawer = createDrawerNavigator<HomeDrawerParamList>();
 
 export default (props:StackScreenProps<UserStackParamList,'Home'>)=>{
     const user = props.route.params.user;
+    //console.log('drawer user', user);
     return(
         <Drawer.Navigator  screenOptions={{
             headerShown:true,
