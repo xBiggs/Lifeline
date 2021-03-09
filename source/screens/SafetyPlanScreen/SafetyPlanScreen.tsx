@@ -8,7 +8,7 @@ import styles from './styles'
 
 
 // export default () => 
-export default ( props: DrawerScreenProps<SafetyPlanDrawer, "EmergencyContact">)=>
+export default ( props: DrawerScreenProps<SafetyPlanDrawer, "Home">)=>
 {
     const user: User = props.route.params.user;
     return (

@@ -25,5 +25,6 @@ export type HomeDrawerParamList = {
 
 export type SafetyPlanDrawer = {
     Home: { user:User },
-    EmergencyContact: {user:User}
+    EmergencyContact: {user:User},
+    EmergencyServices: undefined
 }
