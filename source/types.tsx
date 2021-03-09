@@ -19,6 +19,11 @@ export type HomeDrawerParamList = {
     Information:{user:User},
     Vault:undefined,
     DailyConversations:undefined,
-    SafetyPlan:undefined
+    SafetyPlan: {user: User}, //SafetyPlan:undefined
     Settings:undefined
+}
+
+export type SafetyPlanDrawer = {
+    Home: { user:User },
+    EmergencyContact: {user:User}
 }
