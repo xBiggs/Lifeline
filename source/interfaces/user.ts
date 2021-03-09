@@ -11,4 +11,5 @@ export interface User {
     medInfo?: MedicationInfo;
     riskFactors?: QuestionResponse[];
     mitigatingFactors?: QuestionResponse[];
+    copingStrategies?:string[];
 }
