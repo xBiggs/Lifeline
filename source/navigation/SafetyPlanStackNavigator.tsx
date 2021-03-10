@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import SafetyPlanScreen from '../screens/SafetyPlanScreen/SafetyPlanScreen';
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
@@ -7,10 +7,14 @@ import { User } from '../interfaces/User';
 import { HomeDrawerParamList, SafetyPlanStackParamList } from '../types';
 import ContactAccessScreen from '../screens/ContactScreen/ContactAccessScreen';
 import { DrawerScreenProps } from '@react-navigation/drawer';
+import { Keyboard } from 'react-native';
 
 const Stack = createStackNavigator<SafetyPlanStackParamList>();
+
 export default (props:DrawerScreenProps<HomeDrawerParamList,'SafetyPlan'>)=>{
+    props.navigation.addListener('drawerOpen',e=>{Keyboard.dismiss()})
     const {user} = props.route.params;
+    
     return (
     <Stack.Navigator headerMode='none'>
         <Stack.Screen name='Home' initialParams={{user}} component={SafetyPlanScreen}></Stack.Screen>
