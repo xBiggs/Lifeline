@@ -1,48 +1,101 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
-import { Text, View, TouchableOpacity, ScrollView, ImageSourcePropType } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  ImageSourcePropType,
+  Platform,
+  Button,
+} from "react-native";
 import { Screens } from "..";
-import { Logout } from "../../firebase/auth";
+import { getCurrentUserInfo, GetUserData, Logout } from "../../firebase/auth";
 import { User } from "../../interfaces/User";
 import styles from "./styles";
 import { Card, ListItem } from "react-native-elements";
-import { Notification } from "../../interfaces/Notification";
+import { NotificationType } from "../../interfaces/Notification";
 import moment from "moment";
 import useFormal from "@kevinwolf/formal-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
+import Constants from "expo-constants";
+
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "../../Controllers/notificationsController";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 // borderRadius={15}
-export default function HomeScreen(props: DrawerScreenProps<HomeDrawerParamList, "Home">) {
+export default function HomeScreen(
+  props: DrawerScreenProps<HomeDrawerParamList, "Home">
+) {
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  //State Variables //////////
+  // const [userNotifications, setUserNotifications] = useState<
+  //   NotificationType[]
+  // >();
+
+  // useEffect(() => {
+  //   const getinfo = async () => {
+  //     const data: any = await getCurrentUserInfo();
+  //     if (data.notifications) setUserNotifications(data.notifications);
+  //     else setUserNotifications([]);
+
+  //     return data;
+  //   };
+  //   getinfo();
+  // }, []);
+  //////////////////////////
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        setNotification(notification);
+      }
+    );
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        console.log(response);
+      }
+    );
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
   const user: User = props.route.params.user;
 
   var testDate = new Date();
-  var notificationListTemp: Notification[] = [
-    {
-      date: new Date("March 7, 2021 23:15:30"),
-      title: "Test2",
-      information: "test2",
-      actionScreen: "PersonalInfo",
-      imageURL: require("./research.png"),
-    },
-    {
-      date: testDate,
-      title: "Test3",
-      information: "test",
-      actionScreen: "PersonalInfo",
-      imageURL: require("./research.png"),
-    },
-  ];
 
-  var notificationList: Notification[] = [];
-
+  var notificationList: NotificationType[] = [];
+  const userNotifications: NotificationType[] = user.notifications;
   var index = 0;
-  notificationListTemp.forEach((element) => {
+
+  userNotifications?.forEach((element) => {
     if (
       moment(element.date).isoWeek() == moment().isoWeek() &&
       !moment(element.date).isBefore(moment(), "day")
     ) {
-      console.log("test");
       notificationList.push(element);
     }
   });
@@ -86,15 +139,7 @@ export default function HomeScreen(props: DrawerScreenProps<HomeDrawerParamList,
                   });
                 }}
               >
-                <Text style={styles.buttonLabel}>Edit Information</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={async () => {
-                  props.navigation.navigate("Assessment", { user });
-                }}
-              >
-                <Text style={styles.buttonLabel}>Take Assessment</Text>
+                <Text style={styles.buttonLabel}>{l.actionScreenTitle}</Text>
               </TouchableOpacity>
             </Card>
           ))}

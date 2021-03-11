@@ -16,6 +16,9 @@ export type Screens = {
     Home: {
         user: User
     };
+    Medication: {
+        user: User
+    };
     PersonalInfo: {
         user: User
     };

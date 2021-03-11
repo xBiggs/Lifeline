@@ -1,8 +1,10 @@
 import { firebase } from './config';
 import "firebase/database";
 import {PersInfo} from "../interfaces/PersonalInfo"
-import {MedicationInfo} from "../interfaces/MedicalInfo"
+import {Medication, MedicationInfo} from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
+import { getCurrentUser, getCurrentUserMedication } from './auth';
+import { NotificationType } from '../interfaces/Notification';
 
 
 
@@ -58,6 +60,21 @@ export async function AddMedicalData(user: User,data: MedicationInfo) { //  cred
     }
 
 }
+export async function AddNotification(user: User,data: NotificationType) { //  credential: firebase.auth.UserCredential, info: PersInfo
+
+    try
+    {
+        // map the data to local user object
+        user.notifications.push(data);
+
+        await firebase.firestore().collection('users').doc(user.id).update("notifications", user.notifications);
+    }catch(err)
+    {
+        throw (err as Error).message;
+    }
+
+}
+
 
 
 // commands to test a function: tsc & node firebaseCRUDtest.js

@@ -39,7 +39,7 @@ const initialValues = {
 };
 
 export default function PersonalInfoScreen(
-  props: DrawerScreenProps<HomeDrawerParamList, 'Information'>
+  props: DrawerScreenProps<HomeDrawerParamList, "Information">
 ) {
   const user = props.route.params.user;
   const buttonsGender = ["Male", "female", "Other"];
