@@ -5,9 +5,11 @@ import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
 import CopingStrategiesScreen from '../screens/SafetyPlanScreen/CopingStrategiesScreen/CopingStrategiesScreen';
 import { User } from '../interfaces/User';
 import { HomeDrawerParamList, SafetyPlanStackParamList } from '../types';
-import ContactAccessScreen from '../screens/ContactScreen/ContactAccessScreen';
+// import ContactAccessScreen from '../screens/ContactScreen/ContactAccessScreen';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { Keyboard } from 'react-native';
+import ContactAccessForm from '../Forms/ContactAccessForm';
+import EmergencyContactScreen from '../screens/SafetyPlanScreen/EmergencyContactScreen/EmergencyContactScreen';
 
 const Stack = createStackNavigator<SafetyPlanStackParamList>();
 
@@ -16,10 +18,12 @@ export default (props:DrawerScreenProps<HomeDrawerParamList,'SafetyPlan'>)=>{
     const {user} = props.route.params;
     
     return (
-    <Stack.Navigator headerMode='none'>
-        <Stack.Screen name='Home' initialParams={{user}} component={SafetyPlanScreen}></Stack.Screen>
-        <Stack.Screen name='CopingStrategies' initialParams={{user}} component ={CopingStrategiesScreen}></Stack.Screen>
-        <Stack.Screen name='EmergencyContact' initialParams={{user}} component ={ContactAccessScreen}></Stack.Screen>
+        <Stack.Navigator headerMode='none'>
+        <Stack.Screen name='Home' initialParams={{ user }} component={SafetyPlanScreen}></Stack.Screen>
+        <Stack.Screen name='CopingStrategies' initialParams={{ user }} component={CopingStrategiesScreen}></Stack.Screen>
+        <Stack.Screen name='AccessDeviceContacts' initialParams={{user}} component ={ContactAccessForm}></Stack.Screen>
+        <Stack.Screen name='EmergencyContact' initialParams={{user}} component ={EmergencyContactScreen}></Stack.Screen>
+        <Stack.Screen name='CallContactAccessFormComponent' initialParams={{user}} component ={ContactAccessScreen}></Stack.Screen>
     </Stack.Navigator>
     )
 }
