@@ -32,9 +32,11 @@ import {
 } from "../../firebase/UserDataHandler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
+  getSecondsBetweenDates,
   schedulePushNotification,
   sendPushNotification,
 } from "../../Controllers/notificationsController";
+import moment from "moment";
 
 export default function MedicationForm(
   props: DrawerScreenProps<HomeDrawerParamList, "Medication">
@@ -48,14 +50,14 @@ export default function MedicationForm(
   };
 
   //STATE VARIABLES////////////////////////////
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
   const [userData, setUserData] = useState<MedicationInfo>();
   const [userNotifications, setUserNotifications] = useState<
     NotificationType[]
-  >();
+  >([]);
   const [modalVisible, setModalVisible] = useState(false);
 
   //STATE VARIABLES END////////////////////////////
@@ -85,24 +87,35 @@ export default function MedicationForm(
       };
       var notification: NotificationType = {
         date: date,
-        title: "Take Medication: " + values.name,
+        title: "Refill Medication: " + values.name,
         information:
-          'This is a reminder to take your medication "' +
+          'This is a reminder to Refill your medication "' +
           values.name +
-          ' " by ' +
-          date.toString(),
+          '" by ' +
+          moment(date).format("MMM Do YY"),
         actionScreen: "Medication",
         actionScreenTitle: "View Instructions",
-        imageURL: "medicine.png",
+        imageURL: "../../images/medicine.png",
       };
-      userData?.medication.push(medication);
-      userNotifications?.push(notification);
-      console.log(userNotifications);
+      const today: Date = new Date();
 
+      const secondsBetweenDates = getSecondsBetweenDates(today, date);
+
+      schedulePushNotification(
+        "Medication Alert",
+        "Need to refill: " + values.name,
+        "click to view instructions",
+        secondsBetweenDates
+      );
+
+      userData?.medication.push(medication);
       const user = props.route.params.user;
+
       if (userData) AddMedicalData(user, userData);
+
       if (userNotifications) AddNotification(user, notification);
       setModalVisible(!modalVisible);
+      document.getElementById("create-course-form").reset();
     },
   });
 
@@ -137,6 +150,7 @@ export default function MedicationForm(
   useEffect(() => {
     const getinfo = async () => {
       const data: any = await getCurrentUserInfo();
+      setUserData(data.medInfo);
       if (data.notifications) setUserNotifications(data.notifications);
       else setUserNotifications([]);
 
@@ -145,37 +159,45 @@ export default function MedicationForm(
 
     getinfo();
   }, []);
+
   var info: Medication[] = [];
+  if (userData && !userData?.medication) {
+    userData.medication = [];
+  }
 
   if (userData) info = userData.medication;
+  else info = [];
 
   //GET INFO END///////////////////////
 
   return (
     <KeyboardAwareScrollView>
       <View style={{ backgroundColor: "#219ebc" }}>
-        {info.map((l, i) => (
-          <ListItem key={i} bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title style={styles.MainTitle}>
-                Name: {l.name}
-              </ListItem.Title>
+        {info
+          ? info.map((l, i) => (
+              <ListItem key={i * Math.random()} bottomDivider>
+                <ListItem.Content>
+                  <ListItem.Title style={styles.MainTitle}>
+                    Name: {l.name}
+                  </ListItem.Title>
 
-              <ListItem.Subtitle style={styles.subTitle}>
-                Dose: {l.dose}
-              </ListItem.Subtitle>
-              <ListItem.Subtitle style={styles.subTitle}>
-                Number Of Times Per Day: {l.numTimesDay}
-              </ListItem.Subtitle>
-              <ListItem.Subtitle style={styles.subTitle}>
-                Usage Instructions: {l.usageInstructions}
-              </ListItem.Subtitle>
-              <ListItem.Subtitle style={styles.subTitle}>
-                Refill Date: {l.refillDate}
-              </ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
-        ))}
+                  <ListItem.Subtitle style={styles.subTitle}>
+                    Dose: {l.dose}
+                  </ListItem.Subtitle>
+                  <ListItem.Subtitle style={styles.subTitle}>
+                    Number Of Times Per Day: {l.numTimesDay.toString()}
+                  </ListItem.Subtitle>
+                  <ListItem.Subtitle style={styles.subTitle}>
+                    Usage Instructions: {l.usageInstructions}
+                  </ListItem.Subtitle>
+                  <ListItem.Subtitle style={styles.subTitle}>
+                    Refill Date: {l.refillDate}
+                  </ListItem.Subtitle>
+                </ListItem.Content>
+              </ListItem>
+            ))
+          : null}
+
         <TouchableOpacity
           onPress={() => {
             setModalVisible(true);
@@ -271,6 +293,7 @@ export default function MedicationForm(
                     >
                       {show && (
                         <DateTimePicker
+                          minimumDate={new Date()}
                           style={{
                             alignSelf: "left",
                             width: 125,

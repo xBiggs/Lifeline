@@ -5,15 +5,16 @@ import { Platform } from "react-native";
 export async function schedulePushNotification(
   title: string,
   body: string,
-  data: string
+  data: string,
+  seconds: number
 ) {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
-      data: { data: "goes here" },
+      title: title,
+      body: body,
+      data: { data },
     },
-    trigger: { seconds: 100 },
+    trigger: { seconds: seconds },
   });
 }
 
@@ -36,7 +37,13 @@ export async function sendPushNotification(expoPushToken: any) {
     body: JSON.stringify(message),
   });
 }
+export function getSecondsBetweenDates(t1: Date, t2: Date) {
+  var dif = t1.getTime() - t2.getTime();
 
+  var Seconds_from_T1_to_T2 = dif / 1000;
+  var Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
+  return Seconds_Between_Dates;
+}
 export async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {

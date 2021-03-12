@@ -5,6 +5,7 @@ import {Medication, MedicationInfo} from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
 import { getCurrentUser, getCurrentUserMedication } from './auth';
 import { NotificationType } from '../interfaces/Notification';
+import useFloatingHeaderHeight from '@react-navigation/stack/lib/typescript/src/utils/useHeaderHeight';
 
 
 
@@ -61,11 +62,18 @@ export async function AddMedicalData(user: User,data: MedicationInfo) { //  cred
 
 }
 export async function AddNotification(user: User,data: NotificationType) { //  credential: firebase.auth.UserCredential, info: PersInfo
-
-    try
+   
+     try
     {
+       
         // map the data to local user object
+        
+       if(!user.notifications || user.notifications==undefined){
+           user.notifications=[];
+       }
         user.notifications.push(data);
+     
+  
 
         await firebase.firestore().collection('users').doc(user.id).update("notifications", user.notifications);
     }catch(err)

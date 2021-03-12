@@ -1,4 +1,5 @@
 import { ActionSheetIOS } from "react-native";
+import { Image } from "react-native-svg";
 
 export interface NotificationType{
     date:Date,

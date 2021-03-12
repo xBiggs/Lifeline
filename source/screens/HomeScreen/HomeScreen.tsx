@@ -90,15 +90,19 @@ export default function HomeScreen(
   var notificationList: NotificationType[] = [];
   const userNotifications: NotificationType[] = user.notifications;
   var index = 0;
-
-  userNotifications?.forEach((element) => {
+  var imageList: typeof Image[] = [];
+  userNotifications?.forEach((element: any) => {
+    var tempDate: Date = element.date.toDate();
     if (
-      moment(element.date).isoWeek() == moment().isoWeek() &&
-      !moment(element.date).isBefore(moment(), "day")
+      moment(tempDate).isoWeek() == moment().isoWeek() &&
+      !moment(tempDate).isBefore(moment(), "day")
     ) {
       notificationList.push(element);
+      imageList.push(require("./research.png"));
     }
   });
+  console.log("==============");
+  console.log(userNotifications);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -108,41 +112,47 @@ export default function HomeScreen(
         </Text>
 
         <View>
-          {notificationList.map((l, i) => (
-            <Card containerStyle={{ borderRadius: 30 }}>
-              <Card.Title style={{ color: "#FB8500", fontSize: 30 }}>
-                {l.title} : {moment(l.date).format("MMM Do YY")}
-              </Card.Title>
-              <Card.Divider />
+          {notificationList.length ? (
+            notificationList.map((l, i) => (
+              <Card containerStyle={{ borderRadius: 30 }}>
+                <Card.Title style={{ color: "#FB8500", fontSize: 30 }}>
+                  {l.title} {moment(l.date.toDate()).format("MMM Do YY")}
+                </Card.Title>
+                <Card.Divider />
 
-              <Card.Image
-                style={{ resizeMode: "cover" }}
-                source={l.imageURL}
-              ></Card.Image>
-              <Text
-                style={{
-                  marginBottom: 20,
-                  marginTop: 40,
-                  paddingLeft: 20,
-                  paddingRight: 20,
-                  fontSize: 20,
-                }}
-              >
-                {l.information}
-              </Text>
+                <Card.Image
+                  style={{ resizeMode: "cover" }}
+                  source={
+                    imageList[i] ? imageList[i] : require("./research.png")
+                  }
+                ></Card.Image>
+                <Text
+                  style={{
+                    marginBottom: 20,
+                    marginTop: 40,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    fontSize: 20,
+                  }}
+                >
+                  {l.information}
+                </Text>
 
-              <TouchableOpacity
-                style={styles.button}
-                onPress={async () => {
-                  props.navigation.navigate(l.actionScreen, {
-                    user,
-                  });
-                }}
-              >
-                <Text style={styles.buttonLabel}>{l.actionScreenTitle}</Text>
-              </TouchableOpacity>
-            </Card>
-          ))}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={async () => {
+                    props.navigation.navigate(l.actionScreen, {
+                      user,
+                    });
+                  }}
+                >
+                  <Text style={styles.buttonLabel}>{l.actionScreenTitle}</Text>
+                </TouchableOpacity>
+              </Card>
+            ))
+          ) : (
+            <Text style={styles.buttonTitle}>No New Notifications</Text>
+          )}
         </View>
 
         <TouchableOpacity
