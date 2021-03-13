@@ -6,6 +6,7 @@ import { User } from '../interfaces/User';
 import { getCurrentUser, getCurrentUserMedication } from './auth';
 import { NotificationType } from '../interfaces/Notification';
 import useFloatingHeaderHeight from '@react-navigation/stack/lib/typescript/src/utils/useHeaderHeight';
+import { ContactDetails } from '../interfaces/ContactDetails';
 
 
 
@@ -82,6 +83,18 @@ export async function AddNotification(user: User,data: NotificationType) { //  c
 
 }
 
+export async function AddContacts(user: User, emergencyContact: ContactDetails[]) {
+    try{
+        if(!user.emergencyContacts || user.emergencyContacts==undefined){
+            user.emergencyContacts=[];
+        }
+        user.emergencyContacts = emergencyContact;
 
+        await firebase.firestore().collection('users').doc(user.id).update("EmergencyContactInfo", user.emergencyContacts);
+        return true;
+    } catch(err) {
+        throw (err as Error).message;
+    }
+}
 
 // commands to test a function: tsc & node firebaseCRUDtest.js

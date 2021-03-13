@@ -1,6 +1,7 @@
 export interface ContactDetails {
-    firstName: string,
-    lastName: string,
-    digits: string,
-    email?: string
+    firstName: string | undefined,
+    lastName: string | undefined,
+    digits: number, // string
+    email?: string,
+    id?: string
 }

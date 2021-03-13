@@ -7,17 +7,21 @@ import * as Device from 'expo-device'
 import { StackScreenProps } from '@react-navigation/stack';
 import { SafetyPlanStackParamList } from '../types'
 import { boolean } from 'yup';
+import { AddContacts } from '../firebase/UserDataHandler'
 
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
+  const user = props.route.params.user;
 
   const [contacts, setContacts] = useState<Contacts.Contact[]>();
   // const [inMemoryContacts, setInMemoryContacts] = useState<Contacts.Contact[]>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [searchResults, setSearchResults] = React.useState<Contacts.Contact[]>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<Contacts.Contact[]>();
+
+  const [firebaseReturnStatus, setReturnStatus] = useState(false);
 
   // const loadContacts = async () => {
   //   const permissions = await Contacts.requestPermissionsAsync();
@@ -45,19 +49,19 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       setIsLoading(true);
       const permissions = await Contacts.requestPermissionsAsync();
 
-      if(permissions.status !== 'granted'){
+      if (permissions.status !== 'granted') {
         return;
       }
 
-      const {data} = await Contacts.getContactsAsync({
+      const { data } = await Contacts.getContactsAsync({
         fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
       });
 
-      if (data.length > 0){
+      if (data.length > 0) {
         setContacts(data);
         setIsLoading(false);
-        console.log(data);
-        
+        // console.log(data);
+
       }
 
     })();
@@ -99,7 +103,18 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
         onPress={() => {
-          console.log(item.firstName, " ", item.lastName);
+          // console.log(item.firstName, " ", item.lastName);
+          // console.log(item.phoneNumbers[0].digits);
+          let emergencyContact = {
+            firstName: item.firstName?.toString(),
+            lastName: item.lastName,
+            digits: Number(item.phoneNumbers[0].digits),
+            email: item.emails[0].email?.toString(),
+            id: item.id
+          }
+
+          AddContacts(user, emergencyContact)
+
         }}
       >
         <Text style={{ fontSize: 20 }}>+ Add</Text>
@@ -152,18 +167,18 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         placeholderTextColor="black"
         style={styles.searchBox}
         // onChangeText={value => searchContacts(value)}
-        onChangeText={value => setSearchResults({value})}
+        onChangeText={value => setSearchResults({ value })}
       />
       <View style={{ flex: 1 }}>
         {/* , backgroundColor: '#2f363c' */}
         {/* {this.state.isLoading ? ( */}
-        {/* {isLoading ? (
+        {isLoading ? (
           <View
             style={styles.activityIndicatorView}
           >
             <ActivityIndicator size="large" color="#bad555" />
           </View>
-        ) : null} */}
+        ) : null}
         <FlatList
           // data={this.state.contacts}
           data={contacts}
