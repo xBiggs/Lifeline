@@ -9,67 +9,78 @@ import { SafetyPlanStackParamList } from '../types'
 import { boolean } from 'yup';
 
 
-// let isLoading: false;
-
-// if crash, change 'any' to 'ContactDetails'
-// export default class ContactAccessForm extends React.Component<StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>, any> {
-
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
-  // if crash, change 'any' to 'ContactDetails'
-  // constructor(props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) {
-  //   super(props);
-  //   console.log(props);
-  //   this.state = {
-  //     isLoading: false,
-  //     contacts: []
-  //   };
-  // }
 
-  // let state = {
-  //   isLoading: false,
-  //   contacts: []
-  // };
-
-  // const [contacts, setContacts] = useState({});
-  const [contacts, setContacts] = useState<ContactDetails[]>();
-  const [inMemoryContacts, setInMemoryContacts] = useState({});
+  const [contacts, setContacts] = useState<Contacts.Contact[]>();
+  // const [inMemoryContacts, setInMemoryContacts] = useState<Contacts.Contact[]>();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchResults, setSearchResults] = React.useState<Contacts.Contact[]>();
+
   // const loadContacts = async () => {
-  const loadContacts = async () => {
-    const permissions = await Contacts.requestPermissionsAsync();
+  //   const permissions = await Contacts.requestPermissionsAsync();
 
-    if (permissions.status !== 'granted') {
-      return;
-    }
+  //   if (permissions.status !== 'granted') {
+  //     return;
+  //   }
 
-    const { data } = await Contacts.getContactsAsync({
-      fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
-    });
+  //   const { data } = await Contacts.getContactsAsync({
+  //     fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
+  //   });
 
-    // console.log(data);
-    // this.setState({ contacts: data, inMemoryContacts: data, isLoading: false });
-    // setState({ contacts: data, inMemoryContacts: data, isLoading: false });
-    setContacts(data);
-    setInMemoryContacts(data);
-    setIsLoading(false);
-  };
+  //   setContacts(data);
+  //   // setInMemoryContacts(data);
+  //   setIsLoading(false);
+  // };
 
   // componentDidMount() {
   //   this.setState({ isLoading: true });
   //   this.loadContacts();
   // }
+
   useEffect(() => {
-    setIsLoading(true);
-    loadContacts();
-  });
+    (async () => {
+      setIsLoading(true);
+      const permissions = await Contacts.requestPermissionsAsync();
+
+      if(permissions.status !== 'granted'){
+        return;
+      }
+
+      const {data} = await Contacts.getContactsAsync({
+        fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
+      });
+
+      if (data.length > 0){
+        setContacts(data);
+        setIsLoading(false);
+        console.log(data);
+        
+      }
+
+    })();
+  }, []);
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   loadContacts();
+  // });
+
+  useEffect(() => {
+    setSearchResults(
+      contacts?.filter(person => {
+        return person.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
+      })
+    )
+  }, [searchTerm, contacts])
 
 
 
   // might throw an error here!!!
   // renderItem = ({ item }: { item: ContactDetails }) => (
-  const renderItem = ({ item }: { item: ContactDetails }) => (
+  const renderItem = ({ item }: { item: Contacts.Contact }) => (
     <View style={styles.renderItemView}>
       <Text style={styles.renderItemText}>
         {item.firstName + ' '}
@@ -87,7 +98,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         borderRadius: 15, width: 100,
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
-      // onPress={this.addToFirebase}
+        onPress={() => {
+          console.log(item.firstName, " ", item.lastName);
+        }}
       >
         <Text style={{ fontSize: 20 }}>+ Add</Text>
       </TouchableOpacity>
@@ -96,27 +109,30 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
 
   // IF NOT WORKING, REMOVE THE 'string'
   // const searchContacts = (value: string) => {
-    // code changed here (original right below, modified one below the the original)
-    // const filteredContacts = this.state.inMemoryContacts.filter(contact => {
-    // const filteredContacts = inMemoryContacts.filter((contact: { firstName: string; lastName: string; }) => {
-    //   let contactLowercase = (
-    //     contact.firstName +
-    //     ' ' +
-    //     contact.lastName
-    //   ).toLowerCase();
+  //   // code changed here (original right below, modified one below the the original)
+  //   // const filteredContacts = inMemoryContacts?.filter(contact => {
+  //   const filteredContacts = inMemoryContacts?.filter(person => person.firstName?.toLowerCase().includes(value));
+  //   //   (contact: { firstName: string; lastName: string; }) => {
+  //   //   let contactLowercase = (
+  //   //     contact.firstName +
+  //   //     ' ' +
+  //   //     contact.lastName
+  //   //   ).toLowerCase();
 
-    //   let searchTermLowercase = value.toLowerCase();
+  //   //   let searchTermLowercase = value.toLowerCase();
 
-    //   return contactLowercase.indexOf(searchTermLowercase) > -1;
-      
-    // });
-    // this.setState({ contacts: filteredContacts });
+  //   //   return contactLowercase.indexOf(searchTermLowercase) > -1;
+
+  //   // });
+  //   setContacts(filteredContacts);
   // };
 
 
   // const searchContacts = (value: string) => {
   //   setSearchTerm(value);
-
+  //   useEffect(() => {
+  //     const result = contacts?.filter
+  //   }, [searchTerm]);
   // };
 
   // useEffect(() => {
@@ -125,8 +141,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
 
 
   // render() {
-    
+
   // }
+
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={{ marginTop: 10 }} />
@@ -134,18 +151,19 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         placeholder="Search"
         placeholderTextColor="black"
         style={styles.searchBox}
-        // onChangeText={value => this.searchContacts(value)}
+        // onChangeText={value => searchContacts(value)}
+        onChangeText={value => setSearchResults({value})}
       />
       <View style={{ flex: 1 }}>
         {/* , backgroundColor: '#2f363c' */}
         {/* {this.state.isLoading ? ( */}
-          {isLoading ? (
+        {/* {isLoading ? (
           <View
             style={styles.activityIndicatorView}
           >
             <ActivityIndicator size="large" color="#bad555" />
           </View>
-        ) : null}
+        ) : null} */}
         <FlatList
           // data={this.state.contacts}
           data={contacts}
@@ -166,3 +184,4 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     </View>
   );
 }
+
