@@ -27,6 +27,8 @@ import VaultScreen from "../screens/VaultScreen/VaultScreen";
 import DailyConversationsScreen from "../screens/DailyConversationsScreen/DailyConversationsScreen";
 import SafetyPlanStackNavigator from "./SafetyPlanStackNavigator";
 
+import AppointmentsScreen from "../screens/AppointmentsScreen/AppointmentsScreen";
+
 /**
  * USAGE: USED TO NAVIGATE BETWEEN AUTH SCREENS FOR A UNAUTHORIZED USER
  */
@@ -82,6 +84,11 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         name="Medication"
         initialParams={{ user }}
         component={MedicationForm}
+      ></Drawer.Screen>
+      <Drawer.Screen
+        name="Appointments"
+        initialParams={{ user }}
+        component={AppointmentsScreen}
       ></Drawer.Screen>
     </Drawer.Navigator>
   );

@@ -8,6 +8,8 @@ export { default as SignupScreen } from './SignupScreen/SignupScreen'
 
 export {default as PersonalInfoScreen} from './/PersonalInfoScreen/PersonalInfoScreen'
 
+export {default as Appointments} from './AppointmentsScreen/AppointmentsScreen'
+
 export {default as AssessmentScreen} from './AssessmentScreen/AssessmentScreen'
 
 export type Screens = {
@@ -17,6 +19,9 @@ export type Screens = {
         user: User
     };
     Medication: {
+        user: User
+    };
+    Appointments: {
         user: User
     };
     PersonalInfo: {

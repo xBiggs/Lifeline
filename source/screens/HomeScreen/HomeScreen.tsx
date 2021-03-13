@@ -114,7 +114,7 @@ export default function HomeScreen(
         <View>
           {notificationList.length ? (
             notificationList.map((l, i) => (
-              <Card containerStyle={{ borderRadius: 30 }}>
+              <Card key={i} containerStyle={{ borderRadius: 30 }}>
                 <Card.Title style={{ color: "#FB8500", fontSize: 30 }}>
                   {l.title} {moment(l.date.toDate()).format("MMM Do YY")}
                 </Card.Title>
