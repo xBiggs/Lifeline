@@ -32,8 +32,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   // };
 
   // const [contacts, setContacts] = useState({});
-  const [contacts, setContacts] = useState<ContactDetails[]>();
-  const [inMemoryContacts, setInMemoryContacts] = useState({});
+  const [contacts, setContacts] = useState<Contacts.Contact[]>();
+  const [inMemoryContacts, setInMemoryContacts] = useState<Contacts.Contact[]>();
   const [isLoading, setIsLoading] = useState(false);
 
   // const loadContacts = async () => {
@@ -69,7 +69,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
 
   // might throw an error here!!!
   // renderItem = ({ item }: { item: ContactDetails }) => (
-  const renderItem = ({ item }: { item: ContactDetails }) => (
+  const renderItem = ({ item }: { item: Contacts.Contact }) => (
     <View style={styles.renderItemView}>
       <Text style={styles.renderItemText}>
         {item.firstName + ' '}
