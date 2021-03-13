@@ -37,7 +37,7 @@ export default StyleSheet.create({
         marginRight: 0,
         marginTop: 20,
         height: 48,
-        width:350,
+        flex:.8,
         borderRadius: 10,
         alignItems: "center",
         justifyContent: 'center',

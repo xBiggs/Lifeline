@@ -88,7 +88,7 @@ export default function AppointmentScreen(
       var notification: NotificationType = {
         date: firebase.firestore.Timestamp.fromDate(date),
         title: "New Appointment: ",
-        information: "You have a docter appointment for :" + values.reason,
+        information: "You have a docter appointment for : " + values.reason,
         actionScreen: "Appointments",
         actionScreenTitle: "View Appointment",
         imageURL: "../../images/medicine.png",
@@ -120,12 +120,7 @@ export default function AppointmentScreen(
     setDate(currentDate);
   };
 
-  const onChangeTime = (event: any, selectedDate: Time) => {
-    const currentDate = selectedDate || time;
-    setShow(Platform.OS === "ios");
-    setDate(currentDate);
-  };
-  const showMode = (currentMode: React.SetStateAction<string>) => {
+  const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
   };
@@ -177,6 +172,7 @@ export default function AppointmentScreen(
       info.splice(i);
     }
   });
+
   return (
     <KeyboardAwareScrollView>
       <View style={{ backgroundColor: "#219ebc" }}>
@@ -185,7 +181,7 @@ export default function AppointmentScreen(
               <ListItem key={i * Math.random()} bottomDivider>
                 <ListItem.Content>
                   <ListItem.Title style={styles.MainTitle}>
-                    Date: {l.date.toDate().toDateString()}
+                    Date: {l.date.toDate().toString()}
                   </ListItem.Title>
 
                   <ListItem.Subtitle style={styles.subTitle}>
@@ -248,25 +244,31 @@ export default function AppointmentScreen(
                     {...formal.getFieldProps("reason")}
                   />
                   {formal.errors.reason && (
-                    <Text style={styles.error}>{formal.errors.name}</Text>
+                    <Text style={styles.error}>{formal.errors.reason}</Text>
                   )}
 
                   <View>
                     <View>
-                      <Text style={styles.buttonLabel}> Date:</Text>
+                      <Button onPress={showDatepicker} title="Select Date" />
                     </View>
+                    <View>
+                      <Button onPress={showTimepicker} title="Select Time" />
+                    </View>
+
                     <View
                       style={{
                         backgroundColor: "#FB8500",
                         alignContent: "center",
                       }}
                     >
+                      <Text style={styles.buttonLabel}> Date:</Text>
+
                       {show && (
                         <DateTimePicker
                           minimumDate={new Date()}
                           style={{
                             alignSelf: "left",
-                            width: 125,
+                            width: 180,
                             height: 35,
                             marginTop: 10,
                             marginBottom: 20,
@@ -274,39 +276,10 @@ export default function AppointmentScreen(
                           }}
                           testID="dateTimePicker"
                           value={date}
-                          mode={mode}
+                          mode={Platform.OS == "ios" ? "datetime" : "date"}
                           is24Hour={true}
-                          display="calendar"
+                          display="default"
                           onChange={onChange}
-                        />
-                      )}
-                    </View>
-                  </View>
-                  <View>
-                    <View>
-                      <Text style={styles.buttonLabel}> Time:</Text>
-                    </View>
-                    <View
-                      style={{
-                        backgroundColor: "#FB8500",
-                        alignContent: "center",
-                      }}
-                    >
-                      {show && (
-                        <DateTimePicker
-                          style={{
-                            alignSelf: "left",
-                            width: 125,
-                            height: 35,
-                            marginTop: 10,
-                            marginBottom: 20,
-                            backgroundColor: "white",
-                          }}
-                          testID="dateTimePicker"
-                          value={time}
-                          mode={"time"}
-                          is24Hour={true}
-                          onChange={onChangeTime}
                         />
                       )}
                     </View>

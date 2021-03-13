@@ -8,6 +8,7 @@ import {
   ImageSourcePropType,
   Platform,
   Button,
+  Dimensions,
 } from "react-native";
 import { Screens } from "..";
 import { getCurrentUserInfo, GetUserData, Logout } from "../../firebase/auth";
@@ -104,6 +105,7 @@ export default function HomeScreen(
   console.log("==============");
   console.log(userNotifications);
 
+  const windowWidth = Dimensions.get("window").width;
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={styles.container}>
@@ -114,8 +116,14 @@ export default function HomeScreen(
         <View>
           {notificationList.length ? (
             notificationList.map((l, i) => (
-              <Card key={i} containerStyle={{ borderRadius: 30 }}>
-                <Card.Title style={{ color: "#FB8500", fontSize: 30 }}>
+              <Card
+                key={i}
+                containerStyle={{
+                  borderRadius: 30,
+                  width: windowWidth * 0.9,
+                }}
+              >
+                <Card.Title style={{ color: "#FB8500", fontSize: 25 }}>
                   {l.title} {moment(l.date.toDate()).format("MMM Do YY")}
                 </Card.Title>
                 <Card.Divider />
@@ -132,14 +140,25 @@ export default function HomeScreen(
                     marginTop: 40,
                     paddingLeft: 20,
                     paddingRight: 20,
-                    fontSize: 20,
+                    fontSize: 15,
                   }}
                 >
                   {l.information}
                 </Text>
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={{
+                    backgroundColor: "#FB8500",
+                    alignSelf: "center",
+                    marginLeft: 0,
+                    marginRight: 0,
+                    marginTop: 20,
+                    height: 48,
+                    width: windowWidth * 0.8,
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                   onPress={async () => {
                     props.navigation.navigate(l.actionScreen, {
                       user,
@@ -156,7 +175,17 @@ export default function HomeScreen(
         </View>
 
         <TouchableOpacity
-          style={styles.buttonLogout}
+          style={{
+            backgroundColor: "#023047",
+            marginLeft: 0,
+            marginRight: 0,
+            marginTop: 20,
+            height: 48,
+            width: windowWidth * 0.9,
+            borderRadius: 15,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
           onPress={async () => {
             await Logout();
           }}
