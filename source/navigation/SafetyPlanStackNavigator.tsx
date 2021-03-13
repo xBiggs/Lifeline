@@ -23,7 +23,7 @@ export default (props:DrawerScreenProps<HomeDrawerParamList,'SafetyPlan'>)=>{
         <Stack.Screen name='CopingStrategies' initialParams={{ user }} component={CopingStrategiesScreen}></Stack.Screen>
         <Stack.Screen name='AccessDeviceContacts' initialParams={{user}} component ={ContactAccessForm}></Stack.Screen>
         <Stack.Screen name='EmergencyContact' initialParams={{user}} component ={EmergencyContactScreen}></Stack.Screen>
-        <Stack.Screen name='CallContactAccessFormComponent' initialParams={{user}} component ={ContactAccessScreen}></Stack.Screen>
+       {/* <Stack.Screen name='CallContactAccessFormComponent' initialParams={{user}} component ={ContactAccessScreen}></Stack.Screen>*/}
     </Stack.Navigator>
     )
 }

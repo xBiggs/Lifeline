@@ -9,6 +9,7 @@ import { ScrollView, TextInput, TouchableOpacity } from 'react-native-gesture-ha
 import { SetUserData } from '../../../firebase/auth';
 import { AddUserData } from '../../../firebase/UserDataHandler';
 import { SafetyPlanStackParamList } from '../../../types';
+import GeneratedCopingStrategies from './GeneratedCopingStrategies';
 
 
 export default (props:StackScreenProps<SafetyPlanStackParamList,'CopingStrategies'>)=>
@@ -18,6 +19,12 @@ export default (props:StackScreenProps<SafetyPlanStackParamList,'CopingStrategie
     const {navigation} = props
     const [strat,setStrat] = useState('');
     const [strats,setStrats]= useState<string[]>(user.copingStrategies);
+    const [showGeneratedCopingStrategies,setShowGenereatedCopingStrategies] = useState(true);
+
+    const updateStrats= (newStrats:string[])=>{
+        console.log('setting strats')
+        setStrats(newStrats);
+    }
 
     const updateUser = async()=>
     {
@@ -34,7 +41,13 @@ export default (props:StackScreenProps<SafetyPlanStackParamList,'CopingStrategie
 
     return (
         <>
-            <View style={{}} >
+            <View style={{flex:1, alignContent:'center',margin:10}}>
+            {
+                showGeneratedCopingStrategies?<>
+                <Text style={{alignSelf:'center'}}>Generated Coping Strategies</Text>
+                <GeneratedCopingStrategies strats={strats} setStrats={setStrats}></GeneratedCopingStrategies></>
+            :
+            < >
                 <TextInput value={strat} placeholder='add' clearTextOnFocus={true} onChangeText={text=>setStrat(text)}></TextInput>
                 <Button title='Add' onPress={()=>{
                 if(strat=='')
@@ -52,10 +65,18 @@ export default (props:StackScreenProps<SafetyPlanStackParamList,'CopingStrategie
                 setStrat('')
                // console.log(strats)
                 }}></Button>
+            </>}
+            <Button  title={showGeneratedCopingStrategies?'Enter Your own Coping Strategy':'View Common Coping Strategies'}
+            onPress={()=>{
+                setShowGenereatedCopingStrategies(!showGeneratedCopingStrategies);
+            }}
+            ></Button>
             </View>
-            <View style={{flex:1, alignItems:'center'}}>
+            
+            <View style={{flex:2, alignItems:'center'}}>
+                <Text>Your Current Coping Strategies</Text>
                 {strats.length>0?strats.map(s=>(
-                    <View key={s} style={{flexDirection:'row'}}>
+                    <View key={strats.indexOf(s)} style={{flexDirection:'row'}}>
                         <Text style={{flex:1, fontSize:15}}>{s}</Text>
                        <TouchableOpacity onPress={()=>{
                            setStrats(prev=>{
