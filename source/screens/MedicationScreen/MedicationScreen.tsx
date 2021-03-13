@@ -37,6 +37,7 @@ import {
   sendPushNotification,
 } from "../../Controllers/notificationsController";
 import moment from "moment";
+import firebase from "firebase";
 
 export default function MedicationForm(
   props: DrawerScreenProps<HomeDrawerParamList, "Medication">
@@ -86,7 +87,7 @@ export default function MedicationForm(
         refillDate: date.toString(),
       };
       var notification: NotificationType = {
-        date: date,
+        date: firebase.firestore.Timestamp.fromDate(date),
         title: "Refill Medication: " + values.name,
         information:
           'This is a reminder to Refill your medication "' +
@@ -115,7 +116,6 @@ export default function MedicationForm(
 
       if (userNotifications) AddNotification(user, notification);
       setModalVisible(!modalVisible);
-      document.getElementById("create-course-form").reset();
     },
   });
 

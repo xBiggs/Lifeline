@@ -1,6 +1,16 @@
 //AuthStackNavigator.tsx
-import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+
+import MedicalInfoScreen from "../screens/MedicalInfoScreen/MedicalInfoScreen";
+import MedicationForm from "../screens/MedicationScreen/MedicationScreen";
+import React, { Props, useState } from "react";
+import {
+  createDrawerNavigator,
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+  DrawerItem,
+  DrawerItemList,
+  DrawerScreenProps,
+} from "@react-navigation/drawer";
 import { HomeDrawerParamList, UserStackParamList } from "../types";
 import {
   AssessmentScreen,
@@ -10,13 +20,12 @@ import {
 } from "../screens";
 import { User } from "../interfaces/User";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Text } from "react-native";
+import { Keyboard, Linking, Text } from "react-native";
 import SafetyPlanScreen from "../screens/SafetyPlanScreen/SafetyPlanScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import VaultScreen from "../screens/VaultScreen/VaultScreen";
 import DailyConversationsScreen from "../screens/DailyConversationsScreen/DailyConversationsScreen";
-import MedicalInfoScreen from "../screens/MedicalInfoScreen/MedicalInfoScreen";
-import MedicationForm from "../screens/MedicationScreen/MedicationScreen";
+import SafetyPlanStackNavigator from "./SafetyPlanStackNavigator";
 
 /**
  * USAGE: USED TO NAVIGATE BETWEEN AUTH SCREENS FOR A UNAUTHORIZED USER
@@ -24,11 +33,14 @@ import MedicationForm from "../screens/MedicationScreen/MedicationScreen";
 const Drawer = createDrawerNavigator<HomeDrawerParamList>();
 
 export default (props: StackScreenProps<UserStackParamList, "Home">) => {
+  // Keyboard.dismiss();
   const user = props.route.params.user;
+  //console.log('drawer user', user);
   return (
     <Drawer.Navigator
       screenOptions={{
         headerShown: true,
+        unmountOnBlur: true,
       }}
     >
       <Drawer.Screen
@@ -42,26 +54,18 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         component={AssessmentScreen}
       ></Drawer.Screen>
       <Drawer.Screen
-        name="Medication"
-        initialParams={{ user }}
-        component={MedicationForm}
-      ></Drawer.Screen>
-      <Drawer.Screen
         name="Information"
         initialParams={{ user }}
         component={PersonalInfoScreen}
       ></Drawer.Screen>
-      <Drawer.Screen
-        name="Medical_Information"
-        initialParams={{ user }}
-        component={MedicalInfoScreen}
-      ></Drawer.Screen>
-      {/* THESE SCREENS WILL NEED COMPONENTS */}
+
       <Drawer.Screen
         options={{ title: "Safety Plan" }}
         name="SafetyPlan"
-        component={SafetyPlanScreen}
+        initialParams={{ user }}
+        component={SafetyPlanStackNavigator}
       ></Drawer.Screen>
+      {/* THESE SCREENS WILL NEED COMPONENTS */}
       <Drawer.Screen name="Vault" component={VaultScreen}></Drawer.Screen>
       <Drawer.Screen
         name="DailyConversations"
@@ -69,6 +73,21 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         component={DailyConversationsScreen}
       ></Drawer.Screen>
       <Drawer.Screen name="Settings" component={SettingsScreen}></Drawer.Screen>
+      <Drawer.Screen
+        name="Medical_Information"
+        initialParams={{ user }}
+        component={MedicalInfoScreen}
+      ></Drawer.Screen>
+      <Drawer.Screen
+        name="Medication"
+        initialParams={{ user }}
+        component={MedicationForm}
+      ></Drawer.Screen>
     </Drawer.Navigator>
   );
+};
+const CustomDrawerContent = (props: any) => {
+  // console.log(props)
+  console.log("working");
+  return <DrawerItem {...props} label="Home" onPress={() => {}}></DrawerItem>;
 };

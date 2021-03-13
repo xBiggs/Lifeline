@@ -44,7 +44,8 @@
     "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
     "yup": "^0.32.9",
-    "expo-constants": "~9.3.3"
+    "expo-contacts": "~8.6.0",
+    "expo-device": "~2.4.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

@@ -65,7 +65,6 @@ export async function AddNotification(user: User,data: NotificationType) { //  c
    
      try
     {
-       
         // map the data to local user object
         
        if(!user.notifications || user.notifications==undefined){
