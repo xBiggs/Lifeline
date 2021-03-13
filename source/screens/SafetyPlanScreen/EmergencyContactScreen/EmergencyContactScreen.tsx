@@ -10,11 +10,11 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
     const { user } = props.route.params
     const { navigation } = props
 
-    useEffect(() => {
-        navigation.addListener('blur', e => {
-            navigation.goBack();
-        })
-    })
+    // useEffect(() => {
+    //     navigation.addListener('blur', e => {
+    //         navigation.goBack();
+    //     })
+    // })
     return (
         <View>
             {/* {user.emergencyContacts ? <Text>List all emergency contacts and access contacts button</Text> : <Text>No emergeny contacts</Text>} */}
@@ -24,7 +24,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 backgroundColor: '#f2f2f2', height: 50, width: 50,
                 borderRadius: 50, marginLeft: 350
             }}
-            onPress={async() => {
+            onPress={() => {
                 props.navigation.navigate("AccessDeviceContacts", { user });
               }}
             >
