@@ -25,7 +25,7 @@ export default function LoginScreen({navigation}:StackScreenProps<Screens,'Login
             // Do something with error here
             alert(error);
         }finally{
-            setLoading(false);
+           
         }
     }
 

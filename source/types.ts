@@ -29,7 +29,7 @@ export type SafetyPlanStackParamList = {
     Home: {user:User},
     CopingStrategies:{user:User},
     WarningSigns:{user:User},
-    Favorites:{user:User},
+    SocialEngagements:{user:User},
     Help:{user:User},
     EmergencyContact:{user:User},
     AccessDeviceContacts: {user:User}
