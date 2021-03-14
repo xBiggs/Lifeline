@@ -1,26 +1,19 @@
-import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Text,
   View,
   TouchableOpacity,
   ScrollView,
-  ImageSourcePropType,
-  Platform,
-  Button,
   Dimensions,
 } from "react-native";
-import { Screens } from "..";
-import { getCurrentUserInfo, GetUserData, Logout } from "../../firebase/auth";
+import { Logout } from "../../firebase/auth";
 import { User } from "../../interfaces/User";
 import styles from "./styles";
-import { Card, ListItem } from "react-native-elements";
+import { Card } from "react-native-elements";
 import { NotificationType } from "../../interfaces/Notification";
 import moment from "moment";
-import useFormal from "@kevinwolf/formal-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
-import Constants from "expo-constants";
 
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../../Controllers/notificationsController";

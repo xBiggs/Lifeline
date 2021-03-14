@@ -28,6 +28,7 @@ import DailyConversationsScreen from "../screens/DailyConversationsScreen/DailyC
 import SafetyPlanStackNavigator from "./SafetyPlanStackNavigator";
 
 import AppointmentsScreen from "../screens/AppointmentsScreen/AppointmentsScreen";
+import HomeDrawer from "./HomeDrawer";
 
 /**
  * USAGE: USED TO NAVIGATE BETWEEN AUTH SCREENS FOR A UNAUTHORIZED USER
@@ -40,6 +41,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
   //console.log('drawer user', user);
   return (
     <Drawer.Navigator
+      drawerContent={(props)=><HomeDrawer drawerProps={props} user={user}></HomeDrawer>}
       screenOptions={{
         headerShown: true,
         unmountOnBlur: true,
@@ -67,7 +69,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={SafetyPlanStackNavigator}
       ></Drawer.Screen>
-      {/* THESE SCREENS WILL NEED COMPONENTS */}
+      
       <Drawer.Screen name="Vault" component={VaultScreen}></Drawer.Screen>
       <Drawer.Screen
         name="DailyConversations"
@@ -77,6 +79,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
       <Drawer.Screen name="Settings" component={SettingsScreen}></Drawer.Screen>
       <Drawer.Screen
         name="Medical_Information"
+        options={{title:'Medical Information'}}
         initialParams={{ user }}
         component={MedicalInfoScreen}
       ></Drawer.Screen>
