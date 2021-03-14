@@ -1,3 +1,4 @@
+import { faShekelSign } from '@fortawesome/free-solid-svg-icons';
 import { StyleSheet } from 'react-native';
 import { withTheme } from 'react-native-elements';
 
@@ -46,7 +47,7 @@ export default StyleSheet.create({
         color: 'white',
         fontSize: 22,
         fontWeight: "bold",
-        justifyContent:'center',
+        textAlign: "center",
     },
   pageTitle: {
         color: 'white',
