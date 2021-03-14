@@ -37,9 +37,9 @@ export async function GetUserData(userCredential: firebase.auth.UserCredential) 
     return user;
 }
 
-export async function SetUserData(user: User, credential: firebase.auth.UserCredential) {
-    const userRef = firebase.firestore().collection('users')
-    userRef.doc(user.id).set(user);
+export async function SetUserData(user: User) {
+    const collectionRef = firebase.firestore().collection('users')
+    collectionRef.doc(user.id).set(user);
 }
 
 export async function Logout() {
@@ -71,8 +71,3 @@ export async function getCurrentUserInfo(){
 export async function getCurrentUser(){
     return firebase.auth().currentUser;
 }
-
-   
-
-  
-

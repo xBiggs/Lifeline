@@ -7,7 +7,7 @@ import { ContactDetails } from "./ContactDetails";
 import { WarningSign } from "./WarningSign";
 
 export interface User {
-    notifications: NotificationType[];
+    notifications?: NotificationType[];
     firstName: string;
     lastName: string;
     email: string;

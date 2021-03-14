@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View, StyleSheet, Button } from "react-native";
 import { FlatList } from 'react-native-gesture-handler';
 import { DrawerScreenProps } from '@react-navigation/drawer';
@@ -7,6 +7,7 @@ import { SafetyPlanStackParamList } from "../../../types";
 import { User } from '../../../interfaces/User';
 import { WarningSign, WarningSignValue , MODERATE, SEVERE } from "../../../interfaces/WarningSign";
 import WarningSignCard from "./WarningSignCard";
+import { SetUserData } from '../../../firebase/auth';
 // import styles from "./styles";
 
 interface WarningSignListElement {
@@ -19,18 +20,33 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
   const [index, setIndex] = useState(0);
   const [text, onChangeText] = React.useState("");
   const [id, setId] = useState(0);
-  const populateWarningSigns = () => {
-    const list: WarningSignListElement[] = [];
-    if (user.warningSigns) {
+
+  const list: WarningSignListElement[] = [];
+  useEffect(()=>{
+    console.clear();
+    console.log('user warning sign effects')
+    if(user.warningSigns) {
       user.warningSigns.forEach(sign => {
         list.push({id: id.toString(), warningSign: sign});
         setId(id+1);
       });
     }
-    return list;
-  }
-  const initialWarningSigns: WarningSignListElement[] = populateWarningSigns();
+  },[]);
+  const initialWarningSigns: WarningSignListElement[] = list;
   const [warningSignList, setWarningSignList] = useState(initialWarningSigns);
+  useEffect(() => {
+    (async () => {
+      const warningSigns: WarningSign[] = [];
+      warningSignList.forEach(element => warningSigns.push(element.warningSign));
+      user.warningSigns = warningSigns;
+      try {
+        await SetUserData(user);
+      } catch (e) {
+        // Do something with error here
+        alert((e as Error).message);
+      }
+    })();
+  },[warningSignList]);
 
   const addWarningSign = (): void => {
     const newElement: WarningSignListElement = {
@@ -43,17 +59,11 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
     setId(id+1);
     const newList: WarningSignListElement[] = [...warningSignList , newElement];
     setWarningSignList(newList);
-    // const warningSigns: WarningSign[] = [];
-    // newList.forEach(element => warningSigns.push(element.warningSign));
-    // user.warningSigns = warningSigns;
   }
 
   const removeWarningSign = (id: string): void => {
     const filteredList: WarningSignListElement[] = warningSignList.filter(element => element.id !== id);
     setWarningSignList(filteredList);
-    // const warningSigns: WarningSign[] = [];
-    // filteredList.forEach(element => warningSigns.push(element.warningSign))
-    // user.warningSigns = warningSigns;
   }
 
   return (
