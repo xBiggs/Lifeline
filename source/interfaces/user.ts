@@ -4,6 +4,7 @@ import { QuestionResponse } from "./QuestionResponse";
 import { NotificationType } from "./Notification";
 import SocialEngagement from "./socialEngagements";
 import { ContactDetails } from "./ContactDetails";
+import { WarningSign } from "./WarningSign";
 
 export interface User {
     notifications: NotificationType[];
@@ -18,4 +19,5 @@ export interface User {
     copingStrategies?:string[];
     socialEngagements?:SocialEngagement
     emergencyContacts?: ContactDetails[]; // new
+    warningSigns?: WarningSign[]; // new
 }
