@@ -102,10 +102,10 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         borderRadius: 15, width: 100,
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
-        onPress={() => {
+        onPress={async () => {
           // console.log(item.firstName, " ", item.lastName);
           // console.log(item.phoneNumbers[0].digits);
-          let emergencyContact = {
+          var emergencyContact: ContactDetails = {
             firstName: item.firstName?.toString(),
             lastName: item.lastName,
             digits: Number(item.phoneNumbers[0].digits),
@@ -113,7 +113,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
             id: item.id
           }
 
-          AddContacts(user, emergencyContact)
+          await AddContacts(user, emergencyContact);
 
         }}
       >
