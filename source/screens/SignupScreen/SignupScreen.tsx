@@ -12,10 +12,11 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Screens } from "..";
 import { SignUp, SetUserData, Login } from "../../firebase/auth";
+import { AuthStackParamList } from "../../types";
 import styles from "./styles";
 
 export default function SignupScreen(
-  props: StackScreenProps<Screens, "Signup">
+  props: StackScreenProps<AuthStackParamList, "Signup">
 ) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

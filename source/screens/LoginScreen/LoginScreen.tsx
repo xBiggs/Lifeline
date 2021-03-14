@@ -5,14 +5,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Screens } from '..';
 import { Login, GetUserData } from '../../firebase/auth';
 import { User } from '../../interfaces/User';
+import { AuthStackParamList } from '../../types';
 import styles from './styles';
 
-export default function LoginScreen({navigation}:StackScreenProps<Screens,'Login'>) {
+export default function LoginScreen({navigation}:StackScreenProps<AuthStackParamList,'Login'>) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading,setLoading] = useState(false);
 
     const onFooterLinkPress = () => {
+        console.log('footer pressed')
         navigation.navigate('Signup')
     }
 
