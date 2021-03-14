@@ -8,6 +8,8 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { SafetyPlanStackParamList } from '../types'
 import { boolean } from 'yup';
 import { AddContacts } from '../firebase/UserDataHandler'
+import { Value } from 'react-native-reanimated';
+import { string } from 'yup/lib/locale';
 
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
@@ -73,12 +75,16 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   // });
 
   useEffect(() => {
-    setSearchResults(
+    const getSearchResult = async () => {
       contacts?.filter(person => {
         return person.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
+        // console.log(person.firstName?.toLowerCase().includes(searchTerm.toLowerCase()));
+        
       })
-    )
-  }, [searchTerm, contacts])
+    };
+    // setContacts(getSearchResult);
+    getSearchResult();
+  }, []);
 
 
 
@@ -109,11 +115,19 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
             firstName: item.firstName?.toString(),
             lastName: item.lastName,
             digits: Number(item.phoneNumbers[0].digits),
-            email: item.emails[0].email?.toString(),
             id: item.id
           }
 
           await AddContacts(user, emergencyContact);
+          // console.log(contacts?.indexOf(item));
+          
+          
+
+          // useEffect(() => {
+          //   (async function AddToContact(emergencyContact: ContactDetails) {
+          //     await AddContacts(user, emergencyContact);
+          //   });
+          // }, []);
 
         }}
       >

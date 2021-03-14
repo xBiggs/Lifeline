@@ -99,7 +99,7 @@ export async function AddContacts(user: User, person: ContactDetails) {
                 // });
 
                 for (let num of snapshot.data().emergencyContacts) {
-                    if (num.digits == person.digits) {
+                    if (num.digits === person.digits) {
                         personFound = true;
                         // console.log("FOUND and breaking out");
                         break;
@@ -109,7 +109,7 @@ export async function AddContacts(user: User, person: ContactDetails) {
                 }
 
                 if (!personFound){
-                    // console.log("Inside if-personfound");
+                    console.log("Inside if-personfound");
                     await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
                 }
 

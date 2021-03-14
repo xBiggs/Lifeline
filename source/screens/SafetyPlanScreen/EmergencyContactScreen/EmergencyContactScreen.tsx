@@ -6,6 +6,7 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafetyPlanStackParamList } from '../../../types';
 import { ContactDetails } from "../../../interfaces/ContactDetails";
 import { getCurrentUserInfo } from "../../../firebase/auth";
+import _ from 'lodash';
 
 
 
@@ -24,9 +25,21 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
         (async () => {
             const data: any = await getCurrentUserInfo();
             // console.log(data.emergencyContacts);
-
             setContactsData(data.emergencyContacts);
             // console.log(contactsData[0].firstName);
+            // console.log(typeof(contactsData));
+            
+            // var filteredContacts: any = [contactsData[0]];
+            // // filteredContacts.push(contactsData[0])
+            // for (let obj of contactsData) {
+            //     for (let i of filteredContacts){
+            //         if (obj.digits !== i.digits) {
+            //             // console.log("Contact already exist");
+            //             filteredContacts.push(obj)
+            //         }
+            //     }
+            // }
+            // setContactsData(filteredContacts);
 
         })();
     }, []);
