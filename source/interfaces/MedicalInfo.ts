@@ -14,7 +14,7 @@ export interface Medication{
     refillDate?: string; // Date;
 }
 export interface Apointment{
-    date: string; // Date;
-    time: string; // Date; // have to extract time from date object
+    date: firebase.default.firestore.Timestamp; // Date;
+     // Date; // have to extract time from date object
     reason: string;
 }

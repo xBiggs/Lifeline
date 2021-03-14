@@ -19,7 +19,10 @@ export type HomeDrawerParamList = {
     Vault:undefined,
     DailyConversations:undefined,
     SafetyPlan:{user:User}
-    Settings:undefined
+    Settings:undefined,
+    Appointments:{user:User}
+    Medical_Information:{user:User}
+    Medication:{user:User}
 }
 
 export type SafetyPlanStackParamList = {

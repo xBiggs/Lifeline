@@ -1,11 +1,17 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { StackScreenProps } from "@react-navigation/stack";
+import firebase from "firebase";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Screens } from "..";
-import { AddUserData } from "../../firebase/UserDataHandler";
+import {
+  getSecondsBetweenDates,
+  schedulePushNotification,
+} from "../../Controllers/notificationsController";
+import { AddNotification, AddUserData } from "../../firebase/UserDataHandler";
+import { NotificationType } from "../../interfaces/Notification";
 import {
   mitigatingFactorQuestions,
   QuestionResponse,
@@ -33,7 +39,8 @@ const RiskFactorQuestionComponent = (
           onPress={() => {
             questionResponse.response = choice;
             setQuestionNum(
-              questionNum + 1 == NUM_RISK_FACTOR_QUESTIONS +NUM_MITIGATING_FACTOR_QUESTIONS
+              questionNum + 1 ==
+                NUM_RISK_FACTOR_QUESTIONS + NUM_MITIGATING_FACTOR_QUESTIONS
                 ? questionNum + 1
                 : questionNum + 1
             );
@@ -62,11 +69,12 @@ const MitigatingFactorQuestionComponent = (
           onPress={() => {
             questionResponse.response = choice;
             setQuestionNum(
-              questionNum + 1 == NUM_MITIGATING_FACTOR_QUESTIONS + NUM_RISK_FACTOR_QUESTIONS
+              questionNum + 1 ==
+                NUM_MITIGATING_FACTOR_QUESTIONS + NUM_RISK_FACTOR_QUESTIONS
                 ? questionNum + 1
                 : questionNum + 1
             );
-          //  console.log(questionNum);
+            //  console.log(questionNum);
           }}
         >
           <Text style={styles.buttonLabel}>{choice}</Text>
@@ -77,7 +85,9 @@ const MitigatingFactorQuestionComponent = (
 };
 
 //screen component
-export default (props: DrawerScreenProps<HomeDrawerParamList, "Assessment">) => {
+export default (
+  props: DrawerScreenProps<HomeDrawerParamList, "Assessment">
+) => {
   const user = props.route.params.user;
   const [questionNum, setQuestionNum] = useState(0);
 
@@ -90,15 +100,44 @@ export default (props: DrawerScreenProps<HomeDrawerParamList, "Assessment">) => 
       MitigatingFactorQuestionComponent(question, questionNum, setQuestionNum)
   );
 
-  const AllQuestionComponents = RiskFactorQuestionComponents.concat(MitigatingFactorQuestionComponents);
-  console.log(AllQuestionComponents.length)
+  const AllQuestionComponents = RiskFactorQuestionComponents.concat(
+    MitigatingFactorQuestionComponents
+  );
+  console.log(AllQuestionComponents.length);
 
   const CurrentQuestion = AllQuestionComponents[questionNum];
 
   useEffect(() => {
-
-    if (questionNum == NUM_RISK_FACTOR_QUESTIONS+NUM_MITIGATING_FACTOR_QUESTIONS) {
+    if (
+      questionNum ==
+      NUM_RISK_FACTOR_QUESTIONS + NUM_MITIGATING_FACTOR_QUESTIONS
+    ) {
       try {
+        var date: Date = new Date();
+        var newDate: Date = new Date(date.setMonth(date.getMonth() + 3));
+        var notification: NotificationType = {
+          date: firebase.firestore.Timestamp.fromDate(newDate),
+          title: "Retake Assesent: ",
+          information:
+            'It has been three months since you last took your assesment. Please retake it now. "',
+
+          actionScreen: "Assesment",
+          actionScreenTitle: "Take Assesment",
+          imageURL: "../../images/medicine.png",
+        };
+        const today: Date = new Date();
+
+        const secondsBetweenDates = getSecondsBetweenDates(today, newDate);
+
+        schedulePushNotification(
+          "Evaluation Alert",
+          "It is time to retake your assesment",
+          "click to take evaluation",
+          secondsBetweenDates
+        );
+
+        if (user) AddNotification(user, notification);
+
         user.riskFactors = riskFactorQuestions;
         user.mitigatingFactors = mitigatingFactorQuestions;
         AddUserData(user);
