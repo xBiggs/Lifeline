@@ -12,12 +12,10 @@ export default (props:StackScreenProps<SafetyPlanStackParamList,'Home'>)=>
     const {user} = props.route.params;
     const {navigation} = props;
 
-    
-
 return (
         <View style={styles.container}>
 
-            <TouchableOpacity style={styles.button}><Text style={styles.buttonTitle}>Enter Your Warning Signs</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={()=>props.navigation.navigate('WarningSigns',{user})}><Text style={styles.buttonTitle}>Enter Your Warning Signs</Text></TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={()=>props.navigation.navigate('CopingStrategies',{user})}><Text style={styles.buttonTitle}>Enter Coping Strategies</Text></TouchableOpacity>
             <TouchableOpacity style={styles.button}><Text style={styles.buttonTitle} onPress={()=>{ navigation.navigate('SocialEngagements',{user})
                 }}>Enter Favorite Social Engagements</Text></TouchableOpacity>

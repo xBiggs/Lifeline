@@ -3,9 +3,9 @@ import { Text, TextInput, TouchableOpacity, View, StyleSheet, Button } from "rea
 import { FlatList } from 'react-native-gesture-handler';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import { SafetyPlanStackParamList } from "../../types";
-import { User } from '../../interfaces/User';
-import { WarningSign, WarningSignValue , MODERATE, SEVERE } from "../../interfaces/WarningSign";
+import { SafetyPlanStackParamList } from "../../../types";
+import { User } from '../../../interfaces/User';
+import { WarningSign, WarningSignValue , MODERATE, SEVERE } from "../../../interfaces/WarningSign";
 import WarningSignCard from "./WarningSignCard";
 // import styles from "./styles";
 
@@ -16,7 +16,7 @@ interface WarningSignListElement {
 
 export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanStackParamList, "WarningSigns">) {
   const user: User = props.route.params.user;
-  const [index, setIndex] = useState(WarningSignValue.MODERATE_VALUE);
+  const [index, setIndex] = useState(0);
   const [text, onChangeText] = React.useState("");
   const [id, setId] = useState(0);
   const populateWarningSigns = () => {
@@ -32,17 +32,28 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
   const initialWarningSigns: WarningSignListElement[] = populateWarningSigns();
   const [warningSignList, setWarningSignList] = useState(initialWarningSigns);
 
-  const addWarningSign = () => {
+  const addWarningSign = (): void => {
     const newElement: WarningSignListElement = {
       id: id.toString(),
       warningSign: {
         sign: text,
-        points: index as 1 || 2
+        points: index+1 as WarningSignValue
       }
     }
     setId(id+1);
     const newList: WarningSignListElement[] = [...warningSignList , newElement];
     setWarningSignList(newList);
+    // const warningSigns: WarningSign[] = [];
+    // newList.forEach(element => warningSigns.push(element.warningSign));
+    // user.warningSigns = warningSigns;
+  }
+
+  const removeWarningSign = (id: string): void => {
+    const filteredList: WarningSignListElement[] = warningSignList.filter(element => element.id !== id);
+    setWarningSignList(filteredList);
+    // const warningSigns: WarningSign[] = [];
+    // filteredList.forEach(element => warningSigns.push(element.warningSign))
+    // user.warningSigns = warningSigns;
   }
 
   return (
@@ -60,16 +71,14 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
           setIndex(event.nativeEvent.selectedSegmentIndex);
         }}
       />
-      <Text>
-        Selected index: {index}
-      </Text>
       <TouchableOpacity onPress={() => addWarningSign()}>
-        <Text>Create account</Text>
+        <Text>Add Warning Sign</Text>
       </TouchableOpacity>
       <FlatList
             keyExtractor = { (item: WarningSignListElement) => item.id}
             data={warningSignList}
-            renderItem = {element => (<WarningSignCard sign={element.item.warningSign.sign} points={element.item.warningSign.points}/>)} />
+            renderItem = {element => (<WarningSignCard warningSign={element.item.warningSign} onPressTrash={() => removeWarningSign(element.item.id)}/>)}
+             />
     </View>
   );
 }
