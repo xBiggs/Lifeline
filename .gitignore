@@ -20,3 +20,5 @@ QuestionResponse.js
 User.js
 UserDataHandler.js
 firebaseCRUDtest.js
+PersonalDetails.js
+WarningSigns.js

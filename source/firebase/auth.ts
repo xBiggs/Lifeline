@@ -37,42 +37,15 @@ export async function GetUserData(userCredential: firebase.auth.UserCredential) 
     return user;
 }
 
-export async function SetUserData(user: User, credential: firebase.auth.UserCredential) {
-    const userRef = firebase.firestore().collection('users')
-    userRef.doc(user.id).set(user);
+export async function SetUserData(user: User) {
+    const collectionRef = firebase.firestore().collection('users')
+    collectionRef.doc(user.id).set(user);
 }
 
 export async function Logout() {
     await firebase.auth().signOut();
 }
 
-export async function getCurrentUserMedication(){
-    const user = firebase.auth().currentUser;
-
-    
-    const uid = user.uid;
-    const usersRef = firebase.firestore().collection(COLLECTION);
-    const document = await usersRef.doc(uid).get();
-    
-    return document.data();
-
-}
-export async function getCurrentUserInfo(){
-    const user = firebase.auth().currentUser;
-   
-    
-    const uid = user.uid;
-    const usersRef = firebase.firestore().collection(COLLECTION);
-    const document = await usersRef.doc(uid).get();
-    
-    return document.data();
-
-}
 export async function getCurrentUser(){
     return firebase.auth().currentUser;
 }
-
-   
-
-  
-

@@ -44,7 +44,7 @@ export default function SignupScreen(
         email,
         password
       );
-      await SetUserData(user, userCredential);
+      await SetUserData(user);
       await Login(email,password);
     } catch (error) {
       // Do something with error here
