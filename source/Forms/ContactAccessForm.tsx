@@ -75,7 +75,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   useEffect(() => {
     setSearchResults(
       contacts?.filter(person => {
-        return person.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
+        return person.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
       })
     )
   }, [searchTerm, contacts])
@@ -199,4 +199,3 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     </View>
   );
 }
-

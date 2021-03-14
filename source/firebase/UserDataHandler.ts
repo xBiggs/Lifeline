@@ -128,12 +128,5 @@ export async function AddContacts(user: User, person: ContactDetails) {
     }
 }
 
-export async function GetContacts(user: User) {
-    await firebase.firestore().collection('users').doc(user.id).get().then(async function (snapshot) {
-        if(snapshot.exists){
-            return snapshot.data();
-        }
-    });
-}
 
 // commands to test a function: tsc & node firebaseCRUDtest.js
