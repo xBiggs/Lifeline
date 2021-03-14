@@ -2,6 +2,7 @@ import { PersInfo } from "./PersonalInfo";
 import { MedicationInfo } from "./MedicalInfo";
 import { QuestionResponse } from "./QuestionResponse";
 import { NotificationType } from "./Notification";
+import SocialEngagement from "./socialEngagements";
 
 export interface User {
     notifications: NotificationType[];
@@ -14,4 +15,5 @@ export interface User {
     riskFactors?: QuestionResponse[];
     mitigatingFactors?: QuestionResponse[];
     copingStrategies?:string[];
+    socialEngagements?:SocialEngagement
 }

@@ -10,6 +10,7 @@ import styles from './styles'
 export default (props:StackScreenProps<SafetyPlanStackParamList,'Home'>)=>
 {
     const {user} = props.route.params;
+    const {navigation} = props;
 
     
 
@@ -18,7 +19,8 @@ return (
 
             <TouchableOpacity style={styles.button}><Text style={styles.buttonTitle}>Enter Your Warning Signs</Text></TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={()=>props.navigation.navigate('CopingStrategies',{user})}><Text style={styles.buttonTitle}>Enter Coping Strategies</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.button}><Text style={styles.buttonTitle}>Enter Favorite Social Activites</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button}><Text style={styles.buttonTitle} onPress={()=>{ navigation.navigate('SocialEngagements',{user})
+                }}>Enter Favorite Social Engagements</Text></TouchableOpacity>
             <TouchableOpacity style={styles.button}
             onPress={async () => {
                 props.navigation.navigate("EmergencyContact", { user });

@@ -17,6 +17,8 @@ export default StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
         justifyContent:'center',
+        textAlign:'center',
+        
     },
     container: {
         alignItems: 'center',
