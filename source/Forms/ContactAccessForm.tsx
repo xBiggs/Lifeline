@@ -176,13 +176,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={{ marginTop: 10 }} />
-      <TextInput
+      {/* <TextInput
         placeholder="Search"
         placeholderTextColor="black"
         style={styles.searchBox}
         // onChangeText={value => searchContacts(value)}
         onChangeText={value => setSearchResults({ value })}
-      />
+      /> */}
       <View style={{ flex: 1 }}>
         {/* , backgroundColor: '#2f363c' */}
         {/* {this.state.isLoading ? ( */}
