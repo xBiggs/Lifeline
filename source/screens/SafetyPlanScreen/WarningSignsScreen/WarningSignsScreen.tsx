@@ -72,6 +72,7 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
         value={text}
         multiline={true}
         numberOfLines={4}
+        placeholder={"Warning Sign"}
       />
       <SegmentedControl
         values={[MODERATE, SEVERE]}
