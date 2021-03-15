@@ -3,7 +3,7 @@ import "firebase/database";
 import { PersInfo } from "../interfaces/PersonalInfo"
 import { Medication, MedicationInfo } from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
-import { getCurrentUser, getCurrentUserMedication } from './auth';
+import { getCurrentUser} from './auth';
 import { NotificationType } from '../interfaces/Notification';
 import useFloatingHeaderHeight from '@react-navigation/stack/lib/typescript/src/utils/useHeaderHeight';
 import { ContactDetails } from '../interfaces/ContactDetails';
@@ -128,5 +128,15 @@ export async function AddContacts(user: User, person: ContactDetails) {
     }
 }
 
+export async function DeleteContacts(user: User, item: ContactDetails) {
+    try {
+        
+        // const obj = await firebase.firestore().collection('users').doc(user.id).get();
+        // obj.data().emergencyContacts.
+        
+    } catch (err) {
+        throw (err as Error).message;
+    }
+}
 
 // commands to test a function: tsc & node firebaseCRUDtest.js
