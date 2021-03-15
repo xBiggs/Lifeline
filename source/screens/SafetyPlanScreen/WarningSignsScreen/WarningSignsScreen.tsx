@@ -46,7 +46,9 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
   },[warningSignList]);
 
   const addWarningSign = (): void => {
-    if (text.trim().length !== 0) {
+    if (text.trim().length === 0) {
+      alert("Warning sign cannot be empty!");
+    } else {
       const newElement: WarningSignListElement = {
         id: Guid.create().toString(),
         warningSign: {
@@ -57,7 +59,6 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
       const newList: WarningSignListElement[] = [...warningSignList , newElement];
       setWarningSignList(newList);
     }
-    alert("Warning sign cannot be empty!");
   }
 
   const removeWarningSign = (id: string): void => {
