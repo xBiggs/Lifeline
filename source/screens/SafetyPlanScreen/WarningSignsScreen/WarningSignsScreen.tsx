@@ -45,19 +45,22 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
     })();
   },[warningSignList]);
 
-  const addWarningSign = async (): Promise<void> => {
-    const newElement: WarningSignListElement = {
-      id: Guid.create().toString(),
-      warningSign: {
-        sign: text,
-        points: index+1 as WarningSignValue
+  const addWarningSign = (): void => {
+    if (text.trim().length !== 0) {
+      const newElement: WarningSignListElement = {
+        id: Guid.create().toString(),
+        warningSign: {
+          sign: text.trim(),
+          points: index+1 as WarningSignValue
+        }
       }
+      const newList: WarningSignListElement[] = [...warningSignList , newElement];
+      setWarningSignList(newList);
     }
-    const newList: WarningSignListElement[] = [...warningSignList , newElement];
-    setWarningSignList(newList);
+    alert("Warning sign cannot be empty!");
   }
 
-  const removeWarningSign = async (id: string): Promise<void> => {
+  const removeWarningSign = (id: string): void => {
     const filteredList: WarningSignListElement[] = warningSignList.filter(element => element.id !== id);
     setWarningSignList(filteredList);
   }
