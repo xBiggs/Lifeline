@@ -38,6 +38,7 @@ import {
 } from "../../Controllers/notificationsController";
 import moment from "moment";
 import firebase from "firebase";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function MedicationForm(
   props: DrawerScreenProps<HomeDrawerParamList, "Medication">
@@ -127,8 +128,8 @@ export default function MedicationForm(
   };
 
   const showMode = (currentMode: React.SetStateAction<string>) => {
-    setShow(true);
     setMode(currentMode);
+    setShow(true);
   };
 
   const showDatepicker = () => {
@@ -171,7 +172,7 @@ export default function MedicationForm(
   //GET INFO END///////////////////////
 
   return (
-    <KeyboardAwareScrollView>
+    <ScrollView>
       <View style={{ backgroundColor: "#219ebc" }}>
         {info
           ? info.map((l, i) => (
@@ -201,7 +202,6 @@ export default function MedicationForm(
         <TouchableOpacity
           onPress={() => {
             setModalVisible(true);
-            showMode("date");
           }}
         >
           <View
@@ -240,7 +240,9 @@ export default function MedicationForm(
               setModalVisible(!modalVisible);
             }}
           >
-            <View style={styles.centeredView}>
+            <KeyboardAwareScrollView
+              contentContainerStyle={{ alignItems: "center" }}
+            >
               <View style={styles.modalView}>
                 <View style={styles.inputContainer}>
                   <Text style={styles.buttonLabel}>Name</Text>
@@ -264,7 +266,7 @@ export default function MedicationForm(
                   </Text>
                   <TextInput
                     style={styles.input}
-                    {...formal.getFieldProps("numTimesPerDay")}
+                    {...formal.getFieldProps("numTimesPerDay").value}
                   />
                   {formal.errors.numTimesPerDay && (
                     <Text style={styles.error}>
@@ -283,7 +285,11 @@ export default function MedicationForm(
                   )}
                   <View>
                     <View>
-                      <Text style={styles.buttonLabel}>Refill Date:</Text>
+                      <TouchableOpacity onPress={showDatepicker}>
+                        <Text style={styles.buttonLabel}>
+                          Select Refill Date
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                     <View
                       style={{
@@ -366,10 +372,10 @@ export default function MedicationForm(
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
+            </KeyboardAwareScrollView>
           </Modal>
         </View>
       </View>
-    </KeyboardAwareScrollView>
+    </ScrollView>
   );
 }

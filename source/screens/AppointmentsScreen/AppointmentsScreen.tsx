@@ -120,9 +120,9 @@ export default function AppointmentScreen(
     setDate(currentDate);
   };
 
-  const showMode = (currentMode) => {
-    setShow(true);
+  const showMode = (currentMode: React.SetStateAction<string>) => {
     setMode(currentMode);
+    setShow(true);
   };
 
   const showDatepicker = () => {
@@ -168,7 +168,7 @@ export default function AppointmentScreen(
   info.forEach((element, i) => {
     const tempDate = element.date.toDate();
     console.log(tempDate);
-    if (moment(tempDate).isSameOrBefore(moment(), "day")) {
+    if (moment(tempDate).isBefore(moment(), "day")) {
       info.splice(i);
     }
   });
@@ -195,7 +195,6 @@ export default function AppointmentScreen(
         <TouchableOpacity
           onPress={() => {
             setModalVisible(true);
-            showMode("date");
           }}
         >
           <View
@@ -249,10 +248,17 @@ export default function AppointmentScreen(
 
                   <View>
                     <View>
-                      <Button onPress={showDatepicker} title="Select Date" />
+                      <TouchableOpacity onPress={showDatepicker}>
+                        <Text style={styles.buttonLabel}>Select Date</Text>
+                      </TouchableOpacity>
                     </View>
                     <View>
-                      <Button onPress={showTimepicker} title="Select Time" />
+                      <TouchableOpacity
+                        style={{ marginTop: 20, marginBottom: 20 }}
+                        onPress={showTimepicker}
+                      >
+                        <Text style={styles.buttonLabel}>Select Time</Text>
+                      </TouchableOpacity>
                     </View>
 
                     <View
@@ -261,7 +267,7 @@ export default function AppointmentScreen(
                         alignContent: "center",
                       }}
                     >
-                      <Text style={styles.buttonLabel}> Date:</Text>
+                      {/* <Text style={styles.buttonLabel}> Date:</Text> */}
 
                       {show && (
                         <DateTimePicker
@@ -276,7 +282,7 @@ export default function AppointmentScreen(
                           }}
                           testID="dateTimePicker"
                           value={date}
-                          mode={Platform.OS == "ios" ? "datetime" : "date"}
+                          mode={mode}
                           is24Hour={true}
                           display="default"
                           onChange={onChange}
