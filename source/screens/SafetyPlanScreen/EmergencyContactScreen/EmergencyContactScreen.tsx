@@ -5,8 +5,8 @@ import { View, Text } from 'react-native'
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafetyPlanStackParamList } from '../../../types';
 import { ContactDetails } from "../../../interfaces/ContactDetails";
-import { getCurrentUserInfo } from "../../../firebase/auth";
 import _ from 'lodash';
+
 
 
 
@@ -23,9 +23,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
 
     useEffect(() => {
         (async () => {
-            const data: any = await getCurrentUserInfo();
             // console.log(data.emergencyContacts);
-            setContactsData(data.emergencyContacts);
+            setContactsData(user.emergencyContacts);
             // console.log(contactsData[0].firstName);
             // console.log(typeof(contactsData));
             
@@ -116,7 +115,11 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 keyExtractor={(item, index) => index.toString()}
                 ListEmptyComponent={() => (
                     <View
-                        style={styles.flatListView}
+                        // style={styles.flatListView}
+                        style={{flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginTop: 50}}
                     >
                         <Text style={{ color: 'blue' }}>No Contacts Found</Text>
 
