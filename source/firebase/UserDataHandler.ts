@@ -3,6 +3,7 @@ import "firebase/database";
 import { PersInfo } from "../interfaces/PersonalInfo"
 import { Medication, MedicationInfo } from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
+import * as Contacts from 'expo-contacts';
 import { getCurrentUser} from './auth';
 import { NotificationType } from '../interfaces/Notification';
 import useFloatingHeaderHeight from '@react-navigation/stack/lib/typescript/src/utils/useHeaderHeight';
@@ -77,66 +78,69 @@ export async function AddNotification(user: User, data: NotificationType) { //  
 
 }
 
-export async function AddContacts(user: User, person: ContactDetails) {
-    try {
-        if (!user.emergencyContacts || user.emergencyContacts == undefined) {
-            user.emergencyContacts = [];
-        }
-        user.emergencyContacts.push(person);
+export async function AddContacts(user: User) { //, person: ContactDetails) {
+    // try {
+        // if (!user.emergencyContacts || user.emergencyContacts == undefined) {
+        //     // user.emergencyContacts = [];
+        // }
+        // user.emergencyContacts.push(person);
 
-        var personFound = false;
-        await firebase.firestore().collection('users').doc(user.id).get().then(async function (snapshot) {
+        // var personFound = false;
+        // await firebase.firestore().collection('users').doc(user.id).get().then(async function (snapshot) {
 
-            if (snapshot.exists) {
-                // console.log([0].digits);
-                // snapshot.data().emergencyContacts.forEach(element => {
-                //     if (element.digits === person.digits) {
-                //         // console.log("FOUND");
-                //         personFound = true;
-                //         break
-                //         // return;
-                //     }
-                // });
+        //     if (snapshot.exists) {
+        //         // console.log([0].digits);
+        //         // snapshot.data().emergencyContacts.forEach(element => {
+        //         //     if (element.digits === person.digits) {
+        //         //         // console.log("FOUND");
+        //         //         personFound = true;
+        //         //         break
+        //         //         // return;
+        //         //     }
+        //         // });
 
-                for (let num of snapshot.data().emergencyContacts) {
-                    if (num.digits === person.digits) {
-                        personFound = true;
-                        // console.log("FOUND and breaking out");
-                        break;
-                    }
-                    console.log("outside");
+        //         for (let num of snapshot.data().emergencyContacts) {
+        //             if (num.digits === person.digits) {
+        //                 personFound = true;
+        //                 // console.log("FOUND and breaking out");
+        //                 break;
+        //             }
+        //             console.log("outside");
                     
-                }
+        //         }
 
-                if (!personFound){
-                    console.log("Inside if-personfound");
-                    await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
-                }
+        //         if (!personFound){
+        //             console.log("Inside if-personfound");
+        //             await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
+        //         }
 
-            }
-            else {
-                console.log("No data found");
-            }
-        }).catch(function (err) {
-            console.log(err);
-        });
+        //     }
+        //     else {
+        //         console.log("No data found");
+        //     }
+        // }).catch(function (err) {
+        //     console.log(err);
+        // });
 
         // await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
         // return true;
-    } catch (err) {
-        throw (err as Error).message;
+    // } catch (err) {
+    //     throw (err as Error).message;
+    // }
+
+
+    /* UPDATING THE ENTIRE USER OBJECT */
+
+    try {
+        // user.emergencyContacts?.push(item);
+        await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
+        // return user;
+    } catch (error) {
+        throw (error as Error).message;
     }
+
+
 }
 
-export async function DeleteContacts(user: User, item: ContactDetails) {
-    try {
-        
-        // const obj = await firebase.firestore().collection('users').doc(user.id).get();
-        // obj.data().emergencyContacts.
-        
-    } catch (err) {
-        throw (err as Error).message;
-    }
-}
 
 // commands to test a function: tsc & node firebaseCRUDtest.js

@@ -6,8 +6,7 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafetyPlanStackParamList } from '../../../types';
 import { ContactDetails } from "../../../interfaces/ContactDetails";
 import _ from 'lodash';
-
-
+import * as Contacts from 'expo-contacts';
 
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
@@ -67,6 +66,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
             <Text style={{ fontSize: 20 }}>Call {item.firstName} {item.lastName}</Text>
           </TouchableOpacity>
         </View >
+        
       );
 
 

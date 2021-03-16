@@ -5,6 +5,7 @@ import { NotificationType } from "./Notification";
 import SocialEngagement from "./socialEngagements";
 import { ContactDetails } from "./ContactDetails";
 import { WarningSign } from "./WarningSign";
+import * as Contacts from 'expo-contacts';
 
 export interface User {
     notifications?: NotificationType[];
@@ -18,6 +19,6 @@ export interface User {
     mitigatingFactors?: QuestionResponse[];
     copingStrategies?:string[];
     socialEngagements?:SocialEngagement
-    emergencyContacts?: ContactDetails[]; // new
+    emergencyContacts?: Contacts.Contact[];//Contacts.Contact[]; // new
     warningSigns?: WarningSign[]; // new
 }

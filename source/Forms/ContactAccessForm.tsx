@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, FlatList, ActivityIndicator, TextInput, Button, TouchableOpacity } from 'react-native';
 import * as Contacts from 'expo-contacts';
+import * as Devices from 'expo-device';
 import styles from "../screens/ContactScreen/styles";
 import { ContactDetails } from "../interfaces/ContactDetails";
 import * as Device from 'expo-device'
@@ -10,11 +11,13 @@ import { boolean } from 'yup';
 import { AddContacts } from '../firebase/UserDataHandler'
 import { Value } from 'react-native-reanimated';
 import { string } from 'yup/lib/locale';
-
+import { User } from '../interfaces/User';
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
   const user = props.route.params.user;
+
+  const device = Devices.osName;
 
   const [contacts, setContacts] = useState<Contacts.Contact[]>();
   // const [inMemoryContacts, setInMemoryContacts] = useState<Contacts.Contact[]>();
@@ -23,7 +26,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Contacts.Contact[]>();
 
-  const [firebaseReturnStatus, setReturnStatus] = useState(false);
+  const [person, setPerson] = useState<Contacts.Contact>();
 
   // const loadContacts = async () => {
   //   const permissions = await Contacts.requestPermissionsAsync();
@@ -108,27 +111,27 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         borderRadius: 15, width: 100,
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
-        onPress={async () => {
-          // console.log(item.firstName, " ", item.lastName);
-          // console.log(item.phoneNumbers[0].digits);
-          var emergencyContact: ContactDetails = {
-            firstName: item.firstName?.toString(),
-            lastName: item.lastName,
-            digits: Number(item.phoneNumbers[0].digits),
-            id: item.id
-          }
+        onPress={async () => { 
+          
+          user.emergencyContacts?.push(item)
+          console.log(user);
+          
 
-          await AddContacts(user, emergencyContact);
+          await AddContacts(user)
+          
           // console.log(contacts?.indexOf(item));
           
           
 
           // useEffect(() => {
-          //   (async function AddToContact(emergencyContact: ContactDetails) {
-          //     await AddContacts(user, emergencyContact);
+          //   (async function AddToContact(user: User) {
+          //     // await AddContacts(user);
+          //     console.log(user);
+              
           //   });
+            
           // }, []);
-
+          
         }}
       >
         <Text style={{ fontSize: 20 }}>+ Add</Text>
