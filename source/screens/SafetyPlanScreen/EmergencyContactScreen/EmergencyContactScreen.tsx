@@ -13,7 +13,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
     const { user } = props.route.params
     const { navigation } = props
 
-    // const [contactsData, setContactsData] = useState<Contacts.Contact[]>();
+    const [contactsData, setContactsData] = useState<Contacts.Contact[]>();
     
     // useEffect(() => {
     //     navigation.addListener('blur', e => {
@@ -23,7 +23,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
 
 
     useEffect(() => {
-        // setContactsData(cont => user.emergencyContacts)
+        setContactsData(cont => user.emergencyContacts)
     }, [user.emergencyContacts]);
 
 

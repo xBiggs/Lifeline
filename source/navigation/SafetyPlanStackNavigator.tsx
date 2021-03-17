@@ -12,6 +12,7 @@ import ContactAccessForm from '../Forms/ContactAccessForm';
 import EmergencyContactScreen from '../screens/SafetyPlanScreen/EmergencyContactScreen/EmergencyContactScreen';
 import SocialEngagementsScreen from '../screens/SafetyPlanScreen/SocialEngagementsScreen/';
 import WarningSignsScreen from '../screens/SafetyPlanScreen/WarningSignsScreen/WarningSignsScreen';
+import LocationServivesScreen from '../screens/SafetyPlanScreen/LocationServicesScreen/LocationServivesScreen';
 
 const Stack = createStackNavigator<SafetyPlanStackParamList>();
 
@@ -27,7 +28,7 @@ export default (props:DrawerScreenProps<HomeDrawerParamList,'SafetyPlan'>)=>{
         <Stack.Screen name='AccessDeviceContacts' initialParams={{user}} component ={ContactAccessForm}></Stack.Screen>
         <Stack.Screen name='SocialEngagements' initialParams={{user}} component={SocialEngagementsScreen}></Stack.Screen>
         <Stack.Screen name="WarningSigns" initialParams={{ user }} component={WarningSignsScreen}></Stack.Screen>
-        {/* <Stack.Screen name='CallContactAccessFormComponent' initialParams={{user}} component ={ContactAccessScreen}></Stack.Screen> */}
+        <Stack.Screen name='LocationServices' initialParams={{ user }} component={LocationServivesScreen}></Stack.Screen>
     </Stack.Navigator>
     )
 }
