@@ -114,12 +114,12 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         onPress={async () => { 
           
           user.emergencyContacts?.push(item)
-          console.log(user);
+          // console.log(user);
           
-
-          await AddContacts(user)
-          
+          await AddContacts(user);
+          props.navigation.navigate("EmergencyContact", { user });          
           // console.log(contacts?.indexOf(item));
+          // return;
           
           
 

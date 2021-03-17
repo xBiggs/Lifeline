@@ -8,6 +8,7 @@ import { getCurrentUser} from './auth';
 import { NotificationType } from '../interfaces/Notification';
 import useFloatingHeaderHeight from '@react-navigation/stack/lib/typescript/src/utils/useHeaderHeight';
 import { ContactDetails } from '../interfaces/ContactDetails';
+import { Alert } from 'react-native';
 
 
 
@@ -132,9 +133,7 @@ export async function AddContacts(user: User) { //, person: ContactDetails) {
     /* UPDATING THE ENTIRE USER OBJECT */
 
     try {
-        // user.emergencyContacts?.push(item);
         await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
-        // return user;
     } catch (error) {
         throw (error as Error).message;
     }

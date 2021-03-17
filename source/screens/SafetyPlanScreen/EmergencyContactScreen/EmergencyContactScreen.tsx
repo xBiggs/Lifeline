@@ -13,38 +13,22 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
     const { user } = props.route.params
     const { navigation } = props
 
-    const [contactsData, setContactsData] = useState<any>([{}]);
+    // const [contactsData, setContactsData] = useState<Contacts.Contact[]>();
+    
     // useEffect(() => {
     //     navigation.addListener('blur', e => {
     //         navigation.goBack();
     //     })
     // })
 
+
     useEffect(() => {
-        (async () => {
-            // console.log(data.emergencyContacts);
-            setContactsData(user.emergencyContacts);
-            // console.log(contactsData[0].firstName);
-            // console.log(typeof(contactsData));
-            
-            // var filteredContacts: any = [contactsData[0]];
-            // // filteredContacts.push(contactsData[0])
-            // for (let obj of contactsData) {
-            //     for (let i of filteredContacts){
-            //         if (obj.digits !== i.digits) {
-            //             // console.log("Contact already exist");
-            //             filteredContacts.push(obj)
-            //         }
-            //     }
-            // }
-            // setContactsData(filteredContacts);
-
-        })();
-    }, []);
+        // setContactsData(cont => user.emergencyContacts)
+    }, [user.emergencyContacts]);
 
 
-    const renderItem = ({ item }: { item: ContactDetails }) => (
-        <View style={{marginTop:10, marginBottom: 10, marginLeft: 20, marginRight: 20}}>
+    const renderItem = ({ item }: { item: Contacts.Contact }) => (
+        <View style={{marginTop:10, marginBottom: 50, marginLeft: 20, marginRight: 20}}>
           {/* <Text style={styles.renderItemText}>
             {item.firstName + ' '}
             {item.lastName}
@@ -57,7 +41,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
     
           <TouchableOpacity style={{
             alignItems: 'center', justifyContent: 'center',
-            backgroundColor: '#51a4e8', height: 30,
+            backgroundColor: '#51a4e8', height: 50,
             borderRadius: 15, width: 300,
             marginTop: 5, marginBottom: 15, marginLeft: 40
           }}
@@ -109,8 +93,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
             <View style = {{ borderWidth: 0.5, borderColor:'black', margin:10 }} />
 
             <FlatList
-                // data={this.state.contacts}
-                data={contactsData}
+                // data={contactsData}
+                data={user.emergencyContacts}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 ListEmptyComponent={() => (
