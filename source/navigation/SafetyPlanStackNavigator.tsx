@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import SafetyPlanScreen from '../screens/SafetyPlanScreen/SafetyPlanScreen';
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
-import CopingStrategiesScreen from '../screens/SafetyPlanScreen/CopingStrategiesScreen/CopingStrategiesScreen';
+import CopingStrategiesScreen from '../screens/SafetyPlanScreen/CopingStrategiesScreen/';
 import { User } from '../interfaces/User';
 import { HomeDrawerParamList, SafetyPlanStackParamList } from '../types';
 // import ContactAccessScreen from '../screens/ContactScreen/ContactAccessScreen';
