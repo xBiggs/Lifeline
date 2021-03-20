@@ -113,11 +113,29 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       }}
         onPress={async () => { 
           
-          user.emergencyContacts?.push(item)
+          // user.emergencyContacts?.push(item)
           // console.log(user);
           
-          await AddContacts(user);
-          props.navigation.navigate("EmergencyContact", { user });          
+          let userExist = false;
+          user.emergencyContacts.forEach(element => {
+            if (item.phoneNumbers[0].digits === element.phoneNumbers[0].digits){
+              userExist = true;
+              // break
+              console.log("User ALREADY exist");
+              
+              props.navigation.navigate("EmergencyContact", { user });
+            }
+          });
+
+          if(!userExist) {
+            user.emergencyContacts?.push(item);
+            await AddContacts(user);
+            console.log("User added");
+            props.navigation.navigate("EmergencyContact", { user });
+          }
+
+          // await AddContacts(user);
+          // props.navigation.navigate("EmergencyContact", { user });          
           // console.log(contacts?.indexOf(item));
           // return;
           
