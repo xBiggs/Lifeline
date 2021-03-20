@@ -43,19 +43,11 @@ import { ScrollView } from "react-native-gesture-handler";
 export default function MedicationForm(
   props: DrawerScreenProps<HomeDrawerParamList, "Medication">
 ) {
-  const medicalFields: MedicationInfo = {
-    diagnose: "",
-    medication: [],
-    regiments: "",
-    familyMedicalHistory: "string",
-    nextApointment: [],
-  };
-
   //STATE VARIABLES////////////////////////////
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-
+  const user = props.route.params.user;
   const [userData, setUserData] = useState<MedicationInfo>();
   const [userNotifications, setUserNotifications] = useState<
     NotificationType[]
@@ -64,26 +56,40 @@ export default function MedicationForm(
 
   //STATE VARIABLES END////////////////////////////
   //////////////////////////Formal Data////////////////
+  const medicalFields: MedicationInfo = {
+    diagnose: "",
+    medication: [],
+    regiments: "",
+    familyMedicalHistory: "string",
+    nextApointment: [],
+  };
   const schema = yup.object().shape({
     name: yup.string().required(),
     dose: yup.string().required(),
-    numTimesPerDay: yup.number().required(),
+    numTimesDay: yup.number().required(),
     usageInstructions: yup.string().required(),
   });
   const initialValues = {
     dose: "",
     name: "",
-    numTimesPerDay: 0,
+    numTimesDay: 0,
     usageInstructions: "",
   };
-
+  var tempMedication = {
+    name: "string",
+    dose: "string", // ex: can be milligrams or milliliter
+    numTimesDay: 4,
+    usageInstructions: "string",
+    refillDate: "string", // Date;
+  };
+  //FORM SUBMISSION
   const formal = useFormal(initialValues, {
     schema,
     onSubmit: async (values) => {
       var medication: Medication = {
         name: values.name,
         dose: values.dose,
-        numTimesDay: values.numTimesPerDay,
+        numTimesDay: values.numTimesDay,
         usageInstructions: values.usageInstructions,
         refillDate: date.toString(),
       };
@@ -99,8 +105,8 @@ export default function MedicationForm(
         actionScreenTitle: "View Instructions",
         imageURL: "../../images/medicine.png",
       };
-      const today: Date = new Date();
 
+      const today: Date = new Date();
       const secondsBetweenDates = getSecondsBetweenDates(today, date);
 
       schedulePushNotification(
@@ -111,8 +117,6 @@ export default function MedicationForm(
       );
 
       userData?.medication.push(medication);
-      const user = props.route.params.user;
-
       if (userData) AddMedicalData(user, userData);
 
       if (userNotifications) AddNotification(user, notification);
@@ -140,22 +144,12 @@ export default function MedicationForm(
 
   //////////////////////////END////////////////
 
-  var tempMedication = {
-    name: "string",
-    dose: "string", // ex: can be milligrams or milliliter
-    numTimesDay: 4,
-    usageInstructions: "string",
-    refillDate: "string", // Date;
-  };
   //GET INFO///////////////////////
   useEffect(() => {
     const getinfo = async () => {
-      const data: any = await getCurrentUserInfo();
-      setUserData(data.medInfo);
-      if (data.notifications) setUserNotifications(data.notifications);
+      setUserData(user.medInfo);
+      if (user.notifications) setUserNotifications(user.notifications);
       else setUserNotifications([]);
-
-      return data;
     };
 
     getinfo();
@@ -266,11 +260,11 @@ export default function MedicationForm(
                   </Text>
                   <TextInput
                     style={styles.input}
-                    {...formal.getFieldProps("numTimesPerDay").value}
+                    {...formal.getFieldProps("numTimesDay").value}
                   />
-                  {formal.errors.numTimesPerDay && (
+                  {formal.errors.numTimesDay && (
                     <Text style={styles.error}>
-                      {formal.errors.numTimesPerDay}
+                      {formal.errors.numTimesDay}
                     </Text>
                   )}
                   <Text style={styles.buttonLabel}>Instructions</Text>
@@ -301,7 +295,6 @@ export default function MedicationForm(
                         <DateTimePicker
                           minimumDate={new Date()}
                           style={{
-                            alignSelf: "left",
                             width: 125,
                             height: 35,
                             marginTop: 10,
