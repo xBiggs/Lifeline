@@ -65,7 +65,7 @@ export default ( props:StackScreenProps<SafetyPlanStackParamList,'CopingStrategi
             <View style={styles.copingStrategiesList}>
                 {copingStrategies.length > 0?
                 <CopingStrategiesList removeStrategy={removeStrategy} strategies = {copingStrategies}></CopingStrategiesList>:
-                <Text style={[styles.buttonTitleMain,{alignSelf:'center'}]}>No Copng Strategies</Text>}
+                <Text style={[styles.buttonTitleMain,{alignSelf:'center'}]}>No Coping Strategies</Text>}
             </View>
         </View>
     )
