@@ -1,24 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Dimensions,
-} from "react-native";
-import { Logout } from "../../firebase/auth";
+import { Text, View, TouchableOpacity, ScrollView, Dimensions } from "react-native";
+import { FirebaseController } from "../../firebase/FirebaseController";
 import { User } from "../../interfaces/User";
 import styles from "./styles";
 import { Card } from "react-native-elements";
 import { NotificationType } from "../../interfaces/Notification";
-import moment from "moment";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
-
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../../Controllers/notificationsController";
+// This import takes up a lot of space, try to be more specific on imports if possible
+import moment from "moment";
 
 Notifications.setNotificationHandler({
+  // TODO: What is the point of async here?
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
@@ -30,8 +25,10 @@ Notifications.setNotificationHandler({
 export default function HomeScreen(
   props: DrawerScreenProps<HomeDrawerParamList, "Home">
 ) {
+  // TODO: Variables are never used
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
+
   const notificationListener = useRef();
   const responseListener = useRef();
   //State Variables //////////
@@ -53,17 +50,21 @@ export default function HomeScreen(
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
+      // FIXME: ERROR
       setExpoPushToken(token)
     );
 
     // This listener is fired whenever a notification is received while the app is foregrounded
+          // FIXME: ERROR
     notificationListener.current = Notifications.addNotificationReceivedListener(
       (notification) => {
+              // FIXME: ERROR
         setNotification(notification);
       }
     );
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+          // FIXME: ERROR
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         // console.log(response);
@@ -72,17 +73,24 @@ export default function HomeScreen(
 
     return () => {
       Notifications.removeNotificationSubscription(
+              // FIXME: ERROR
         notificationListener.current
       );
+            // FIXME: ERROR
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
   const user: User = props.route.params.user;
 
+  // TODO: Stop using var
   var testDate = new Date();
-
   var notificationList: NotificationType[] = [];
+
+
+  // TODO: What if notification is null?
   const userNotifications: NotificationType[] = user.notifications;
+
+  // TODO: Stop using var
   var index = 0;
   var imageList: typeof Image[] = [];
   userNotifications?.forEach((element: any) => {
@@ -153,6 +161,7 @@ export default function HomeScreen(
                     justifyContent: "center",
                   }}
                   onPress={async () => {
+                    // FIXME: Error
                     props.navigation.navigate(l.actionScreen, {
                       user,
                     });
@@ -180,7 +189,7 @@ export default function HomeScreen(
             justifyContent: "center",
           }}
           onPress={async () => {
-            await Logout();
+            await FirebaseController.Logout();
           }}
         >
           <Text style={styles.buttonLabel}>Logout</Text>

@@ -1,28 +1,14 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-  DrawerItem,
-  DrawerContentScrollView,
-  DrawerContentComponentProps,
-} from '@react-navigation/drawer';
-import {
-  useTheme,
-  Avatar,
-  Title,
-  Caption,
-  Paragraph,
-  Drawer,
-  Text,
-  TouchableRipple,
-  Switch,
-} from 'react-native-paper';
+import { DrawerItem, DrawerContentScrollView, DrawerContentComponentProps } from '@react-navigation/drawer';
+import { Avatar, Title, Drawer } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { User } from '../interfaces/User';
-import { Logout } from '../firebase/auth';
+import { FirebaseController } from '../firebase/FirebaseController';
 
-export default (props:{drawerProps:DrawerContentComponentProps,user:User})=> {
+export default (props: { drawerProps: DrawerContentComponentProps, user: User } )=> {
 
-
+    // TODO: Not sure the point of using these variables like objects here
     const {user} = props
     const {navigation} = props.drawerProps
 
@@ -124,7 +110,6 @@ export default (props:{drawerProps:DrawerContentComponentProps,user:User})=> {
 
             onPress={() => {navigation.navigate('SafetyPlan',{screen:'Home'})}}
           />
-          
         </Drawer.Section>
         <Drawer.Section title="Logout">
         <DrawerItem
@@ -136,7 +121,7 @@ export default (props:{drawerProps:DrawerContentComponentProps,user:User})=> {
               />
             )}
             label="Logout"
-            onPress={async() => {await Logout();}}
+            onPress={ async () => {await FirebaseController.Logout();} }
           />
         </Drawer.Section>
       </View>

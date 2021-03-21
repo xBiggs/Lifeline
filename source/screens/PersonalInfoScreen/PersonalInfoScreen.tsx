@@ -1,28 +1,11 @@
 import React, { useState } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  Alert,
-  View,
-  Text,
-  TextInput,
-  Button,
-  NativeAppEventEmitter,
-} from "react-native";
+import { Alert, View, Text, TextInput } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import useFormal from "@kevinwolf/formal-native";
 import * as yup from "yup";
-import {
-  BottomSheet,
-  ButtonGroup,
-  CheckBox,
-  Divider,
-  ListItem,
-} from "react-native-elements";
+import { BottomSheet, ButtonGroup, Divider, ListItem } from "react-native-elements";
 import styles from "./styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
-
-import { StackScreenProps } from "@react-navigation/stack";
-import { Screens } from "..";
 import { AddPersonalData } from "../../firebase/UserDataHandler";
 import { PersInfo } from "../../interfaces/PersonalInfo";
 import { DrawerScreenProps } from "@react-navigation/drawer";
@@ -38,11 +21,10 @@ const initialValues = {
   religion: "List N/A if prefer not to say",
 };
 
-export default function PersonalInfoScreen(
-  props: DrawerScreenProps<HomeDrawerParamList, "Information">
-) {
+export default function PersonalInfoScreen(props: DrawerScreenProps<HomeDrawerParamList, "Information">) {
   const user = props.route.params.user;
   const buttonsGender = ["Male", "female", "Other"];
+  // TODO: None of the variables are read lol
   const [americanIndian, setAmericanIndian] = useState();
   const [asian, setAsian] = useState();
   const [black, setBlack] = useState();
@@ -52,6 +34,7 @@ export default function PersonalInfoScreen(
   const [other, setOther] = useState();
   const [gender, setRadio] = useState(0);
 
+  // TODO: Stop using keyword var, use let or const instead
   var tempPersonalInfo: PersInfo = {
     age: "",
     race: "",
@@ -62,6 +45,7 @@ export default function PersonalInfoScreen(
   };
 
   const handleRadioInput = (e: React.SetStateAction<undefined>) => {
+    // FIXME: Error
     setRadio(e);
   };
 
@@ -238,6 +222,7 @@ export default function PersonalInfoScreen(
             <Text style={styles.buttonLabel}>Gender</Text>
 
             <ButtonGroup
+            // FIXME: Error
               onPress={handleRadioInput}
               selectedIndex={gender}
               buttons={buttonsGender}

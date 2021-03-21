@@ -1,52 +1,24 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  Pressable,
-  Alert,
-  TextInput,
-  Button,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableOpacity, Modal, Alert, TextInput, Platform } from "react-native";
 import * as yup from "yup";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Divider, ListItem } from "react-native-elements";
-
+import { ListItem } from "react-native-elements";
 import styles from "./styles";
 import useFormal from "@kevinwolf/formal-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
-import {
-  getCurrentUserInfo,
-  getCurrentUserMedication,
-  SetUserData,
-} from "../../firebase/auth";
-import {
-  Apointment,
-  Medication,
-  MedicationInfo,
-} from "../../interfaces/MedicalInfo";
+import { FirebaseController } from "../../firebase/FirebaseController";
+import { Apointment, MedicationInfo } from "../../interfaces/MedicalInfo";
 import { NotificationType } from "../../interfaces/Notification";
-import {
-  AddMedicalData,
-  AddNotification,
-} from "../../firebase/UserDataHandler";
+import { AddMedicalData, AddNotification } from "../../firebase/UserDataHandler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import {
-  getSecondsBetweenDates,
-  schedulePushNotification,
-  sendPushNotification,
-} from "../../Controllers/notificationsController";
+import { getSecondsBetweenDates, schedulePushNotification } from "../../Controllers/notificationsController";
+
+// TODO: These imports take up too much space, try to be more specific on imports if possible
 import moment from "moment";
 import firebase from "firebase";
-import { faUserGraduate } from "@fortawesome/free-solid-svg-icons";
 
-export default function AppointmentScreen(
-  props: DrawerScreenProps<HomeDrawerParamList, "Appointments">
-) {
+export default function AppointmentScreen(props: DrawerScreenProps<HomeDrawerParamList, "Appointments">) {
   const appointments: Apointment = {
     date: firebase.firestore.Timestamp.fromDate(new Date()), // Date;
     // Date; // have to extract time from date object
@@ -55,10 +27,13 @@ export default function AppointmentScreen(
 
   //STATE VARIABLES////////////////////////////
   const [date, setDate] = useState(new Date());
+  // TODO: Time is never used
   const [time, setTime] = useState(new Date());
   const [mode, setMode] = useState("date");
+  // TODO: modeTime is never used
   const [modeTime, setModeTime] = useState("date");
   const [show, setShow] = useState(false);
+  // TODO: showTime is never used
   const [showTime, setShowTime] = useState(false);
 
   const [userData, setUserData] = useState<MedicationInfo>();
@@ -136,6 +111,7 @@ export default function AppointmentScreen(
 
   //////////////////////////END////////////////
 
+  // TODO: never use keyword var, and this variable is never used. Use keywords let or const instead of var please
   var tempAppointment = {
     date: firebase.firestore.Timestamp.fromDate(new Date()), // Date;
     // Date; // have to extract time from date object
@@ -144,7 +120,7 @@ export default function AppointmentScreen(
   //GET INFO///////////////////////
   useEffect(() => {
     const getinfo = async () => {
-      const data: any = await getCurrentUserInfo();
+      const data: any = await FirebaseController.GetCurrentUserInfo();
       setUserData(data.medInfo);
       if (data.notifications) setUserNotifications(data.notifications);
       else setUserNotifications([]);
@@ -161,6 +137,7 @@ export default function AppointmentScreen(
     userData.nextApointment = [];
   }
 
+  // TODO: I think you spelled Appointment wrong, nextApointment can be null here
   if (userData) info = userData.nextApointment;
   else info = [];
 
@@ -272,6 +249,7 @@ export default function AppointmentScreen(
                       {show && (
                         <DateTimePicker
                           minimumDate={new Date()}
+                          // FIXME: Error
                           style={{
                             alignSelf: "left",
                             width: 180,
@@ -282,9 +260,11 @@ export default function AppointmentScreen(
                           }}
                           testID="dateTimePicker"
                           value={date}
+                          // FIXME: Error
                           mode={mode}
                           is24Hour={true}
                           display="default"
+                          // FIXME: Error
                           onChange={onChange}
                         />
                       )}

@@ -1,20 +1,15 @@
 import { StackScreenProps } from "@react-navigation/stack"
 import React, { useEffect, useState } from "react"
-import { Alert } from "react-native"
 import { View,Text, Modal, StyleSheet, TouchableOpacity,Pressable } from "react-native"
 import { SafetyPlanStackParamList } from "../../../types"
 import * as Contacts from 'expo-contacts'
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
-import UserStackNavigator from "../../../navigation/UserStackNavigator"
 import SocialEngagementContact from "../../../interfaces/socialEngagementContact"
-import { User } from "../../../interfaces/User"
 import SocialEngagement from "../../../interfaces/socialEngagements"
-import PersonalInfoScreen from "../../PersonalInfoScreen/PersonalInfoScreen"
 import { ScrollView, TextInput } from "react-native-gesture-handler"
-import { AddUserData } from "../../../firebase/UserDataHandler"
 /** SCREEN USED TO IDENTIFY  FRIENDS TO REACH OUT TO, FAVORITE COFEE SHOPS OR PARKS, AND SOCIAL EVENTS
- * 
+ *
  */
 
 export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>)=>
@@ -27,13 +22,13 @@ export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagemen
     }
     const [socialContacts,setSocialContacts]= useState<SocialEngagementContact[]>(user.socialEngagements.socialContacts);
     const [socialEngagements,setSocialEngagements] = useState<SocialEngagement>(user.socialEngagements);
+    // TODO: Variables never used
     const [places,setPlaces] = useState<string[]>();
     const [activities,setActivities]= useState<string[]>();
-   
     useEffect(()=>{
         user.socialEngagements = socialEngagements
     },[socialEngagements])
-/*   
+/*
 useEffect(()=>{
     console.log('uploading....')
     user.socialEngagements = socialEngagements;
@@ -43,27 +38,25 @@ useEffect(()=>{
 },[socialEngagements])
 */
 
-    
 const ContactView = ()=>{
     const [contacts,setContacts] = useState<Contacts.Contact[]>();
 
     useEffect(() => {
         (async () => {
+          // TODO: Try Catch ??
           const { status } = await Contacts.requestPermissionsAsync();
           if (status === 'granted') {
             const { data } = await Contacts.getContactsAsync({
               fields: [Contacts.Fields.Emails],
             });
-    
             if (data.length > 0) {
              setContacts(data)
             }
           }
         })();
       }, []);
-    
       return (
-        <> 
+        <>
          <Text style={{alignSelf:'center'}}>Your Contacts</Text>
           {
               contacts?contacts.map(contact=>{
@@ -87,22 +80,16 @@ const ContactView = ()=>{
             if(error) return
             const newArr = [newSocialContact,...socialEngagements.socialContacts]
             user.socialEngagements?user.socialEngagements.socialContacts=socialContacts:null
-            
             setSocialEngagements(prev=>{
                 return {...prev,socialContacts:newArr}
             })
         }
-        
-        
         }><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></TouchableOpacity>
 
     </View>
-    
-     
                   )
               }):<Text>No Contacts</Text>
           }
-          
         </>
       );
 
@@ -112,14 +99,12 @@ const FriendModal = ()=>{
     const [modalVisible, setModalVisible] = useState(false);
     return (
       <View style={styles.centeredView}>
-         
         <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
 
           onRequestClose={() => {
-              
             setModalVisible(!modalVisible);
           }}
         >
@@ -134,7 +119,6 @@ const FriendModal = ()=>{
             </Pressable>
           </View>
         </View>
-         
         </Modal>
         <Pressable
           style={[styles.button, styles.buttonOpen]}
@@ -144,10 +128,8 @@ const FriendModal = ()=>{
         </Pressable>
       </View>
     );
-  
 }
-const SocialEngagements = ()=>
-{
+const SocialEngagements = () => {
     useEffect(()=>{
        user.socialEngagements = socialEngagements
     },[socialEngagements])
@@ -175,10 +157,8 @@ const SocialEngagements = ()=>
                         </View>
                         <EngagementModal {...sContact}></EngagementModal>
                         </View>
-                      
                         </View>
                    ))
-                        
                 }
 
                 <Text style={{alignSelf:'center'}}>Activities</Text>
@@ -204,7 +184,6 @@ const EngagementModal = (contact:SocialEngagementContact)=>{
           visible={modalVisible}
 
           onRequestClose={() => {
-              
             setModalVisible(!modalVisible);
           }}
         >
@@ -212,7 +191,6 @@ const EngagementModal = (contact:SocialEngagementContact)=>{
           <View style={styles.modalView}>
               <View style={{flexDirection:'row'}}><TextInput onChangeText={text=>setText(text)} style={{flex:2}}  placeholder='enter an activity'></TextInput><Pressable onPress={()=>{
                   console.log('Add pressed')
-                  
                   setSocialEngagements(prev=>{
                       contact.engagements.push(text);
                       return {...prev}
@@ -226,7 +204,6 @@ const EngagementModal = (contact:SocialEngagementContact)=>{
             </Pressable>
           </View>
         </View>
-         
         </Modal>
         <Pressable
           style={{backgroundColor:'red'}}
@@ -236,11 +213,8 @@ const EngagementModal = (contact:SocialEngagementContact)=>{
         </Pressable>
       </View>
     );
-  
 }
 
-
-   
     return(
         <>
             <ScrollView style={{flex:4,}}>

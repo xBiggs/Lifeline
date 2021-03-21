@@ -2,6 +2,8 @@ import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
+// TODO: Make this a class with static methods for Facade design pattern
+
 export async function schedulePushNotification(
   title: string,
   body: string,

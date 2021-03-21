@@ -1,22 +1,13 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { StackScreenProps } from "@react-navigation/stack";
 import firebase from "firebase";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import { Button, Text } from "react-native-elements";
+import { Text } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Screens } from "..";
-import {
-  getSecondsBetweenDates,
-  schedulePushNotification,
-} from "../../Controllers/notificationsController";
+import { getSecondsBetweenDates, schedulePushNotification } from "../../Controllers/notificationsController";
 import { AddNotification, AddUserData } from "../../firebase/UserDataHandler";
 import { NotificationType } from "../../interfaces/Notification";
-import {
-  mitigatingFactorQuestions,
-  QuestionResponse,
-  riskFactorQuestions,
-} from "../../interfaces/QuestionResponse";
+import { mitigatingFactorQuestions, QuestionResponse, riskFactorQuestions } from "../../interfaces/QuestionResponse";
 import { HomeDrawerParamList } from "../../types";
 import styles from "./styles";
 

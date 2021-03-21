@@ -2,32 +2,33 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Screens } from '..';
-import { Login, GetUserData } from '../../firebase/auth';
+import { FirebaseController} from '../../firebase/FirebaseController';
 import { User } from '../../interfaces/User';
 import { AuthStackParamList } from '../../types';
 import styles from './styles';
 
-export default function LoginScreen({navigation}:StackScreenProps<AuthStackParamList,'Login'>) {
+export default function LoginScreen( {navigation} : StackScreenProps<AuthStackParamList,'Login'> ) : JSX.Element {
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading,setLoading] = useState(false);
 
-    const onFooterLinkPress = () => {
+    const onFooterLinkPress = () : void => {
         console.log('footer pressed')
         navigation.navigate('Signup')
     }
 
-    const onLoginPress = async () => {
+    const onLoginPress = async () : Promise<void> => {
         setLoading(true);
         try {
-            const userCredential = await Login(email, password);
-            const user = await GetUserData(userCredential) as User;
+            const userCredential = await FirebaseController.Login(email, password);
+            // TODO: user is never used??
+            const user = await FirebaseController.GetUserData(userCredential) as User;
         } catch (error) {
-            // Do something with error here
+            // TODO: Do something with error here
             alert(error);
-        }finally{
-           
+        } finally {
+            // TODO: Empty finally block?
         }
     }
 
@@ -71,5 +72,5 @@ export default function LoginScreen({navigation}:StackScreenProps<AuthStackParam
                 </View>
             </KeyboardAwareScrollView>
         </View>
-    )
+    );
 }

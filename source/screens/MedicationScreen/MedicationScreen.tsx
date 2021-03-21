@@ -1,48 +1,28 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  Pressable,
-  Alert,
-  TextInput,
-  Button,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableOpacity, Modal, Alert, TextInput, Platform } from "react-native";
 import * as yup from "yup";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Divider, ListItem } from "react-native-elements";
-
+import { ListItem } from "react-native-elements";
 import styles from "./styles";
 import useFormal from "@kevinwolf/formal-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
-import {
-  getCurrentUserInfo,
-  getCurrentUserMedication,
-  SetUserData,
-} from "../../firebase/auth";
+import { FirebaseController } from "../../firebase/FirebaseController";
 import { Medication, MedicationInfo } from "../../interfaces/MedicalInfo";
 import { NotificationType } from "../../interfaces/Notification";
-import {
-  AddMedicalData,
-  AddNotification,
-} from "../../firebase/UserDataHandler";
+import { AddMedicalData, AddNotification } from "../../firebase/UserDataHandler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import {
-  getSecondsBetweenDates,
-  schedulePushNotification,
-  sendPushNotification,
-} from "../../Controllers/notificationsController";
-import moment from "moment";
-import firebase from "firebase";
+import { getSecondsBetweenDates, schedulePushNotification } from "../../Controllers/notificationsController";
 import { ScrollView } from "react-native-gesture-handler";
 
-export default function MedicationForm(
-  props: DrawerScreenProps<HomeDrawerParamList, "Medication">
-) {
+// TODO: These imports take up too much space. Try to be more specific with imports if possible
+import moment from "moment";
+import firebase from "firebase";
+
+
+export default function MedicationForm(props: DrawerScreenProps<HomeDrawerParamList, "Medication">) {
+
+  // TODO: Variable is never used
   const medicalFields: MedicationInfo = {
     diagnose: "",
     medication: [],
@@ -80,6 +60,7 @@ export default function MedicationForm(
   const formal = useFormal(initialValues, {
     schema,
     onSubmit: async (values) => {
+      // TODO: Don't use keyword var, user keywords let or const instead
       var medication: Medication = {
         name: values.name,
         dose: values.dose,
@@ -87,6 +68,7 @@ export default function MedicationForm(
         usageInstructions: values.usageInstructions,
         refillDate: date.toString(),
       };
+      // TODO: Don't use keyword var, user keywords let or const instead
       var notification: NotificationType = {
         date: firebase.firestore.Timestamp.fromDate(date),
         title: "Refill Medication: " + values.name,
@@ -110,6 +92,7 @@ export default function MedicationForm(
         secondsBetweenDates
       );
 
+      // TODO: What happens if userData is undefined? Do you need a try catch block to handle error?
       userData?.medication.push(medication);
       const user = props.route.params.user;
 
@@ -140,6 +123,7 @@ export default function MedicationForm(
 
   //////////////////////////END////////////////
 
+    // TODO: Stop using keyword var, use keywords let or const instead
   var tempMedication = {
     name: "string",
     dose: "string", // ex: can be milligrams or milliliter
@@ -150,7 +134,7 @@ export default function MedicationForm(
   //GET INFO///////////////////////
   useEffect(() => {
     const getinfo = async () => {
-      const data: any = await getCurrentUserInfo();
+      const data: any = await FirebaseController.GetCurrentUserInfo();
       setUserData(data.medInfo);
       if (data.notifications) setUserNotifications(data.notifications);
       else setUserNotifications([]);
@@ -161,6 +145,7 @@ export default function MedicationForm(
     getinfo();
   }, []);
 
+  // TODO: Stop using keyword var, use keywords let or const instead
   var info: Medication[] = [];
   if (userData && !userData?.medication) {
     userData.medication = [];
@@ -300,6 +285,7 @@ export default function MedicationForm(
                       {show && (
                         <DateTimePicker
                           minimumDate={new Date()}
+                          // FIXME: Error
                           style={{
                             alignSelf: "left",
                             width: 125,
@@ -310,9 +296,11 @@ export default function MedicationForm(
                           }}
                           testID="dateTimePicker"
                           value={date}
+                          // FIXME: Error
                           mode={mode}
                           is24Hour={true}
                           display="calendar"
+                          //FIXME: Error
                           onChange={onChange}
                         />
                       )}

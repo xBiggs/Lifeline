@@ -11,7 +11,8 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Screens } from "..";
-import { SignUp, SetUserData, Login } from "../../firebase/auth";
+import { FirebaseController } from "../../firebase/FirebaseController";
+import { User } from "../../interfaces/User";
 import { AuthStackParamList } from "../../types";
 import styles from "./styles";
 
@@ -38,14 +39,14 @@ export default function SignupScreen(
     }
 
     try {
-      const { user, userCredential } = await SignUp(
+      const user: User = await FirebaseController.SignUp(
         firstName,
         lastName,
         email,
         password
       );
-      await SetUserData(user);
-      await Login(email,password);
+      await FirebaseController.SetUserData(user);
+      await FirebaseController.Login(email, password);
     } catch (error) {
       // Do something with error here
       alert(error);

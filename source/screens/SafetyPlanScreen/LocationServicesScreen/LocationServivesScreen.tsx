@@ -12,13 +12,16 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
 
     useEffect(() => {
         (async () => {
+            // TODO: Try Catch ??
             let { status } = await Location.requestPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg("Permission to access location was denied");
                 return;
             }
 
+            // TODO: Try Catch??
             let location = await Location.getCurrentPositionAsync({});
+            // FIXME: Error
             setLocation(location);
         })();
     }, []);
@@ -29,7 +32,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
     } else if (location) {
         text = JSON.stringify(location);
     }
-    
 
     return (
         <View>

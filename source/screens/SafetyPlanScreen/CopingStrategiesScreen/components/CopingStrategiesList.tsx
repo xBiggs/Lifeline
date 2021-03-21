@@ -5,7 +5,6 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 export default (props:{strategies:string[],removeStrategy:(strategy:string)=>void})=>
 {
-    
     return (
         <FlatList style={{margin:5}} data={props.strategies} renderItem={({item})=><_renderItem removeStrategy={props.removeStrategy} item={item}></_renderItem>} keyExtractor={(item)=>item}>
         </FlatList>

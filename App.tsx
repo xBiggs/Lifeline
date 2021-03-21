@@ -1,34 +1,30 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { firebase } from './source/firebase/config';
-import { LoginScreen, HomeScreen, SignupScreen, Screens, PersonalInfoScreen, AssessmentScreen } from './source/screens';
 import { User } from './source/interfaces/User';
 import { decode, encode } from 'base-64';
-import { ActivityIndicator, LogBox, Text, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, LogBox, View } from 'react-native';
 import UserStackNavigator from './source/navigation/UserStackNavigator';
 import AuthStackNavigator from './source/navigation/AuthStackNavigator';
+import { FirebaseController } from './source/firebase/FirebaseController';
 
 if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 
-const Stack = createStackNavigator<Screens>();
 LogBox.ignoreLogs(["Setting a timer"])
 
-
 export default function App() {
-  const width:number =useWindowDimensions().width;
-  const height:number = useWindowDimensions().height;
+
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<User | null>(null);
 
-  const userChanged = async (user: firebase.User | null) => {
+  const userChanged = async (user: firebase.User | null) : Promise<void> => {
 
-    const usersRef = firebase.firestore().collection('users');
+    const collectionRef = FirebaseController.GetCollectionRef();
     if (user) {
       console.log(`${user.email} is logged in`)
-      const userData: User = (await usersRef.doc(user.uid).get()).data() as User;
+      const userData: User = (await collectionRef.doc(user.uid).get()).data() as User;
       if (userData) {
         setLoading(false)
         setUser(userData)
@@ -42,8 +38,12 @@ export default function App() {
   }
 
   useEffect(() => {
-    const userListener = firebase.auth().onAuthStateChanged(userChanged);
-   return userListener;
+    try {
+      const userListener = firebase.auth().onAuthStateChanged(userChanged);
+      return userListener;
+    } catch (e) {
+      alert( (e as Error).message );
+    }
   }, [])
 
   // shows loading indicator while checking for auth
@@ -55,11 +55,8 @@ export default function App() {
     )
   }
   return (
-       <NavigationContainer>
-         {user? 
-         <UserStackNavigator user={user}></UserStackNavigator>
-        :
-        <AuthStackNavigator></AuthStackNavigator>}
+    <NavigationContainer>
+      { user? <UserStackNavigator user={user}></UserStackNavigator> : <AuthStackNavigator></AuthStackNavigator> }
     </NavigationContainer>
   );
 }
