@@ -19,7 +19,6 @@ export default (props:{addStrategy:(strategy:string)=>void})=>{
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
            <GeneratedCopingStrategiesList addStrategy={props.addStrategy}></GeneratedCopingStrategiesList>
-           
           </View>
         </View>
         <Pressable
@@ -39,17 +38,12 @@ export default (props:{addStrategy:(strategy:string)=>void})=>{
   );
 }
 
-  
-  
-  
-
 const styles = StyleSheet.create({
     centeredView: {
       flex: 1,
       marginTop: 50,
     },
     modalView: {
-     
       backgroundColor: "orange",
       shadowColor: "#000",
       shadowOffset: {
@@ -84,5 +78,4 @@ const styles = StyleSheet.create({
       marginBottom: 15,
       textAlign: "center"
     }
-  });
-  
+});

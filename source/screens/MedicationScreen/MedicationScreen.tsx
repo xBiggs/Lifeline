@@ -4,26 +4,18 @@ import {
   Text,
   TouchableOpacity,
   Modal,
-  Pressable,
   Alert,
   TextInput,
-  Button,
   Platform,
 } from "react-native";
 import * as yup from "yup";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Divider, ListItem } from "react-native-elements";
-
+import { ListItem } from "react-native-elements";
 import styles from "./styles";
 import useFormal from "@kevinwolf/formal-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
-import {
-  getCurrentUserInfo,
-  getCurrentUserMedication,
-  SetUserData,
-} from "../../firebase/auth";
+import { FirebaseController } from "../../firebase/FirebaseController";
 import { Medication, MedicationInfo } from "../../interfaces/MedicalInfo";
 import { NotificationType } from "../../interfaces/Notification";
 import {
@@ -34,11 +26,12 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import {
   getSecondsBetweenDates,
   schedulePushNotification,
-  sendPushNotification,
 } from "../../Controllers/notificationsController";
+import { ScrollView } from "react-native-gesture-handler";
+
+// TODO: These imports take up too much space. Try to be more specific with imports if possible
 import moment from "moment";
 import firebase from "firebase";
-import { ScrollView } from "react-native-gesture-handler";
 
 export default function MedicationForm(
   props: DrawerScreenProps<HomeDrawerParamList, "Medication">
@@ -86,6 +79,7 @@ export default function MedicationForm(
   const formal = useFormal(initialValues, {
     schema,
     onSubmit: async (values) => {
+      // TODO: Don't use keyword var, user keywords let or const instead
       var medication: Medication = {
         name: values.name,
         dose: values.dose,
@@ -93,6 +87,7 @@ export default function MedicationForm(
         usageInstructions: values.usageInstructions,
         refillDate: date.toString(),
       };
+      // TODO: Don't use keyword var, user keywords let or const instead
       var notification: NotificationType = {
         date: firebase.firestore.Timestamp.fromDate(date),
         title: "Refill Medication: " + values.name,
@@ -116,6 +111,7 @@ export default function MedicationForm(
         secondsBetweenDates
       );
 
+      // TODO: What happens if userData is undefined? Do you need a try catch block to handle error?
       userData?.medication.push(medication);
       if (userData) AddMedicalData(user, userData);
 
@@ -155,6 +151,7 @@ export default function MedicationForm(
     getinfo();
   }, []);
 
+  // TODO: Stop using keyword var, use keywords let or const instead
   var info: Medication[] = [];
   if (userData && !userData?.medication) {
     userData.medication = [];
@@ -294,6 +291,7 @@ export default function MedicationForm(
                       {show && (
                         <DateTimePicker
                           minimumDate={new Date()}
+                          // FIXME: Error
                           style={{
                             width: 125,
                             height: 35,
@@ -303,9 +301,11 @@ export default function MedicationForm(
                           }}
                           testID="dateTimePicker"
                           value={date}
+                          // FIXME: Error
                           mode={mode}
                           is24Hour={true}
                           display="calendar"
+                          //FIXME: Error
                           onChange={onChange}
                         />
                       )}

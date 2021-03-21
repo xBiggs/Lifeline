@@ -3,112 +3,201 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import * as Contacts from 'expo-contacts'
-import { TouchableOpacity, StyleSheet, Text, View, Modal, Pressable, Keyboard } from 'react-native'
+import { TouchableOpacity, StyleSheet, Text, View, Modal, Pressable } from 'react-native'
 import { SafetyPlanStackParamList } from '../../../types'
 import { FlatList, TextInput } from 'react-native-gesture-handler'
 import { ListItem } from 'react-native-elements'
 import SocialEngagementContact from '../../../interfaces/socialEngagementContact'
 import { AddUserData } from '../../../firebase/UserDataHandler'
 import SocialEngagement from '../../../interfaces/socialEngagements'
+import SocialEngagementMenu from './components/SocialEngagementMenu'
+import SocialCircle from './components/SocialCircle'
+import SocialCircleActivities from './components/SocialCircleActivities'
 
 
+export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>) =>{
+    const {user} = props.route.params;
+    user.socialEngagements?null:user.socialEngagements={
+        activites:[],
+        places:[],
+        socialContacts:[]
+    }
+    const [option,setOption] = useState(0);
+    const [socialContacts,setSocialContacts] = useState(user.socialEngagements.socialContacts);
+
+    //listener to keep user object social contacts in sync with firebase
+    useEffect(()=>{
+        console.log('updating firebase')
+        if(user.socialEngagements) user.socialEngagements.socialContacts = socialContacts;
+        AddUserData(user);
+    },[socialContacts])
 
 
-export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>)=>{
+    //functions to add and remove social contacts
+    const addSocialContact =(contact:SocialEngagementContact) =>{
+        if(socialContacts.find(c=> c.id == contact.id))
+        {
+            alert(`${contact.contact.firstName} is already in your social circle`)
+        }
+        else
+        {
+            setSocialContacts(prev=>{
+                return [contact,...prev]
+             })
+        }
+    }
+    const removeSocialContact = (socialContact:SocialEngagementContact) =>{
+        setSocialContacts(prev=>{
+            const index = prev.indexOf(socialContact)
+            const newArr = [...prev];
+            if(index!=-1) newArr.splice(index,1)
+            return newArr;
+        })
+    }
+
+    //render screen based on option chosen
+    switch(option)
+    {
+        case 0: // Social Circle Content
+            {
+                return (
+                    <View style={style.container}>
+                        <View style={style.content}>
+                           <SocialCircle addSocialContact={addSocialContact} removeSocialContact={removeSocialContact} socialContacts={socialContacts}></SocialCircle>
+                        </View>
+                        <View style={style.menu}>
+                            <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                        </View>
+                    </View>
+                )
+            }
+        case 1: // SocialCircleActivites
+            {
+                return (
+                    <View style={style.container}>
+                        <View style={style.content}>
+                       <SocialCircleActivities setSocialContacts={setSocialContacts} socialContacts={socialContacts}></SocialCircleActivities>
+                        </View>
+                        <View style={style.menu}>
+                            <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                        </View>
+                    </View>
+                )
+            }
+        case 2:
+            {
+
+        }
+        case 3:
+            {
+
+            }
+        default:
+            {
+                return (
+                    <View style={style.container}>
+                        <View style={style.content}>
+                        </View>
+                        <View style={style.menu}>
+                            <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                        </View>
+                    </View>
+                )
+            }
+    }
+}
+
+
+const style = StyleSheet.create({
+    container:{
+        flex:1,
+        alignItems:'stretch'
+
+    },
+    content:{
+        flex:1,
+
+    },
+    menu:{
+
+    }
+
+})
+
+
+const old = (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>)=>{
     const {user} = props.route.params;
     user.socialEngagements?null:user.socialEngagements = {
         activites:[],
         socialContacts:[],
         places:[]
     }
-    const [places,setPlaces]=useState(user.socialEngagements.places);    
+    const [places,setPlaces]=useState(user.socialEngagements.places);
     const [placeText,setPlaceText] = useState('')
+    // TODO: Variable never used
     const [activityText,setActivityText] = useState('');
     const [socialContacts,setSocialContacts] = useState(user.socialEngagements.socialContacts);
     const [view,setView] = useState(0)
-    
-    
 
     useEffect(()=>{
         console.log('updating')
         AddUserData(user)
     },[socialContacts])
 
-    
-    
 
-
-
-const AddFriendsContent = ()=>{
-    return (<View style={{flexDirection:'row', justifyContent:'space-around'}}>
-        <View>
-            <Text>Your Contacts</Text>
-        <ContactList ></ContactList>
-        </View>
-        <View style={{alignSelf:'flex-end'}}>
-        <Text style={{alignSelf:'center'}}>Your Social Circle</Text>
-        <SocialCircle></SocialCircle>
-        </View>
-    
-    
-        
-    </View>)
+    const AddFriendsContent = ()=>{
+        return (
+        <View style={{flexDirection:'row', justifyContent:'space-around'}}>
+            <View>
+                <Text>Your Contacts</Text>
+                <ContactList ></ContactList>
+            </View>
+            <View style={{alignSelf:'flex-end'}}>
+                <Text style={{alignSelf:'center'}}>Your Social Circle</Text>
+                <SocialCircle></SocialCircle>
+            </View>
+        </View>);
 }
 
 const SocialCircle = () =>{
     useEffect(()=>{
         user.socialEngagements?user.socialEngagements.socialContacts = socialContacts:null;
-
-    },[socialContacts])
-  
+    },[socialContacts]);
 
     return (
         <>
-       
         {socialContacts.length==0?<Text>No Contacts in Social Circle</Text>:
         <FlatList data={socialContacts}
         renderItem={({item,index})=>{
-            
             return ( <View key={item.id} style={{flexDirection:'row',backgroundColor:index%2==0?'grey':'white'}}>
             <Text style={{flex:2}}>{`${item.contact.firstName?item.contact.firstName:''} ${item.contact.lastName?item.contact.lastName:''}`}</Text>
             <TouchableOpacity  onPress={()=>{
-                console.log(index)
-               
-               setSocialContacts(prev=>{
+                console.log(index);
+                // TODO: prev is never used
+                setSocialContacts( prev => {
                    socialContacts.splice(index,1)
                    return [...socialContacts]
-               })
-               
+               });
             }
-            
-            
             }><FontAwesomeIcon icon={faMinus}></FontAwesomeIcon></TouchableOpacity>
-    
         </View>)
         }}
-        
         >
-            
-            </FlatList>}
-        
+        </FlatList>}
         </>
     )
 }
 
 const ContactList =()=>{
     const [contacts,setContacts] = useState<Contacts.Contact[]>();
-
-
-   
-
     useEffect(() => {
         (async () => {
+            // TODO: Try Catch ?
           const { status } = await Contacts.requestPermissionsAsync();
           if (status === 'granted') {
             const { data } = await Contacts.getContactsAsync({
               fields: [Contacts.Fields.Emails],
             });
-    
             if (data.length > 0) {
              setContacts(data)
             }
@@ -116,8 +205,8 @@ const ContactList =()=>{
         })();
       }, []);
       return (
-        <> 
-         <FlatList data={contacts} 
+        <>
+         <FlatList data={contacts}
          renderItem={({item,index})=>{
              return (<View key={item.id} style={{flexDirection:'row',backgroundColor:index%2==0?'grey':'white'}}>
              <Text style={{flex:2}}>{`${item.firstName?item.firstName:''} ${item.lastName?item.lastName:''}`}</Text>
@@ -133,10 +222,7 @@ const ContactList =()=>{
                         setSocialContacts([{id:item.id,contact:item,engagements:[]},...socialContacts])
                     }
              }
-             
-             
              }><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></TouchableOpacity>
-     
          </View>)
          }}
          >
@@ -147,15 +233,10 @@ const ContactList =()=>{
 }
 
 const AddFriendActivitiesContent = () =>{
-   
-    
-
     return (
         <>
-       
         {socialContacts.length==0?<Text>No Contacts in Social Circle</Text>:
         <FlatList
-            
         keyboardShouldPersistTaps='handled' data={socialContacts}
         renderItem={({item,index})=>{
             return(
@@ -163,15 +244,7 @@ const AddFriendActivitiesContent = () =>{
             )
         }}
           >
-          
-   
-    
-       
-        
-       
-            
             </FlatList>}
-        
         </>
     )
 }
@@ -242,19 +315,14 @@ const [modalVisible, setModalVisible] = useState(false);
                return <Text key={e}>{e}</Text>
            })}</View>
        </View>
-       
    )
 }
 
 
-const AddSocialPlacesContent = ()=>{
-   
+const AddSocialPlacesContent = () => {
     return(
-        
-              
         <View style={{flex:2,flexDirection:'row'}}>
         <TextInput style={{flex:1,alignSelf:'center',borderColor:'black',borderWidth:1,justifyContent:'space-around'}} onChangeText={text=>{setPlaceText(text)}} placeholder='Add a Place'></TextInput>
-          
             <Pressable style={[styles.buttonOpen,{justifyContent:'space-evenly'}]} onPress={()=>{
                 if(placeText.trim()==''){
                     alert('Cannot add empty place')
@@ -268,12 +336,10 @@ const AddSocialPlacesContent = ()=>{
                 setPlaces([placeText,...places])
             }}><Text>Add Place</Text></Pressable>
         </View>
-        
     )
 }
 
-const AddSocialActivitiesContent = ()=>{
-    
+const AddSocialActivitiesContent = () => {
     return (
         <View>
             <Text>
@@ -283,7 +349,7 @@ const AddSocialActivitiesContent = ()=>{
     )
 }
 
-let ViewContent:JSX.Element;
+let ViewContent: JSX.Element;
 switch(view)
 {
     case 1:
@@ -323,12 +389,9 @@ return(
             <Text style={{alignSelf:'center'}}>What would you like to do?</Text>
             <TouchableOpacity onPress={()=>{setView(1)}} style={[styles.button,{}]}><Text style={styles.buttonTitle}>Add Friends to Social Circle</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>{setView(2)}} style={[styles.button,{alignSelf:'stretch',}]}><Text style={styles.buttonTitle}>Add Activities to Do With Friends</Text></TouchableOpacity>
-      
             <TouchableOpacity onPress={()=>{setView(3)}} style={styles.button}><Text style={styles.buttonTitle}>Add Social Places</Text></TouchableOpacity>
-         <TouchableOpacity onPress={()=>{setView(4)}} style={styles.button}><Text style={styles.buttonTitle}>Add Social Activities</Text></TouchableOpacity>
-
+            <TouchableOpacity onPress={()=>{setView(4)}} style={styles.button}><Text style={styles.buttonTitle}>Add Social Activities</Text></TouchableOpacity>
         </View>
-      
     </>
 )
 
@@ -389,5 +452,4 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: "center"
       }
-    
 })

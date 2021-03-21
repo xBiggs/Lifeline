@@ -65,7 +65,7 @@ export default ( props:StackScreenProps<SafetyPlanStackParamList,'CopingStrategi
             <View style={styles.copingStrategiesList}>
                 {copingStrategies.length > 0?
                 <CopingStrategiesList removeStrategy={removeStrategy} strategies = {copingStrategies}></CopingStrategiesList>:
-                <Text style={[styles.buttonTitleMain,{alignSelf:'center'}]}>No Copng Strategies</Text>}
+                <Text style={[styles.buttonTitleMain,{alignSelf:'center'}]}>No Coping Strategies</Text>}
             </View>
         </View>
     )
@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
         marginLeft:10,
         marginRight:10,
         marginBottom:10,
-        
     },
 
     container: {

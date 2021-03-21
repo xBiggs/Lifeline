@@ -3,30 +3,14 @@
 import MedicalInfoScreen from "../screens/MedicalInfoScreen/MedicalInfoScreen";
 import MedicationForm from "../screens/MedicationScreen/MedicationScreen";
 import React, { Props, useState } from "react";
-import {
-  createDrawerNavigator,
-  DrawerContentComponentProps,
-  DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
-  DrawerScreenProps,
-} from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
 import { HomeDrawerParamList, UserStackParamList } from "../types";
-import {
-  AssessmentScreen,
-  HomeScreen,
-  LoginScreen,
-  PersonalInfoScreen,
-} from "../screens";
-import { User } from "../interfaces/User";
+import { AssessmentScreen, HomeScreen, PersonalInfoScreen } from "../screens";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Keyboard, Linking, Text } from "react-native";
-import SafetyPlanScreen from "../screens/SafetyPlanScreen/SafetyPlanScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import VaultScreen from "../screens/VaultScreen/VaultScreen";
 import DailyConversationsScreen from "../screens/DailyConversationsScreen/DailyConversationsScreen";
 import SafetyPlanStackNavigator from "./SafetyPlanStackNavigator";
-
 import AppointmentsScreen from "../screens/AppointmentsScreen/AppointmentsScreen";
 import HomeDrawer from "./HomeDrawer";
 
@@ -69,7 +53,6 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={SafetyPlanStackNavigator}
       ></Drawer.Screen>
-      
       <Drawer.Screen name="Vault" component={VaultScreen}></Drawer.Screen>
       <Drawer.Screen
         name="DailyConversations"

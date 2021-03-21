@@ -1,33 +1,13 @@
-import React, { useState } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  Alert,
-  View,
-  Text,
-  TextInput,
-  Button,
-  NativeAppEventEmitter,
-} from "react-native";
+import React from "react";
+import { Alert, View, Text, TextInput } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import useFormal from "@kevinwolf/formal-native";
 import * as yup from "yup";
-import {
-  BottomSheet,
-  ButtonGroup,
-  CheckBox,
-  Divider,
-  ListItem,
-} from "react-native-elements";
+import { Divider } from "react-native-elements";
 import styles from "./styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
-
-import { StackScreenProps } from "@react-navigation/stack";
-import { Screens } from "..";
-import { AddPersonalData } from "../../firebase/UserDataHandler";
-import { PersInfo } from "../../interfaces/PersonalInfo";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
-import { getCurrentUserMedication } from "../../firebase/auth";
 
 const schema = yup.object().shape({
   name: yup.string().required(),
@@ -43,9 +23,7 @@ const initialValues = {
   usageInstructions: "",
 };
 
-export default function MedicalInfoScreen(
-  props: DrawerScreenProps<HomeDrawerParamList, "Medical_Information">
-) {
+export default function MedicalInfoScreen(props: DrawerScreenProps<HomeDrawerParamList, "Medical_Information">) {
   const formal = useFormal(initialValues, {
     schema,
     onSubmit: (values) => {

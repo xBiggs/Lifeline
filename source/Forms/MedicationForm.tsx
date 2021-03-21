@@ -1,20 +1,8 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  Pressable,
-  Alert,
-  TextInput,
-  Button,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableOpacity, Modal, Alert, TextInput, Platform } from "react-native";
 import * as yup from "yup";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Divider, ListItem } from "react-native-elements";
-
+import { ListItem } from "react-native-elements";
 import styles from "./styles";
 import useFormal from "@kevinwolf/formal-native";
 
@@ -183,6 +171,7 @@ export default function MedicationForm() {
                   >
                     {show && (
                       <DateTimePicker
+                      // FIXME: Error
                         style={{
                           alignSelf: "left",
                           width: 125,
@@ -193,9 +182,11 @@ export default function MedicationForm() {
                         }}
                         testID="dateTimePicker"
                         value={date}
+                        // FIXME: Error
                         mode={mode}
                         is24Hour={true}
                         display="calendar"
+                        // FIXME: Error
                         onChange={onChange}
                       />
                     )}

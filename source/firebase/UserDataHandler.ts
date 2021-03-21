@@ -1,16 +1,10 @@
 import { firebase } from './config';
-import "firebase/database";
 import { PersInfo } from "../interfaces/PersonalInfo"
-import { Medication, MedicationInfo } from "../interfaces/MedicalInfo"
+import { MedicationInfo } from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
-import * as Contacts from 'expo-contacts';
-import { getCurrentUser} from './auth';
 import { NotificationType } from '../interfaces/Notification';
-import useFloatingHeaderHeight from '@react-navigation/stack/lib/typescript/src/utils/useHeaderHeight';
-import { ContactDetails } from '../interfaces/ContactDetails';
-import { Alert } from 'react-native';
 
-
+// TODO: Why does this even exist
 
 export async function AddPersonalData(user: User, data: PersInfo) { //  credential: firebase.auth.UserCredential, info: PersInfo
 

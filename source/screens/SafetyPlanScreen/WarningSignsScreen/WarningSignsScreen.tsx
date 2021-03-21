@@ -8,7 +8,7 @@ import { SafetyPlanStackParamList } from "../../../types";
 import { User } from '../../../interfaces/User';
 import { WarningSign, WarningSignValue , MODERATE, SEVERE } from "../../../interfaces/WarningSign";
 import WarningSignCard from "./WarningSignCard";
-import { SetUserData } from '../../../firebase/auth';
+import { FirebaseController } from '../../../firebase/FirebaseController';
 // import styles from "./styles";
 
 interface WarningSignListElement {
@@ -17,9 +17,12 @@ interface WarningSignListElement {
 }
 
 export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanStackParamList, "WarningSigns">) {
+
   const user: User = props.route.params.user;
+
   const [index, setIndex] = useState(0);
   const [text, onChangeText] = React.useState("");
+
   const populateWarningSigns = () => {
     const list: WarningSignListElement[] = [];
     if (user.warningSigns) {
@@ -30,14 +33,16 @@ export default function WarningSignsScreen(props: DrawerScreenProps<SafetyPlanSt
     return list;
   }
   const initialWarningSigns: WarningSignListElement[] = populateWarningSigns();
+
   const [warningSignList, setWarningSignList] = useState(initialWarningSigns);
+
   useEffect(() => {
     (async () => {
       const warningSigns: WarningSign[] = [];
       warningSignList.forEach(element => warningSigns.push(element.warningSign));
       user.warningSigns = warningSigns;
       try {
-        await SetUserData(user);
+        await FirebaseController.SetUserData(user);
       } catch (e) {
         // Do something with error here
         alert((e as Error).message);

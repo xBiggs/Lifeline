@@ -11,10 +11,10 @@ import * as Contacts from 'expo-contacts';
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
     const { user } = props.route.params
+    // TODO: Variables never used
     const { navigation } = props
-
     const [contactsData, setContactsData] = useState<Contacts.Contact[]>();
-    
+
     // useEffect(() => {
     //     navigation.addListener('blur', e => {
     //         navigation.goBack();
@@ -38,7 +38,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 </Text> */}
           {/* <Button title="+ Add" onPress={() => { console.log(item.phoneNumbers[0].number) }} />  */}
           {/* style={{ alignItems: 'center', justifyContent: 'center' }} */}
-    
           <TouchableOpacity style={{
             alignItems: 'center', justifyContent: 'center',
             backgroundColor: '#51a4e8', height: 50,
@@ -50,7 +49,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
             <Text style={{ fontSize: 20 }}>Call {item.firstName} {item.lastName}</Text>
           </TouchableOpacity>
         </View >
-        
       );
 
 

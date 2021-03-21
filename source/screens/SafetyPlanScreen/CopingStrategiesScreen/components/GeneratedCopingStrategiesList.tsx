@@ -33,21 +33,17 @@ const generatedCopingStrategies = [
     'Use aromatherapy',
     'Use progressive muscle relaxation',
     'Write in a journal',
-    ]
-    
+];
 
 
-export default (props:{addStrategy:(strategy:string)=>void})=>
-{
-    
+export default (props:{addStrategy:(strategy:string)=>void}) => {
     return (
         <FlatList style={{margin:5}} data={generatedCopingStrategies} renderItem={({item})=><_renderItem addStrategy={props.addStrategy} item={item}></_renderItem>} keyExtractor={(item)=>item}>
         </FlatList>
-    )
-
+    );
 }
 
-const _renderItem = (props:{item:string,addStrategy:(strategy:string)=>void})=>{
+const _renderItem = (props:{item:string,addStrategy:(strategy:string)=>void}) => {
     return (
         <View style={{flexDirection:'row',borderWidth:1}}>
             <Text style={[styles.buttonTitle,{flex:1}]}>{props.item}</Text>

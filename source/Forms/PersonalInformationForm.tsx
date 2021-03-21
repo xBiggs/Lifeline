@@ -1,23 +1,9 @@
 import React, { useState } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  Alert,
-  View,
-  Text,
-  TextInput,
-  Button,
-  NativeAppEventEmitter,
-} from "react-native";
+import { Alert, View, Text, TextInput } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import useFormal from "@kevinwolf/formal-native";
 import * as yup from "yup";
-import {
-  BottomSheet,
-  ButtonGroup,
-  CheckBox,
-  Divider,
-  ListItem,
-} from "react-native-elements";
+import { BottomSheet, ButtonGroup, Divider, ListItem } from "react-native-elements";
 import styles from "./styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { PersInfo } from "../interfaces/PersonalInfo";
@@ -35,6 +21,8 @@ const initialValues = {
 
 export default function PersonalInformation() {
   const buttonsGender = ["Male", "female", "Other"];
+
+  // TODO: Variables are never read
   const [americanIndian, setAmericanIndian] = useState();
   const [asian, setAsian] = useState();
   const [black, setBlack] = useState();
@@ -44,6 +32,7 @@ export default function PersonalInformation() {
   const [other, setOther] = useState();
   const [gender, setRadio] = useState(0);
 
+  // TODO: Stop using var keyword
   var tempPersonalInfo: PersInfo = {
     age: "",
     race: "",
@@ -230,6 +219,7 @@ export default function PersonalInformation() {
             <Text style={styles.buttonLabel}>Gender</Text>
 
             <ButtonGroup
+            // FIXME: Error
               onPress={handleRadioInput}
               selectedIndex={gender}
               buttons={buttonsGender}

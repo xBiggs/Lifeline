@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, FlatList, ActivityIndicator, TextInput, Button, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import * as Devices from 'expo-device';
 import styles from "../screens/ContactScreen/styles";
-import { ContactDetails } from "../interfaces/ContactDetails";
-import * as Device from 'expo-device'
 import { StackScreenProps } from '@react-navigation/stack';
 import { SafetyPlanStackParamList } from '../types'
-import { boolean } from 'yup';
-import { AddContacts } from '../firebase/UserDataHandler'
-import { Value } from 'react-native-reanimated';
-import { string } from 'yup/lib/locale';
-import { User } from '../interfaces/User';
+import { AddContacts } from '../firebase/UserDataHandler';
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
   const user = props.route.params.user;
 
+  // TODO: Variable never used
   const device = Devices.osName;
 
   const [contacts, setContacts] = useState<Contacts.Contact[]>();
@@ -24,8 +19,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   const [isLoading, setIsLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
+  // TODO: Variables never used
   const [searchResults, setSearchResults] = useState<Contacts.Contact[]>();
-
   const [person, setPerson] = useState<Contacts.Contact>();
 
   // const loadContacts = async () => {
@@ -52,12 +47,14 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   useEffect(() => {
     (async () => {
       setIsLoading(true);
+      // TODO: Try Catch??
       const permissions = await Contacts.requestPermissionsAsync();
 
       if (permissions.status !== 'granted') {
         return;
       }
 
+      // TODO: Try Catch??
       const { data } = await Contacts.getContactsAsync({
         fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
       });
@@ -82,7 +79,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       contacts?.filter(person => {
         return person.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
         // console.log(person.firstName?.toLowerCase().includes(searchTerm.toLowerCase()));
-        
       })
     };
     // setContacts(getSearchResult);
@@ -111,27 +107,41 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         borderRadius: 15, width: 100,
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
-        onPress={async () => { 
-          
-          user.emergencyContacts?.push(item)
+        onPress={async () => {
+          // user.emergencyContacts?.push(item)
           // console.log(user);
-          
-          await AddContacts(user);
-          props.navigation.navigate("EmergencyContact", { user });          
+          let userExist = false;
+          // TODO: user and emergencyContacts can be undefined here
+          user.emergencyContacts.forEach(element => {
+            // TODO: item and phoneNumbers can be undefined here
+            if (item.phoneNumbers[0].digits === element.phoneNumbers[0].digits){
+              userExist = true;
+              // break
+              console.log("User ALREADY exist");
+              props.navigation.navigate("EmergencyContact", { user });
+            }
+          });
+
+          if(!userExist) {
+            // TODO: What is emergencyContacts is undefined?
+            user.emergencyContacts?.push(item);
+            // TODO: Try catch ??
+            await AddContacts(user);
+            console.log("User added");
+            props.navigation.navigate("EmergencyContact", { user });
+          }
+
+          // await AddContacts(user);
+          // props.navigation.navigate("EmergencyContact", { user });
           // console.log(contacts?.indexOf(item));
           // return;
-          
-          
 
           // useEffect(() => {
           //   (async function AddToContact(user: User) {
           //     // await AddContacts(user);
           //     console.log(user);
-              
           //   });
-            
           // }, []);
-          
         }}
       >
         <Text style={{ fontSize: 20 }}>+ Add</Text>

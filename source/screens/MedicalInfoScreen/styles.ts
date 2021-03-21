@@ -3,13 +3,10 @@ import { withTheme } from 'react-native-elements';
 
 export default StyleSheet.create({
     container: {
-     
         backgroundColor:'#FB8500',
-      
     },
     modal:{backgroundColor:'#FB8500'},
     title: {
-     
         marginBottom:20,
         color: 'white',
         fontSize: 32,
@@ -31,7 +28,6 @@ export default StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: 'white',
         marginTop: 10,
-        
         marginRight: 30,
         paddingLeft: 16,
         width:300,
@@ -43,7 +39,6 @@ export default StyleSheet.create({
             marginBottom:20,
     },
     button: {
-  
         height: 48,
         width:200,
         borderRadius: 15,
@@ -107,12 +102,10 @@ export default StyleSheet.create({
         marginRight:5,
     },
     inputContainer:{
-        
         backgroundColor:'#FB8500',
             paddingLeft:40,
             paddingTop:0,
             marginBottom:20,
-            
     },
     subTitle:{
             fontSize:20,
@@ -134,7 +127,6 @@ export default StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 22,
-     
       },
       modalView: {
         margin: 20,
@@ -142,7 +134,6 @@ export default StyleSheet.create({
         borderRadius: 40,
         padding: 35,
         alignItems: "center",
-      
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
@@ -153,7 +144,6 @@ export default StyleSheet.create({
         elevation: 5,
         width:400,
       },
-      
       buttonOpen: {
         backgroundColor: "#F194FF",
       },
@@ -169,14 +159,10 @@ export default StyleSheet.create({
         marginBottom: 15,
         textAlign: "center",
       },
-  
     radioContainer:{
-        
         backgroundColor:'#FB8500',
-           
             paddingTop:20,
             paddingBottom:30,
-           
     },
     radioText:{
         color: 'white',
@@ -189,4 +175,4 @@ export default StyleSheet.create({
 backgroundColor:"#FB8500",
 borderWidth:0,
     }
-})
+});
