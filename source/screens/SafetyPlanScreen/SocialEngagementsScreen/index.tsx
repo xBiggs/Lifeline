@@ -3,20 +3,129 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { StackScreenProps } from '@react-navigation/stack'
 import React, { useEffect, useState } from 'react'
 import * as Contacts from 'expo-contacts'
-import { TouchableOpacity, StyleSheet, Text, View, Modal, Pressable, Keyboard } from 'react-native'
+import { TouchableOpacity, StyleSheet, Text, View, Modal, Pressable } from 'react-native'
 import { SafetyPlanStackParamList } from '../../../types'
 import { FlatList, TextInput } from 'react-native-gesture-handler'
 import { ListItem } from 'react-native-elements'
 import SocialEngagementContact from '../../../interfaces/socialEngagementContact'
 import { AddUserData } from '../../../firebase/UserDataHandler'
 import SocialEngagement from '../../../interfaces/socialEngagements'
+import SocialEngagementMenu from './components/SocialEngagementMenu'
+import SocialCircle from './components/SocialCircle'
+import SocialCircleActivities from './components/SocialCircleActivities'
 
 
+export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>) =>{
+    const {user} = props.route.params;
+    user.socialEngagements?null:user.socialEngagements={
+        activites:[],
+        places:[],
+        socialContacts:[]
+    }
+    const [option,setOption] = useState(0);
+    const [socialContacts,setSocialContacts] = useState(user.socialEngagements.socialContacts);
+
+    //listener to keep user object social contacts in sync with firebase
+    useEffect(()=>{
+        console.log('updating firebase')
+        if(user.socialEngagements) user.socialEngagements.socialContacts = socialContacts;
+        AddUserData(user);
+    },[socialContacts])
 
 
-export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>) => {
+    //functions to add and remove social contacts
+    const addSocialContact =(contact:SocialEngagementContact) =>{
+        if(socialContacts.find(c=> c.id == contact.id))
+        {
+            alert(`${contact.contact.firstName} is already in your social circle`)
+        }
+        else
+        {
+            setSocialContacts(prev=>{
+                return [contact,...prev]
+             })
+        }
+    }
+    const removeSocialContact = (socialContact:SocialEngagementContact) =>{
+        setSocialContacts(prev=>{
+            const index = prev.indexOf(socialContact)
+            const newArr = [...prev];
+            if(index!=-1) newArr.splice(index,1)
+            return newArr;
+        })
+    }
 
-    // TODO: Not ssure why you use variables like object here
+    //render screen based on option chosen
+    switch(option)
+    {
+        case 0: // Social Circle Content
+            {
+                return (
+                    <View style={style.container}>
+                        <View style={style.content}>
+                           <SocialCircle addSocialContact={addSocialContact} removeSocialContact={removeSocialContact} socialContacts={socialContacts}></SocialCircle>
+                        </View>
+                        <View style={style.menu}>
+                            <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                        </View>
+                    </View>
+                )
+            }
+        case 1: // SocialCircleActivites
+            {
+                return (
+                    <View style={style.container}>
+                        <View style={style.content}>
+                       <SocialCircleActivities setSocialContacts={setSocialContacts} socialContacts={socialContacts}></SocialCircleActivities>
+                        </View>
+                        <View style={style.menu}>
+                            <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                        </View>
+                    </View>
+                )
+            }
+        case 2:
+            {
+
+        }
+        case 3:
+            {
+
+            }
+        default:
+            {
+                return (
+                    <View style={style.container}>
+                        <View style={style.content}>
+                        </View>
+                        <View style={style.menu}>
+                            <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                        </View>
+                    </View>
+                )
+            }
+    }
+}
+
+
+const style = StyleSheet.create({
+    container:{
+        flex:1,
+        alignItems:'stretch'
+
+    },
+    content:{
+        flex:1,
+
+    },
+    menu:{
+
+    }
+
+})
+
+
+const old = (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>)=>{
     const {user} = props.route.params;
     user.socialEngagements?null:user.socialEngagements = {
         activites:[],
@@ -343,5 +452,4 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: "center"
       }
-    
 })

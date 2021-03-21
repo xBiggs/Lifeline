@@ -1,5 +1,8 @@
 import { User } from "./interfaces/User";
 
+export const LifeLineOrange ='#FB8500'
+export const LifeLineDarkBlue ='#023047'
+export const LifeLineBlue ='#219ebc'
 // type to define route : params for Auth navigator and screens
 export type AuthStackParamList = {
   Login: undefined;
