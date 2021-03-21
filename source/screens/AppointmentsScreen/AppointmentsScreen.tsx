@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Modal, Alert, TextInput, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  Alert,
+  TextInput,
+  Platform,
+} from "react-native";
 import * as yup from "yup";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { ListItem } from "react-native-elements";
@@ -10,15 +18,23 @@ import { HomeDrawerParamList } from "../../types";
 import { FirebaseController } from "../../firebase/FirebaseController";
 import { Apointment, MedicationInfo } from "../../interfaces/MedicalInfo";
 import { NotificationType } from "../../interfaces/Notification";
-import { AddMedicalData, AddNotification } from "../../firebase/UserDataHandler";
+import {
+  AddMedicalData,
+  AddNotification,
+} from "../../firebase/UserDataHandler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { getSecondsBetweenDates, schedulePushNotification } from "../../Controllers/notificationsController";
+import {
+  getSecondsBetweenDates,
+  schedulePushNotification,
+} from "../../Controllers/notificationsController";
 
 // TODO: These imports take up too much space, try to be more specific on imports if possible
 import moment from "moment";
 import firebase from "firebase";
 
-export default function AppointmentScreen(props: DrawerScreenProps<HomeDrawerParamList, "Appointments">) {
+export default function AppointmentScreen(
+  props: DrawerScreenProps<HomeDrawerParamList, "Appointments">
+) {
   const appointments: Apointment = {
     date: firebase.firestore.Timestamp.fromDate(new Date()), // Date;
     // Date; // have to extract time from date object
@@ -35,6 +51,7 @@ export default function AppointmentScreen(props: DrawerScreenProps<HomeDrawerPar
   const [show, setShow] = useState(false);
   // TODO: showTime is never used
   const [showTime, setShowTime] = useState(false);
+  const user = props.route.params.user;
 
   const [userData, setUserData] = useState<MedicationInfo>();
   const [userNotifications, setUserNotifications] = useState<
@@ -120,12 +137,11 @@ export default function AppointmentScreen(props: DrawerScreenProps<HomeDrawerPar
   //GET INFO///////////////////////
   useEffect(() => {
     const getinfo = async () => {
-      const data: any = await FirebaseController.GetCurrentUserInfo();
-      setUserData(data.medInfo);
-      if (data.notifications) setUserNotifications(data.notifications);
+      setUserData(user.medInfo);
+      if (user.notifications) setUserNotifications(user.notifications);
       else setUserNotifications([]);
 
-      return data;
+      return user;
     };
 
     getinfo();
