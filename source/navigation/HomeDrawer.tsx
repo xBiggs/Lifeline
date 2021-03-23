@@ -1,71 +1,76 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { DrawerItem, DrawerContentScrollView, DrawerContentComponentProps } from '@react-navigation/drawer';
-import { Avatar, Title, Drawer } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { User } from '../interfaces/User';
-import { FirebaseController } from '../firebase/FirebaseController';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import {
+  DrawerItem,
+  DrawerContentScrollView,
+  DrawerContentComponentProps,
+} from "@react-navigation/drawer";
+import { Avatar, Title, Drawer } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { User } from "../interfaces/User";
+import { FirebaseController } from "../firebase/FirebaseController";
 
-export default (props: { drawerProps: DrawerContentComponentProps, user: User } )=> {
+export default (props: {
+  drawerProps: DrawerContentComponentProps;
+  user: User;
+}) => {
+  // TODO: Not sure the point of using these variables like objects here
+  const { user } = props;
+  const { navigation } = props.drawerProps;
 
-    // TODO: Not sure the point of using these variables like objects here
-    const {user} = props
-    const {navigation} = props.drawerProps
-
-    const navigate= (route:string)=>{
-        navigation.navigate(route,{user})
-    }
+  const navigate = (route: string) => {
+    navigation.navigate(route, { user });
+  };
 
   return (
     <DrawerContentScrollView {...props}>
-      <View
-        style={
-          styles.drawerContent
-        }
-      >
+      <View style={styles.drawerContent}>
         <View style={styles.userInfoSection}>
           <Avatar.Image
             source={{
               uri:
-                'assets\icon.png://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
+                "assetsicon.png://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg",
             }}
             size={50}
           />
-          <Title style={styles.title}>{`Hello ${user.firstName} ${user.lastName}!`}</Title>
-          <View style={styles.row}>
-          </View>
+          <Title
+            style={styles.title}
+          >{`Hello ${user.firstName} ${user.lastName}!`}</Title>
+          <View style={styles.row}></View>
         </View>
         <Drawer.Section style={styles.drawerSection}>
           <DrawerItem
             icon={({ color, size }) => (
-              <MaterialCommunityIcons
-                name="home"
-                color={color}
-                size={size}
-              />
+              <MaterialCommunityIcons name="home" color={color} size={size} />
             )}
             label="Home"
-            onPress={() => {navigation.navigate('Home',{user})}}
-          />
-          <DrawerItem
-            icon={({ color, size }) => (
-              <MaterialCommunityIcons name="circle-edit-outline" color={color} size={size} />
-            )}
-            label="Information"
-            onPress={() => {navigation.navigate('Information',{user})}}
+            onPress={() => {
+              navigation.navigate("Home", { user });
+            }}
           />
           <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons
-                name="book"
+                name="circle-edit-outline"
                 color={color}
                 size={size}
               />
             )}
-            label="Assessments"
-            onPress={() => {navigate('Assessment')}}
+            label="Information"
+            onPress={() => {
+              navigation.navigate("Information", { user });
+            }}
           />
-            <DrawerItem
+          <DrawerItem
+            icon={({ color, size }) => (
+              <MaterialCommunityIcons name="book" color={color} size={size} />
+            )}
+            label="Assessments"
+            onPress={() => {
+              navigate("Assessment");
+            }}
+          />
+          <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons
                 name="test-tube"
@@ -74,29 +79,27 @@ export default (props: { drawerProps: DrawerContentComponentProps, user: User } 
               />
             )}
             label="Medical"
-            onPress={() => {navigate('Medical_Information')}}
+            onPress={() => {
+              navigate("Medical_Information");
+            }}
           />
-            <DrawerItem
+          <DrawerItem
             icon={({ color, size }) => (
-              <MaterialCommunityIcons
-                name="pill"
-                color={color}
-                size={size}
-              />
+              <MaterialCommunityIcons name="pill" color={color} size={size} />
             )}
             label="Medication"
-            onPress={() => {navigate('Medication')}}
+            onPress={() => {
+              navigate("Medication");
+            }}
           />
-            <DrawerItem
+          <DrawerItem
             icon={({ color, size }) => (
-              <MaterialCommunityIcons
-                name="doctor"
-                color={color}
-                size={size}
-              />
+              <MaterialCommunityIcons name="doctor" color={color} size={size} />
             )}
             label="Appointments"
-            onPress={() => {navigate('Appointments')}}
+            onPress={() => {
+              navigate("Appointments");
+            }}
           />
           <DrawerItem
             icon={({ color, size }) => (
@@ -107,27 +110,35 @@ export default (props: { drawerProps: DrawerContentComponentProps, user: User } 
               />
             )}
             label="Safety Plan"
-
-            onPress={() => {navigation.navigate('SafetyPlan',{screen:'Home'})}}
+            onPress={() => {
+              navigation.navigate("SafetyPlan", { screen: "Home" });
+            }}
+          />
+          <DrawerItem
+            icon={({ color, size }) => (
+              <MaterialCommunityIcons name="book" color={color} size={size} />
+            )}
+            label="Vault"
+            onPress={() => {
+              navigation.navigate("Vault", { screen: "Vault" });
+            }}
           />
         </Drawer.Section>
         <Drawer.Section title="Logout">
-        <DrawerItem
+          <DrawerItem
             icon={({ color, size }) => (
-              <MaterialCommunityIcons
-                name="logout"
-                color={color}
-                size={size}
-              />
+              <MaterialCommunityIcons name="logout" color={color} size={size} />
             )}
             label="Logout"
-            onPress={ async () => {await FirebaseController.Logout();} }
+            onPress={async () => {
+              await FirebaseController.Logout();
+            }}
           />
         </Drawer.Section>
       </View>
     </DrawerContentScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   drawerContent: {
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   caption: {
     fontSize: 14,
@@ -146,24 +157,24 @@ const styles = StyleSheet.create({
   },
   row: {
     marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   section: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 15,
   },
   paragraph: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginRight: 3,
   },
   drawerSection: {
     marginTop: 15,
   },
   preference: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 12,
     paddingHorizontal: 16,
   },

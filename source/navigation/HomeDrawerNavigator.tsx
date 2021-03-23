@@ -25,7 +25,9 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
   //console.log('drawer user', user);
   return (
     <Drawer.Navigator
-      drawerContent={(props)=><HomeDrawer drawerProps={props} user={user}></HomeDrawer>}
+      drawerContent={(props) => (
+        <HomeDrawer drawerProps={props} user={user}></HomeDrawer>
+      )}
       screenOptions={{
         headerShown: true,
         unmountOnBlur: true,
@@ -46,14 +48,17 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={PersonalInfoScreen}
       ></Drawer.Screen>
-
       <Drawer.Screen
         options={{ title: "Safety Plan" }}
         name="SafetyPlan"
         initialParams={{ user }}
         component={SafetyPlanStackNavigator}
       ></Drawer.Screen>
-      <Drawer.Screen name="Vault" component={VaultScreen}></Drawer.Screen>
+      <Drawer.Screen
+        name="Vault"
+        initialParams={{ user }}
+        component={VaultScreen}
+      ></Drawer.Screen>
       <Drawer.Screen
         name="DailyConversations"
         options={{ title: "Daily Conversations" }}
@@ -62,7 +67,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
       <Drawer.Screen name="Settings" component={SettingsScreen}></Drawer.Screen>
       <Drawer.Screen
         name="Medical_Information"
-        options={{title:'Medical Information'}}
+        options={{ title: "Medical Information" }}
         initialParams={{ user }}
         component={MedicalInfoScreen}
       ></Drawer.Screen>

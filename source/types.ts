@@ -19,7 +19,7 @@ export type HomeDrawerParamList = {
     Home: {user:User},
     Assessment:{user:User},
     Information:{user:User},
-    Vault:undefined,
+    Vault:{user:User},
     DailyConversations:undefined,
     SafetyPlan:{user:User}
     Settings:undefined,
@@ -37,4 +37,5 @@ export type SafetyPlanStackParamList = {
     EmergencyContact:{user:User},
     AccessDeviceContacts: {user:User},
     LocationServices: {user: User},
+    Vault:{user:User},
 }

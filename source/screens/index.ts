@@ -29,5 +29,8 @@ export type Screens = {
     };
     Assessment:{
         user:User
+    };
+    Vault:{
+        user:User
     }
 }
