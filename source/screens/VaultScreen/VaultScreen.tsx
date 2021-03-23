@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
+import { Audio } from "expo-av";
 import {
   View,
   Text,
@@ -12,6 +13,8 @@ import {
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
 import { Video, AVPlaybackStatus } from "expo-av";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { black } from "react-native-paper/lib/typescript/styles/colors";
 
 // Pull info from firebase
 const ENTRIES1 = [
@@ -57,10 +60,31 @@ const { width: screenWidth } = Dimensions.get("window");
 export default function Vault(
   props: DrawerScreenProps<HomeDrawerParamList, "Vault">
 ) {
+  const [sound, setSound] = React.useState();
   const [entries, setEntries] = useState([]);
   const carouselRef = useRef(null);
   const user = props.route.params.user;
   const goForward = () => {};
+
+  async function playSound() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../../assets/HereComesTheSun.mp3")
+    );
+    setSound(sound);
+
+    console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  React.useEffect(() => {
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
 
   useEffect(() => {
     setEntries(ENTRIES1);
@@ -102,6 +126,7 @@ export default function Vault(
 
   return (
     <View style={styles.container}>
+      <Text style={styles.quote}>Welcome</Text>
       <Carousel
         ref={carouselRef}
         sliderWidth={screenWidth}
@@ -110,8 +135,35 @@ export default function Vault(
         data={entries}
         renderItem={renderItem}
         hasParallaxImages={true}
+        layout={"default"}
       />
-      <View style={styles.container}></View>
+      <View style={styles.container}>
+        <Text style={styles.description}>
+          Now Playing:{"\n"}Here Comes the Sun
+        </Text>
+
+        <TouchableOpacity
+          style={{
+            alignSelf: "center",
+            backgroundColor: "#219ebc",
+            width: screenWidth - 60,
+            borderRadius: 10,
+            elevation: 5,
+          }}
+          onPress={playSound}
+        >
+          <Text
+            style={{
+              fontSize: 40,
+              color: "white",
+              textAlign: "center",
+              alignSelf: "center",
+            }}
+          >
+            <MaterialCommunityIcons name="play" color={"white"} size={40} />
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -124,16 +176,45 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  quote: {
+    fontSize: 40,
+    alignSelf: "center",
+    color: "#219ebc",
+    textAlign: "center",
+    fontWeight: "bold",
+
+    marginLeft: 20,
+    marginRight: 20,
+    marginBottom: 25,
+  },
+  description: {
+    fontSize: 30,
+    alignSelf: "center",
+    color: "#219ebc",
+    textAlign: "left",
+    fontWeight: "bold",
+    elevation: 20,
+    marginRight: 20,
+    marginBottom: 25,
+    marginTop: -90,
   },
   container: {
-    paddingTop: 30,
+    paddingTop: 20,
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#219ebc",
+    backgroundColor: "white",
   },
   item: {
     width: screenWidth - 60,
     height: screenWidth - 60,
+    backgroundColor: "#219ebc",
+    borderRadius: 7,
+    paddingBottom: 20,
+
+    elevation: 30,
   },
   imageContainer: {
     flex: 1,
