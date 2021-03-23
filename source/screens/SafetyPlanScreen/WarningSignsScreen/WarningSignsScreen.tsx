@@ -104,6 +104,8 @@ export default function WarningSignsScreen(
         numberOfLines={4}
         placeholder={"Enter Warning Sign"}
         placeholderTextColor="#e5e5e5"
+        underlineColorAndroid="#e5e5e5"
+        selectionColor="#e5e5e5"
       />
       <SegmentedControl
         values={[MODERATE, SEVERE]}
