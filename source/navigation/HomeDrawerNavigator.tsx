@@ -59,6 +59,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={VaultScreen}
       ></Drawer.Screen>
+
       <Drawer.Screen
         name="DailyConversations"
         options={{ title: "Daily Conversations" }}

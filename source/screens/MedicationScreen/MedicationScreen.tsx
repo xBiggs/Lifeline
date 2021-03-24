@@ -103,13 +103,14 @@ export default function MedicationForm(
 
       const today: Date = new Date();
       const secondsBetweenDates = getSecondsBetweenDates(today, date);
-
-      schedulePushNotification(
-        "Medication Alert",
-        "Need to refill: " + values.name,
-        "click to view instructions",
-        secondsBetweenDates
-      );
+      if (user.settings?.notificationsOn) {
+        schedulePushNotification(
+          "Medication Alert",
+          "Need to refill: " + values.name,
+          "click to view instructions",
+          secondsBetweenDates
+        );
+      }
 
       // TODO: What happens if userData is undefined? Do you need a try catch block to handle error?
       userData?.medication.push(medication);

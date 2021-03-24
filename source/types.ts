@@ -38,4 +38,5 @@ export type SafetyPlanStackParamList = {
     AccessDeviceContacts: {user:User},
     LocationServices: {user: User},
     Vault:{user:User},
+    Settings:{user:User},
 }

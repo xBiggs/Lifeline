@@ -86,17 +86,19 @@ export default function AppointmentScreen(
         imageURL: "../../images/medicine.png",
       };
       const today: Date = new Date();
+      const user = props.route.params.user;
 
       const secondsBetweenDates = getSecondsBetweenDates(today, date);
+      if (user.settings?.notificationsOn) {
+        schedulePushNotification(
+          "Apointment Alert",
+          "You have an upcoming appointment",
+          "click to view reason",
+          secondsBetweenDates - 86400
+        );
+      }
 
-      schedulePushNotification(
-        "Apointment Alert",
-        "You have an upcoming appointment",
-        "click to view reason",
-        secondsBetweenDates - 86400
-      );
       userData?.nextApointment?.push(appointmentTemp);
-      const user = props.route.params.user;
 
       if (userData) AddMedicalData(user, userData);
 

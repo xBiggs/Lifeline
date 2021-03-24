@@ -58,9 +58,10 @@ export default (props: {
             )}
             label="Information"
             onPress={() => {
-              navigation.navigate("Information", { user });
+              navigation.navigate("Settings", { user });
             }}
           />
+
           <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons name="book" color={color} size={size} />
@@ -121,6 +122,15 @@ export default (props: {
             label="Vault"
             onPress={() => {
               navigation.navigate("Vault", { screen: "Vault" });
+            }}
+          />
+          <DrawerItem
+            icon={({ color, size }) => (
+              <MaterialCommunityIcons name="cog" color={color} size={size} />
+            )}
+            label="Settings"
+            onPress={() => {
+              navigation.navigate("Settings", { user });
             }}
           />
         </Drawer.Section>

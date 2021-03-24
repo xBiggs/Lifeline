@@ -4,10 +4,17 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { getSecondsBetweenDates, schedulePushNotification } from "../../Controllers/notificationsController";
+import {
+  getSecondsBetweenDates,
+  schedulePushNotification,
+} from "../../Controllers/notificationsController";
 import { AddNotification, AddUserData } from "../../firebase/UserDataHandler";
 import { NotificationType } from "../../interfaces/Notification";
-import { mitigatingFactorQuestions, QuestionResponse, riskFactorQuestions } from "../../interfaces/QuestionResponse";
+import {
+  mitigatingFactorQuestions,
+  QuestionResponse,
+  riskFactorQuestions,
+} from "../../interfaces/QuestionResponse";
 import { HomeDrawerParamList } from "../../types";
 import styles from "./styles";
 
@@ -119,13 +126,14 @@ export default (
         const today: Date = new Date();
 
         const secondsBetweenDates = getSecondsBetweenDates(today, newDate);
-
-        schedulePushNotification(
-          "Evaluation Alert",
-          "It is time to retake your assesment",
-          "click to take evaluation",
-          secondsBetweenDates
-        );
+        if (user.settings?.notificationsOn) {
+          schedulePushNotification(
+            "Evaluation Alert",
+            "It is time to retake your assesment",
+            "click to take evaluation",
+            secondsBetweenDates
+          );
+        }
 
         if (user) AddNotification(user, notification);
 
