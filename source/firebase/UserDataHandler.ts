@@ -73,57 +73,7 @@ export async function AddNotification(user: User, data: NotificationType) { //  
 
 }
 
-export async function AddContacts(user: User) { //, person: ContactDetails) {
-    // try {
-        // if (!user.emergencyContacts || user.emergencyContacts == undefined) {
-        //     // user.emergencyContacts = [];
-        // }
-        // user.emergencyContacts.push(person);
-
-        // var personFound = false;
-        // await firebase.firestore().collection('users').doc(user.id).get().then(async function (snapshot) {
-
-        //     if (snapshot.exists) {
-        //         // console.log([0].digits);
-        //         // snapshot.data().emergencyContacts.forEach(element => {
-        //         //     if (element.digits === person.digits) {
-        //         //         // console.log("FOUND");
-        //         //         personFound = true;
-        //         //         break
-        //         //         // return;
-        //         //     }
-        //         // });
-
-        //         for (let num of snapshot.data().emergencyContacts) {
-        //             if (num.digits === person.digits) {
-        //                 personFound = true;
-        //                 // console.log("FOUND and breaking out");
-        //                 break;
-        //             }
-        //             console.log("outside");
-                    
-        //         }
-
-        //         if (!personFound){
-        //             console.log("Inside if-personfound");
-        //             await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
-        //         }
-
-        //     }
-        //     else {
-        //         console.log("No data found");
-        //     }
-        // }).catch(function (err) {
-        //     console.log(err);
-        // });
-
-        // await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
-        // return true;
-    // } catch (err) {
-    //     throw (err as Error).message;
-    // }
-
-
+export async function AddContacts(user: User) {
     /* UPDATING THE ENTIRE USER OBJECT */
 
     try {
