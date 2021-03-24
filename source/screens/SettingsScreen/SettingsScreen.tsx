@@ -23,9 +23,10 @@ export default function Settings(
     user.settings.notificationsOn = !isEnabled;
     saved = false;
   };
-  function save() {
-    AddUserData(user);
+  async function save() {
+    await AddUserData(user);
     saved = true;
+    alert("Settings have been saved");
   }
 
   return (
