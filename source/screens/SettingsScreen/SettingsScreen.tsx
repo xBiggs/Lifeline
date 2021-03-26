@@ -11,9 +11,10 @@ export default function Settings(
   props: DrawerScreenProps<HomeDrawerParamList, "Home">
 ) {
   const nav = useNavigation();
-  const [isEnabled, setIsEnabled] = useState(false);
   var saved = false;
   var user = props.route.params.user;
+  const [isEnabled, setIsEnabled] = useState(user.settings?.notificationsOn);
+
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
     if (!user.settings)
@@ -23,6 +24,7 @@ export default function Settings(
     user.settings.notificationsOn = !isEnabled;
     saved = false;
   };
+
   async function save() {
     await AddUserData(user);
     saved = true;
