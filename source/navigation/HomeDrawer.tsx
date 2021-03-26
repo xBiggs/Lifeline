@@ -58,7 +58,7 @@ export default (props: {
             )}
             label="Information"
             onPress={() => {
-              navigation.navigate("Settings", { user });
+              navigation.navigate("Information", { user });
             }}
           />
 
@@ -71,19 +71,7 @@ export default (props: {
               navigate("Assessment");
             }}
           />
-          <DrawerItem
-            icon={({ color, size }) => (
-              <MaterialCommunityIcons
-                name="test-tube"
-                color={color}
-                size={size}
-              />
-            )}
-            label="Medical"
-            onPress={() => {
-              navigate("Medical_Information");
-            }}
-          />
+
           <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons name="pill" color={color} size={size} />

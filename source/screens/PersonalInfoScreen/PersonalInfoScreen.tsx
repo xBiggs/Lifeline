@@ -3,38 +3,26 @@ import { Alert, View, Text, TextInput } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import useFormal from "@kevinwolf/formal-native";
 import * as yup from "yup";
-import { BottomSheet, ButtonGroup, Divider, ListItem } from "react-native-elements";
+import {
+  BottomSheet,
+  ButtonGroup,
+  Divider,
+  ListItem,
+} from "react-native-elements";
 import styles from "./styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { AddPersonalData } from "../../firebase/UserDataHandler";
+import { AddPersonalData, AddUserData } from "../../firebase/UserDataHandler";
 import { PersInfo } from "../../interfaces/PersonalInfo";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
+import { MedicationInfo } from "../../interfaces/MedicalInfo";
 
-const schema = yup.object().shape({
-  age: yup.number().required(),
-  religion: yup.string().required(),
-});
-
-const initialValues = {
-  age: "Please Enter Age",
-  religion: "List N/A if prefer not to say",
-};
-
-export default function PersonalInfoScreen(props: DrawerScreenProps<HomeDrawerParamList, "Information">) {
+export default function PersonalInfoScreen(
+  props: DrawerScreenProps<HomeDrawerParamList, "Information">
+) {
   const user = props.route.params.user;
-  const buttonsGender = ["Male", "female", "Other"];
-  // TODO: None of the variables are read lol
-  const [americanIndian, setAmericanIndian] = useState();
-  const [asian, setAsian] = useState();
-  const [black, setBlack] = useState();
-  const [hispanic, setHispanic] = useState();
-  const [white, setWhite] = useState();
-  const [nativeHawaiian, setNativeHawaiian] = useState();
-  const [other, setOther] = useState();
-  const [gender, setRadio] = useState(0);
+  const buttonsGender = ["Male", "Female", "Other"];
 
-  // TODO: Stop using keyword var, use let or const instead
   var tempPersonalInfo: PersInfo = {
     age: "",
     race: "",
@@ -43,9 +31,48 @@ export default function PersonalInfoScreen(props: DrawerScreenProps<HomeDrawerPa
     religion: "",
     militaryStatus: "",
   };
+  var tempMedicalInfo: MedicationInfo = {
+    diagnose: "",
+    medication: [],
+    regiments: "",
+    familyMedicalHistory: "",
+    nextApointment: [],
+  };
+
+  if (user.medInfo) tempMedicalInfo = user.medInfo;
+  if (user.personalInfo) tempPersonalInfo = user.personalInfo;
+
+  let initialValue = 0;
+  switch (tempPersonalInfo.gender.toLowerCase()) {
+    case "male":
+      initialValue = 0;
+      break;
+    case "female":
+      initialValue = 1;
+      break;
+    case "other":
+      initialValue = 2;
+  }
+
+  const [gender, setRadio] = useState(initialValue);
+
+  const schema = yup.object().shape({
+    age: yup.number().required(),
+    religion: yup.string().required(),
+    diagnose: yup.string().required(),
+    regiments: yup.string().required(),
+    familyMedicalHistory: yup.string().required(),
+  });
+
+  const initialValues = {
+    age: tempPersonalInfo.age,
+    religion: tempPersonalInfo.religion,
+    diagnose: tempMedicalInfo.diagnose,
+    regiments: tempMedicalInfo.regiments,
+    familyMedicalHistory: tempMedicalInfo.familyMedicalHistory,
+  };
 
   const handleRadioInput = (e: React.SetStateAction<undefined>) => {
-    // FIXME: Error
     setRadio(e);
   };
 
@@ -72,7 +99,14 @@ export default function PersonalInfoScreen(props: DrawerScreenProps<HomeDrawerPa
       tempPersonalInfo.race = race;
       tempPersonalInfo.religion = values.religion;
       tempPersonalInfo.sexualOrientation = sexualOrientation;
-      AddPersonalData(user, tempPersonalInfo);
+
+      tempMedicalInfo.diagnose = values.diagnose;
+      tempMedicalInfo.familyMedicalHistory = values.familyMedicalHistory;
+      tempMedicalInfo.regiments = values.regiments;
+      user.medInfo = tempMedicalInfo;
+      user.personalInfo = tempPersonalInfo;
+
+      AddUserData(user);
       Alert.alert("Thank You!");
     },
   });
@@ -82,12 +116,12 @@ export default function PersonalInfoScreen(props: DrawerScreenProps<HomeDrawerPa
     false
   );
   const [isVisibleMilitaryStatus, setIsVisibleMilitaryStatus] = useState(false);
-  const [race, setRace] = useState("Select Race");
+  const [race, setRace] = useState(tempPersonalInfo.race);
   const [sexualOrientation, setSexualOrientation] = useState(
-    "Select Sexual Orientation"
+    tempPersonalInfo.sexualOrientation
   );
   const [militaryStatus, setMilitaryStatus] = useState(
-    "Select Military Status"
+    tempPersonalInfo.militaryStatus
   );
 
   const list = [
@@ -200,6 +234,68 @@ export default function PersonalInfoScreen(props: DrawerScreenProps<HomeDrawerPa
             }}
           />
           <View style={styles.inputContainer}>
+            <Text style={styles.buttonLabel}>Diagnosis</Text>
+            <TextInput
+              style={styles.input}
+              {...formal.getFieldProps("diagnose")}
+            />
+            {formal.errors.diagnose && (
+              <Text style={styles.error}>{formal.errors.diagnose}</Text>
+            )}
+          </View>
+
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
+            }}
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.buttonLabel}>Family Medical History</Text>
+            <TextInput
+              style={styles.input}
+              {...formal.getFieldProps("familyMedicalHistory")}
+            />
+            {formal.errors.familyMedicalHistory && (
+              <Text style={styles.error}>
+                {formal.errors.familyMedicalHistory}
+              </Text>
+            )}
+          </View>
+
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
+            }}
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.buttonLabel}>Regiments</Text>
+            <TextInput
+              style={styles.input}
+              {...formal.getFieldProps("regiments")}
+            />
+            {formal.errors.regiments && (
+              <Text style={styles.error}>{formal.errors.regiments}</Text>
+            )}
+          </View>
+
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
+            }}
+          />
+          <View style={styles.inputContainer}>
             <Text style={styles.buttonLabel}>Religion</Text>
             <TextInput
               style={styles.input}
@@ -222,7 +318,7 @@ export default function PersonalInfoScreen(props: DrawerScreenProps<HomeDrawerPa
             <Text style={styles.buttonLabel}>Gender</Text>
 
             <ButtonGroup
-            // FIXME: Error
+              // FIXME: Error
               onPress={handleRadioInput}
               selectedIndex={gender}
               buttons={buttonsGender}

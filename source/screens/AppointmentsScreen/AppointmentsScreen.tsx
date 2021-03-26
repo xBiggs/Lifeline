@@ -85,9 +85,9 @@ export default function AppointmentScreen(
         actionScreenTitle: "View Appointment",
         imageURL: "../../images/medicine.png",
       };
+
       const today: Date = new Date();
       const user = props.route.params.user;
-
       const secondsBetweenDates = getSecondsBetweenDates(today, date);
       if (user.settings?.notificationsOn) {
         schedulePushNotification(
