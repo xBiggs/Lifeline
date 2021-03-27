@@ -1,5 +1,6 @@
 import { User } from '../interfaces/User';
 import { firebase } from './config';
+import { AddUserData } from './UserDataHandler';
 
 export class FirebaseController {
 
@@ -79,29 +80,29 @@ export class FirebaseController {
         return document.data();
     }
 
-    static async AddPhotoOrVideo(user:User,file:string|undefined) {
+
+    static async AddPhotoToVault(user:User,file:string|undefined) {
+       
         if(file)
         {
-            console.log("uploading")
-            const filename = file.substring(file.lastIndexOf('/') + 1);
-            // Create a root reference
-            const storageRef = await firebase.storage().ref(filename).putString(file);
-            const url = await storageRef.ref.getDownloadURL();
-            console.log("url",url);
-            
+            // add to storage
+            const response = await fetch(file);
+            const blob = await response.blob();
+            const ref = firebase.storage().ref().child(`/${user.id}/images/${file.substring(file.lastIndexOf('/'))}`);
+           const result = await ref.put(blob);
+           const url = await result.ref.getDownloadURL();
+
+           //add to user and update user in firebase
+           console.log(user.vaultItems);
+           user.vaultItems?.photos.push({
+               title:file.substring(file.lastIndexOf('/')),
+               type:'photo',
+               url:url
+           })
+
+          // await this.GetCollectionRef().doc(user.id).update('vaultItems',{taco:'bueno'})
+        
         }
-       
-/*
-        // Create a reference to 'mountains.jpg'
-        var mountainsRef = storageRef.child(file);
-
-        // Create a reference to 'images/mountains.jpg'
-        var mountainImagesRef = storageRef.child(`/${user.id}/images/${file}`);
-
-    
-
-        // While the file names are the same, the references point to different files
-        mountainsRef.name === mountainImagesRef.name;           // true
-        mountainsRef.fullPath === mountainImagesRef.fullPath;   // false */
     }
+      
 }

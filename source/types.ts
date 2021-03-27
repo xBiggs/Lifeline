@@ -14,6 +14,13 @@ export type UserStackParamList = {
   Home: { user: User };
 };
 
+
+export type PhotoVideoEntry ={
+  title:string,
+  url:string,
+  type:string,
+}
+
 // type to define route : params for User navigator and screens
 export type HomeDrawerParamList = {
     Home: {user:User},

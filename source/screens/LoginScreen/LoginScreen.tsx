@@ -22,14 +22,10 @@ export default function LoginScreen( {navigation} : StackScreenProps<AuthStackPa
         setLoading(true);
         try {
             const userCredential = await FirebaseController.Login(email, password);
-            // TODO: user is never used??
-            const user = await FirebaseController.GetUserData(userCredential) as User;
         } catch (error) {
             // TODO: Do something with error here
             alert(error);
-        } finally {
-            // TODO: Empty finally block?
-        }
+        } 
     }
 
     return (

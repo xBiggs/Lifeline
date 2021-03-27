@@ -11,17 +11,12 @@ import {
   Button,
 } from "react-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { HomeDrawerParamList, LifeLineBlue, VaultStackParamList } from "../../types";
+import { HomeDrawerParamList, LifeLineBlue, PhotoVideoEntry, VaultStackParamList } from "../../types";
 import { Video, AVPlaybackStatus } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { black } from "react-native-paper/lib/typescript/styles/colors";
 import { StackScreenProps } from "@react-navigation/stack";
 
-type Entry ={
-  title:string,
-  url:string,
-  type:string,
-}
 
 // Pull info from firebase
 const ENTRIES1 = [
@@ -68,7 +63,7 @@ export default function Vault(
   props: StackScreenProps<VaultStackParamList, "Vault">
 ) {
   const [sound, setSound] = React.useState<Audio.Sound>();
-  const [entries, setEntries] = useState<Entry[]>([]);
+  const [entries, setEntries] = useState<PhotoVideoEntry[]>([]);
   const carouselRef = useRef(null);
   const user = props.route.params.user;
   const goForward = () => {};

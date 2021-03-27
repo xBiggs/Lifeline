@@ -5,12 +5,17 @@ import { View, Text, StyleSheet, TouchableOpacity,Image } from "react-native"
 import { Button } from 'react-native-paper';
 import { LifeLineBlue, LifeLineDarkBlue, LifeLineOrange, VaultStackParamList } from '../../../types';
 import VaultItemsMenu from './VaultItemsMenu';
-import { TextInput } from 'react-native-gesture-handler';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { FlingGestureHandler, TextInput } from 'react-native-gesture-handler';
 import { User } from '../../../interfaces/User';
 import { FirebaseController } from '../../../firebase/FirebaseController';
 
 export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
+    const {user} = props.route.params;
+    user.vaultItems?null:user.vaultItems={
+        photos:[],
+        videos:[],
+        quotes:[],
+    }
     const [option, setOption] = useState<number>(0)
     return (
         <View style={styles.container}>
@@ -35,20 +40,16 @@ export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
 
 const Content = (props: { option: number,user:User }) => {
     const [fileName,setFileName] = useState("");
-    const [image, setImage] = useState<string>();
+    const [image, setImage] = useState<string | undefined>();
     const [quote, setQuote] = useState("");
     const [audio, setAudio] = useState(null);
 
-    const addImageOrVideoToVault = ()=>{
-        try{
-            FirebaseController.AddPhotoOrVideo(props.user,image);
-
-        }catch(e)
-        {
-            alert(e)
-        }
-        
-
+    const addImageOrVideoToVault =async ()=>{
+      if(image)
+      {
+         
+          await FirebaseController.AddPhotoToVault(props.user,image);
+      }
     }
 
     const pickImage = async () => {
@@ -73,7 +74,7 @@ const Content = (props: { option: number,user:User }) => {
                       <Button mode='contained' color={LifeLineDarkBlue} onPress={pickImage}><Text>Choose Photo/Video</Text></Button>
                       {image && <>
                      <TextInput placeholder={'Enter file name'} onChangeText={(text)=>setFileName(text)}></TextInput>
-                     <Button mode='contained' color={LifeLineOrange} onPress={addImageOrVideoToVault}>Add to Vault</Button>
+                     <Button mode='contained' color={LifeLineOrange} onPress={()=>{ addImageOrVideoToVault();}}>Add to Vault</Button>
                      </>}
                       {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
                    
