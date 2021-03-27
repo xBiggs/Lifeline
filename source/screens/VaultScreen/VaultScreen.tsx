@@ -11,10 +11,17 @@ import {
   Button,
 } from "react-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { HomeDrawerParamList } from "../../types";
+import { HomeDrawerParamList, LifeLineBlue, VaultStackParamList } from "../../types";
 import { Video, AVPlaybackStatus } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { black } from "react-native-paper/lib/typescript/styles/colors";
+import { StackScreenProps } from "@react-navigation/stack";
+
+type Entry ={
+  title:string,
+  url:string,
+  type:string,
+}
 
 // Pull info from firebase
 const ENTRIES1 = [
@@ -58,10 +65,10 @@ const ENTRIES1 = [
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function Vault(
-  props: DrawerScreenProps<HomeDrawerParamList, "Vault">
+  props: StackScreenProps<VaultStackParamList, "Vault">
 ) {
-  const [sound, setSound] = React.useState();
-  const [entries, setEntries] = useState([]);
+  const [sound, setSound] = React.useState<Audio.Sound>();
+  const [entries, setEntries] = useState<Entry[]>([]);
   const carouselRef = useRef(null);
   const user = props.route.params.user;
   const goForward = () => {};
@@ -91,6 +98,7 @@ export default function Vault(
   }, []);
 
   const renderItem = ({ item, index }, parallaxProps) => {
+   // console.log(parallaxProps);
     return (
       <View style={styles.item}>
         {item.type == "photo" ? (
@@ -126,7 +134,18 @@ export default function Vault(
 
   return (
     <View style={styles.container}>
+     
+      <View style={{flexDirection:'row'}}>
       <Text style={styles.quote}>Welcome</Text>
+      <TouchableOpacity style={{
+        backgroundColor:LifeLineBlue,
+        borderRadius:25,
+        alignSelf:'flex-start'
+      }}
+      onPress={()=>{props.navigation.navigate('Manage',{user:props.route.params.user})}}
+      ><MaterialCommunityIcons size={40} color='white' name='plus'></MaterialCommunityIcons></TouchableOpacity>
+      
+     </View>
       <Carousel
         ref={carouselRef}
         sliderWidth={screenWidth}

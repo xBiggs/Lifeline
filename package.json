@@ -55,7 +55,8 @@
     "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
     "undefined": "react-native-picker/picker",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "expo-image-picker": "~9.2.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

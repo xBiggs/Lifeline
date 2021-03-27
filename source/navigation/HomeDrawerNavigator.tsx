@@ -13,6 +13,8 @@ import DailyConversationsScreen from "../screens/DailyConversationsScreen/DailyC
 import SafetyPlanStackNavigator from "./SafetyPlanStackNavigator";
 import AppointmentsScreen from "../screens/AppointmentsScreen/AppointmentsScreen";
 import HomeDrawer from "./HomeDrawer";
+import ManageVaultItems from "../screens/VaultScreen/components/ManageVaultItems";
+import VaultStackNavigator from "./VaultStackNavigator";
 
 /**
  * USAGE: USED TO NAVIGATE BETWEEN AUTH SCREENS FOR A UNAUTHORIZED USER
@@ -57,7 +59,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
       <Drawer.Screen
         name="Vault"
         initialParams={{ user }}
-        component={VaultScreen}
+        component={VaultStackNavigator}
       ></Drawer.Screen>
 
       <Drawer.Screen
@@ -84,9 +86,4 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
       ></Drawer.Screen>
     </Drawer.Navigator>
   );
-};
-const CustomDrawerContent = (props: any) => {
-  // console.log(props)
-  console.log("working");
-  return <DrawerItem {...props} label="Home" onPress={() => {}}></DrawerItem>;
 };

@@ -20,12 +20,18 @@ export type HomeDrawerParamList = {
     Assessment:{user:User},
     Information:{user:User},
     Vault:{user:User},
+    ManageVaultItems:{user:User}
     DailyConversations:undefined,
     SafetyPlan:{user:User}
     Settings:undefined,
     Appointments:{user:User}
     Medical_Information:{user:User}
     Medication:{user:User}
+}
+
+export type VaultStackParamList={
+  Vault:{user:User},
+  Manage:{user:User}
 }
 
 export type SafetyPlanStackParamList = {
