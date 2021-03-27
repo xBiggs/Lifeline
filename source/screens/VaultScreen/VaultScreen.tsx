@@ -68,6 +68,17 @@ export default function Vault(
   const user = props.route.params.user;
   const goForward = () => {};
 
+  props.navigation.addListener('focus',()=>{
+    if(user.vaultItems)
+    {
+      const entries:PhotoVideoEntry[] = [];
+      if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
+      if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
+      setEntries(entries);
+      
+    }
+  })
+
   async function playSound() {
     console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
@@ -89,14 +100,21 @@ export default function Vault(
   }, [sound]);
 
   useEffect(() => {
-    setEntries(ENTRIES1);
-  }, []);
+    if(user.vaultItems)
+    {
+      const entries:PhotoVideoEntry[] = [];
+      if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
+      if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
+      setEntries(entries);
+      
+    }
+  }, [user.vaultItems?.photos,user.vaultItems?.videos]);
 
   const renderItem = ({ item, index }, parallaxProps) => {
    // console.log(parallaxProps);
     return (
       <View style={styles.item}>
-        {item.type == "photo" ? (
+        {item.type == "image" ? (
           <ParallaxImage
             source={{ uri: item.url }}
             containerStyle={styles.imageContainer}

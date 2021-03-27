@@ -1,13 +1,17 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { View, Text, StyleSheet, TouchableOpacity,Image } from "react-native"
-import { Button } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity,Image, KeyboardAvoidingViewBase, Dimensions } from "react-native"
+import { ActivityIndicator, Button, Modal } from 'react-native-paper';
 import { LifeLineBlue, LifeLineDarkBlue, LifeLineOrange, VaultStackParamList } from '../../../types';
 import VaultItemsMenu from './VaultItemsMenu';
 import { FlingGestureHandler, TextInput } from 'react-native-gesture-handler';
 import { User } from '../../../interfaces/User';
 import { FirebaseController } from '../../../firebase/FirebaseController';
+import { ScreenStackHeaderBackButtonImage } from 'react-native-screens';
+import { Video } from 'expo-av';
+import { AddUserData } from '../../../firebase/UserDataHandler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
     const {user} = props.route.params;
@@ -18,6 +22,7 @@ export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
     }
     const [option, setOption] = useState<number>(0)
     return (
+        <KeyboardAwareScrollView enableOnAndroid style={{backgroundColor:LifeLineBlue}}>
         <View style={styles.container}>
 
             <View style={styles.header}>
@@ -35,20 +40,52 @@ export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
                 </TouchableOpacity>
             </View>
         </View>
+        </KeyboardAwareScrollView>
     )
 }
 
 const Content = (props: { option: number,user:User }) => {
     const [fileName,setFileName] = useState("");
-    const [image, setImage] = useState<string | undefined>();
+    const [image,setImage] = useState<string>();
+    const [video,setVideo] = useState<string>();
+    const [loading,setLoading]= useState(false);
+    const videoRef = useRef(null);
+    const [fileInfo,setFileInfo] = useState<{filePath:string, type:string,  }>()
     const [quote, setQuote] = useState("");
     const [audio, setAudio] = useState(null);
 
     const addImageOrVideoToVault =async ()=>{
-      if(image)
+        setLoading(true);
+        if(fileName.trim() =='') {
+            alert("Please enter file name")
+            return;
+        }
+      if(fileInfo)
       {
          
-          await FirebaseController.AddPhotoToVault(props.user,image);
+        const entry =  await FirebaseController.AddPhotoToVault(props.user,fileInfo,fileName)
+        switch(entry?.type)
+        {
+            case 'image':
+                {
+                    props.user.vaultItems?.photos.push(entry);
+                    break;
+
+                }
+            case 'video':
+                {
+                    props.user.vaultItems?.videos.push(entry);
+                    break;
+                }
+        }
+        await AddUserData(props.user);
+        
+
+          setLoading(false);
+          alert("You file has been added to the vault");
+          setFileInfo(undefined)
+          setImage(undefined)
+          setVideo(undefined)
       }
     }
 
@@ -60,25 +97,64 @@ const Content = (props: { option: number,user:User }) => {
           quality: 1,
         });
     
-        if (!result.cancelled) {
-          setImage(result.uri);
+        if (!result.cancelled && (result.type=='image' || result.type =='video')) {
+        
+          setFileInfo({
+              filePath:result.uri,
+              type:result.type
+          })
+          switch(result.type)
+          {
+              case 'image':
+                  {
+                      setImage(result.uri);
+                      setVideo(undefined);
+                      break;
+                  }
+                case 'video':
+                {
+                    setVideo(result.uri);
+                    setImage(undefined);
+                    break;
+                }
+                default:
+                    {
+                        alert("please select image or video");
+                    }
+          }
+          
         }
       };
+
+      if(loading) return <ActivityIndicator size='large' color='white'></ActivityIndicator>
 
     switch (props.option) {
         case 0:
             {
 
                 return (
-                    <View style={{ alignItems: 'center', justifyContent: 'center',marginTop:30 }}>
+                  
+                                <View style={{ alignItems: 'center', justifyContent: 'center',marginTop:30 }}>
                       <Button mode='contained' color={LifeLineDarkBlue} onPress={pickImage}><Text>Choose Photo/Video</Text></Button>
-                      {image && <>
-                     <TextInput placeholder={'Enter file name'} onChangeText={(text)=>setFileName(text)}></TextInput>
-                     <Button mode='contained' color={LifeLineOrange} onPress={()=>{ addImageOrVideoToVault();}}>Add to Vault</Button>
+                      {fileInfo?.filePath && <>
+                     <TextInput style={{backgroundColor:LifeLineBlue,color:'white',fontSize:20, borderColor:LifeLineDarkBlue,borderWidth:5,alignSelf:'stretch',textAlign:'center'}} placeholder={'Enter file name'} onChangeText={(text)=>setFileName(text)}></TextInput>
+                     <Button mode='contained' color={LifeLineDarkBlue} onPress={()=>{ addImageOrVideoToVault();}}>Add to Vault</Button>
                      </>}
                       {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+                      {video &&  <Video
+            style={{height:200, width:350}}
+            ref={videoRef}
+            source={{
+              uri: video,
+            }}
+            useNativeControls
+            resizeMode="contain"
+            isLooping
+            
+          />}
                    
                     </View>
+            
                   );
             }
 
@@ -121,15 +197,17 @@ const styles = StyleSheet.create({
         backgroundColor: LifeLineDarkBlue,
         flex:1,
         
+        
        
     },
     content: {
-        flex: 1,
+        flex: 2,
         backgroundColor: LifeLineBlue
     },
     footer: {
         alignItems: 'stretch',
         margin: 10,
+        
     },
     header: {
         marginTop: 5

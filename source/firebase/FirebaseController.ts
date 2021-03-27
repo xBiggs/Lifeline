@@ -1,4 +1,5 @@
 import { User } from '../interfaces/User';
+import { PhotoVideoEntry } from '../types';
 import { firebase } from './config';
 import { AddUserData } from './UserDataHandler';
 
@@ -80,29 +81,25 @@ export class FirebaseController {
         return document.data();
     }
 
-
-    static async AddPhotoToVault(user:User,file:string|undefined) {
+    static async AddPhotoToVault(user:User,fileInfo:{filePath:string, type:string}|undefined,filename:string):Promise<PhotoVideoEntry|undefined> {
        
-        if(file)
+        if(fileInfo)
         {
+            console.log('adding to storage');
             // add to storage
-            const response = await fetch(file);
+            const response = await fetch(fileInfo.filePath);
             const blob = await response.blob();
-            const ref = firebase.storage().ref().child(`/${user.id}/images/${file.substring(file.lastIndexOf('/'))}`);
+            const ref = firebase.storage().ref().child(`/${user.id}/${fileInfo.type}s/${filename}`);
            const result = await ref.put(blob);
            const url = await result.ref.getDownloadURL();
 
-           //add to user and update user in firebase
-           console.log(user.vaultItems);
-           user.vaultItems?.photos.push({
-               title:file.substring(file.lastIndexOf('/')),
-               type:'photo',
-               url:url
-           })
-
-          // await this.GetCollectionRef().doc(user.id).update('vaultItems',{taco:'bueno'})
-        
-        }
+          // console.log("adding to firebase");
+           return {
+            title:filename,
+            type:fileInfo.type,
+            url:url
+           }
+        }else return undefined
     }
       
 }
