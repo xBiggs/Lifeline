@@ -1,7 +1,8 @@
 import { QuestionResponse } from "./QuestionResponse";
+import firebase from 'firebase';
 
 export interface DailyConversationResponse {
-    date: Date; // current date
+    date: firebase.firestore.Timestamp; // current date
     response: string; // reponse to "How are you feeling today?"
     owner: string; // user email
     riskFactors: QuestionResponse[]; // current risk factors

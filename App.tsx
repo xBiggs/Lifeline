@@ -21,7 +21,7 @@ export default function App() {
 
   const userChanged = async (user: firebase.User | null) : Promise<void> => {
 
-    const collectionRef = FirebaseController.GetCollectionRef();
+    const collectionRef = FirebaseController.GetUserCollectionRef();
     if (user) {
       console.log(`${user.email} is logged in`)
       const userData: User = (await collectionRef.doc(user.uid).get()).data() as User;
