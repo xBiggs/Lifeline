@@ -84,6 +84,12 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={AppointmentsScreen}
       ></Drawer.Screen>
+            <Drawer.Screen
+        name="DailyConversations"
+        options={{ title: "Daily Conversations" }}
+        initialParams={{ user }}
+        component={DailyConversationsScreen}
+      ></Drawer.Screen>
     </Drawer.Navigator>
   );
 };

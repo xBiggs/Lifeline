@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Screens } from "..";
+import { getSecondsBetweenDates, schedulePushNotification } from "../../Controllers/notificationsController";
 import { FirebaseController } from "../../firebase/FirebaseController";
 import { User } from "../../interfaces/User";
 import { AuthStackParamList } from "../../types";
@@ -29,6 +30,19 @@ export default function SignupScreen(
   const onFooterLinkPress = () => {
     props.navigation.navigate("Login");
   };
+
+  // const scheduleDailyConversationNotification = (user: User, date: Date) => {
+  //   const today: Date = new Date();
+  //     const secondsBetweenDates = getSecondsBetweenDates(today, date);
+  //     if (user.settings?.notificationsOn) {
+  //       schedulePushNotification(
+  //         "Apointment Alert",
+  //         "You have an upcoming appointment",
+  //         "click to view reason",
+  //         secondsBetweenDates
+  //       );
+  //     }
+  // }
 
   const onRegisterPress = async () => {
     setLoading(true);

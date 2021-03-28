@@ -94,53 +94,55 @@ export default function WarningSignsScreen(
   };
 
   return (
-    <View style={{ padding: 30, backgroundColor: "#219ebc" }}>
-      <TextInput
-        onChangeText={onChangeText}
-        value={text}
-        multiline={true}
-        numberOfLines={4}
-        placeholder={"Enter Warning Sign"}
-        placeholderTextColor="#e5e5e5"
-        underlineColorAndroid="#e5e5e5"
-        selectionColor="#e5e5e5"
-      />
-      <SegmentedControl
-        values={[MODERATE, SEVERE]}
-        selectedIndex={index}
-        onChange={(event) => {
-          setIndex(event.nativeEvent.selectedSegmentIndex);
-        }}
-      />
-      <TouchableOpacity
-        onPress={() => addWarningSign()}
-        style={{
-          backgroundColor: "#023047",
-          padding: 10,
-          marginTop: 10,
-          borderRadius: 10,
-        }}
-      >
-        <Text
+    <KeyboardAwareScrollView>
+      <View style={{ padding: 30, backgroundColor: "#219ebc" }}>
+        <TextInput
+          onChangeText={onChangeText}
+          value={text}
+          multiline={true}
+          numberOfLines={4}
+          placeholder={"Enter Warning Sign"}
+          placeholderTextColor="#e5e5e5"
+          underlineColorAndroid="#e5e5e5"
+          selectionColor="#e5e5e5"
+        />
+        <SegmentedControl
+          values={[MODERATE, SEVERE]}
+          selectedIndex={index}
+          onChange={(event) => {
+            setIndex(event.nativeEvent.selectedSegmentIndex);
+          }}
+        />
+        <TouchableOpacity
+          onPress={() => addWarningSign()}
           style={{
-            color: "white",
-            textAlign: "center",
-            alignSelf: "center",
+            backgroundColor: "#023047",
+            padding: 10,
+            marginTop: 10,
+            borderRadius: 10,
           }}
         >
-          Add Warning Sign +
-        </Text>
-      </TouchableOpacity>
-      <FlatList
-        keyExtractor={(item: WarningSignListElement) => item.id}
-        data={warningSignList}
-        renderItem={(element) => (
-          <WarningSignCard
-            warningSign={element.item.warningSign}
-            onPressTrash={() => removeWarningSign(element.item.id)}
-          />
-        )}
-      />
+          <Text
+            style={{
+              color: "white",
+              textAlign: "center",
+              alignSelf: "center",
+            }}
+          >
+            Add Warning Sign +
+          </Text>
+        </TouchableOpacity>
+        <FlatList
+          keyExtractor={(item: WarningSignListElement) => item.id}
+          data={warningSignList}
+          renderItem={(element) => (
+            <WarningSignCard
+              warningSign={element.item.warningSign}
+              onPressTrash={() => removeWarningSign(element.item.id)}
+            />
+          )}
+        />
     </View>
+    </KeyboardAwareScrollView>
   );
 }

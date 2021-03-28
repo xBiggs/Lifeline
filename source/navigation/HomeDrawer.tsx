@@ -105,6 +105,19 @@ export default (props: {
           />
           <DrawerItem
             icon={({ color, size }) => (
+              <MaterialCommunityIcons
+                name="human-greeting"
+                color={color}
+                size={size}
+              />
+            )}
+            label="Daily Conversations"
+            onPress={() => {
+              navigation.navigate("DailyConversations");
+            }}
+          />
+          <DrawerItem
+            icon={({ color, size }) => (
               <MaterialCommunityIcons name="book" color={color} size={size} />
             )}
             label="Vault"
