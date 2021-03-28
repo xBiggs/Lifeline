@@ -3,6 +3,7 @@ import { PersInfo } from "../interfaces/PersonalInfo"
 import { MedicationInfo } from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
 import { NotificationType } from '../interfaces/Notification';
+import { EmergencyLocationProvider } from '../interfaces/EmergencyLocationProvider';
 
 // TODO: Why does this even exist
 
@@ -85,5 +86,16 @@ export async function AddContacts(user: User) {
 
 }
 
+export async function AddServiceProvider(user: User, data: EmergencyLocationProvider) {
+    /* UPDATING THE ENTIRE USER OBJECT */
+
+    try {
+        await firebase.firestore().collection('users').doc(user.id).update("serviceProvider", data);
+    } catch (error) {
+        throw (error as Error).message;
+    }
+
+
+}
 
 // commands to test a function: tsc & node firebaseCRUDtest.js

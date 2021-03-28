@@ -38,11 +38,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
             let loca = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
             // FIXME: Error
             setLocation(loca);
-            // console.log(location);
+            console.log(location);
             
            
             // setLatAndLong('@' + location.coords.latitude + ',' + location.coords.longitude);
             setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
+            console.log(typeof(latAndLong));
+            
             // setUrl('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs');
 
 
