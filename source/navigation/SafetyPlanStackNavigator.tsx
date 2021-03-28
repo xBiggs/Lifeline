@@ -11,6 +11,7 @@ import EmergencyContactScreen from "../screens/SafetyPlanScreen/EmergencyContact
 import SocialEngagementsScreen from "../screens/SafetyPlanScreen/SocialEngagementsScreen/";
 import WarningSignsScreen from "../screens/SafetyPlanScreen/WarningSignsScreen/WarningSignsScreen";
 import LocationServivesScreen from "../screens/SafetyPlanScreen/LocationServicesScreen/LocationServivesScreen";
+import EmergencyLocationScreen from "../screens/SafetyPlanScreen/EmergencyLocationScreen/EmergencyLocationScreen";
 import Vault from "../screens/VaultScreen/VaultScreen";
 
 const Stack = createStackNavigator<SafetyPlanStackParamList>();
@@ -60,6 +61,13 @@ export default (
         initialParams={{ user }}
         component={LocationServivesScreen}
       ></Stack.Screen>
+
+      <Stack.Screen
+        name="EmergencyLocations"
+        initialParams={{ user }}
+        component={EmergencyLocationScreen}
+      ></Stack.Screen>
+
       <Stack.Screen
         name="Vault"
         initialParams={{ user }}

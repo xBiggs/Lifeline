@@ -9,6 +9,7 @@ import * as Contacts from 'expo-contacts';
 import { Settings } from "react-native";
 import { SettingsType } from "./Settings";
 import { VaultItems } from "./VaultItems";
+import { EmergencyLocationProvider } from "./EmergencyLocationProvider"
 
 export interface User {
     notifications?: NotificationType[];
@@ -25,5 +26,6 @@ export interface User {
     emergencyContacts?: Contacts.Contact[];//Contacts.Contact[]; // new
     warningSigns?: WarningSign[]; // new
     settings?:SettingsType;
-    vaultItems?:VaultItems
+    vaultItems?:VaultItems;
+    emergencyProviders?: EmergencyLocationProvider[];
 }

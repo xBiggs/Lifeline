@@ -9,10 +9,12 @@ import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-hand
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServices'>) => {
 
-    const [location, setLocation] = useState("");
+    const { user } = props.route.params;
+
+    const [location, setLocation] = useState({});
     const [errorMsg, setErrorMsg] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchData, setSearchData] = useState<any>();
+    const [searchData, setSearchData] = useState<any>([]);
     const [latAndLong, setLatAndLong] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -26,9 +28,11 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
             }
 
             // TODO: Try Catch??
-            let location = await Location.getCurrentPositionAsync({});
+            let loca = await Location.getCurrentPositionAsync({});
             // FIXME: Error
-            setLocation(location);
+            setLocation(loca);
+            // console.log(location);
+            
             setIsLoading(true);
             // setLatAndLong('@' + location.coords.latitude + ',' + location.coords.longitude);
             setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
@@ -59,7 +63,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
     };
 
     return (
-        <View style={{marginBottom:400}}>
+        <View>
             <View>
                 <TextInput
                     placeholder="What can I help you with today!"
@@ -92,12 +96,20 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                                 .then(response => response.json())
                                 .then(result => setSearchData(result))
                                 .catch(e => console.log(e));
-                            // console.log(searchData);
+                            console.log(searchData);
                             setIsLoading(false);
                         }}
                 >
                     <Text>Search</Text>
 
+                </TouchableOpacity>
+            </View>
+
+            <View>
+                <TouchableOpacity
+                style={{justifyContent: "center", alignContent: "center", width: 200, height:50, backgroundColor: "purple", marginLeft: 100}}
+                onPress={() => props.navigation.navigate('EmergencyLocations', { user })}>
+                    <Text>My emergency providers</Text>
                 </TouchableOpacity>
             </View>
 
@@ -114,13 +126,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                         <ActivityIndicator size="large" color="#bad555" />
                     </View>
                 ) : null}
-                <FlatList
+                {/* <FlatList
                     data={searchData}
                     renderItem={() => (
                         <Text>item</Text>
                     )}
 
-                />
+                /> */}
 
             </View>
 

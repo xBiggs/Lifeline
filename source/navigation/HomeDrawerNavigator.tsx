@@ -62,11 +62,12 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         component={VaultStackNavigator}
       ></Drawer.Screen>
 
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="DailyConversations"
         options={{ title: "Daily Conversations" }}
         component={DailyConversationsScreen}
-      ></Drawer.Screen>
+      ></Drawer.Screen> */}
+      
       <Drawer.Screen name="Settings" component={SettingsScreen}></Drawer.Screen>
       <Drawer.Screen
         name="Medical_Information"
