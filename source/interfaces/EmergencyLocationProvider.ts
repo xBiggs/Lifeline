@@ -3,7 +3,5 @@ export interface EmergencyLocationProvider {
     vicinity: string, // address
     phone?: string | number,
     physicianName?: string,
-    serviceType?: string,
-    location?: string
-    
+    serviceType?: string    
 }
