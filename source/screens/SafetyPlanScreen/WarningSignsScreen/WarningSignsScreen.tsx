@@ -94,9 +94,7 @@ export default function WarningSignsScreen(
   };
 
   return (
-    <KeyboardAwareScrollView
-      style={{ padding: 30, backgroundColor: "#219ebc" }}
-    >
+    <View style={{ padding: 30, backgroundColor: "#219ebc" }}>
       <TextInput
         onChangeText={onChangeText}
         value={text}
@@ -143,6 +141,6 @@ export default function WarningSignsScreen(
           />
         )}
       />
-    </KeyboardAwareScrollView>
+    </View>
   );
 }
