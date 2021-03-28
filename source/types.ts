@@ -28,7 +28,7 @@ export type HomeDrawerParamList = {
     Information:{user:User},
     Vault:{user:User},
     ManageVaultItems:{user:User}
-    // DailyConversations:{user:User},
+    DailyConversations:{user:User},
     SafetyPlan:{user:User}
     Settings:undefined,
     Appointments:{user:User}

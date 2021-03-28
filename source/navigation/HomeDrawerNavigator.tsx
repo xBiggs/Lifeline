@@ -67,7 +67,6 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={DailyConversationsScreen}
       ></Drawer.Screen>
-      
       <Drawer.Screen name="Settings" component={SettingsScreen}></Drawer.Screen>
       <Drawer.Screen
         name="Medical_Information"
