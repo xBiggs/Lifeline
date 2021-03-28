@@ -13,6 +13,8 @@ import SocialEngagement from '../../../interfaces/socialEngagements'
 import SocialEngagementMenu from './components/SocialEngagementMenu'
 import SocialCircle from './components/SocialCircle'
 import SocialCircleActivities from './components/SocialCircleActivities'
+import AddFavoriteSocialPlaces from './components/AddFavoriteSocialPlaces'
+import AddFavoriteSocialActivities from './components/AddFavoriteSocialActivities'
 
 
 export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagements'>) =>{
@@ -24,13 +26,27 @@ export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagemen
     }
     const [option,setOption] = useState(0);
     const [socialContacts,setSocialContacts] = useState(user.socialEngagements.socialContacts);
-
+    const [socialPlaces,setSocialPlaces] = useState(user.socialEngagements.places);
+    const [socialActivities,setSocialActivities] = useState(user.socialEngagements.activites);
     //listener to keep user object social contacts in sync with firebase
     useEffect(()=>{
         console.log('updating firebase')
         if(user.socialEngagements) user.socialEngagements.socialContacts = socialContacts;
         AddUserData(user);
     },[socialContacts])
+
+    //listener to keep user object social places in sync with firebase
+    useEffect(()=>{
+        if(user.socialEngagements)user.socialEngagements.places = socialPlaces;
+        AddUserData(user);
+    },[socialPlaces])
+
+     //listener to keep user object social places in sync with firebase
+     useEffect(()=>{
+        if(user.socialEngagements)user.socialEngagements.activites = socialActivities;
+        AddUserData(user);
+    },[socialActivities])
+
 
 
     //functions to add and remove social contacts
@@ -86,10 +102,31 @@ export default (props:StackScreenProps<SafetyPlanStackParamList,'SocialEngagemen
             }
         case 2:
             {
+                return (
+                    <View style={style.container}>
+                    <View style={style.content}>
+                        <AddFavoriteSocialPlaces setSocialPlaces={setSocialPlaces} places={socialPlaces}></AddFavoriteSocialPlaces>
+                  
+                    </View>
+                    <View style={style.menu}>
+                        <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                    </View>
+                </View>
+                )
 
         }
         case 3:
             {
+                return(
+                <View style={style.container}>
+                <View style={style.content}>
+                    <AddFavoriteSocialActivities setSocialActivities={setSocialActivities} activities={socialActivities}></AddFavoriteSocialActivities>
+              
+                </View>
+                <View style={style.menu}>
+                    <SocialEngagementMenu setOption={setOption} ></SocialEngagementMenu>
+                </View>
+            </View>)
 
             }
         default:

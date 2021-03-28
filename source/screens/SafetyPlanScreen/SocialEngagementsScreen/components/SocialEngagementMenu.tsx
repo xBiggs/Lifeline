@@ -18,7 +18,7 @@ export default(props:{setOption:(option:number)=>void})=>{
             }}>Add Favorite Social Places</Button>
             <Button style={styles.button} color='white' onPress={()=>{
                 props.setOption(3)
-            }}>Add Favorite Soical Activities</Button>
+            }}>Add Favorite Social Activities</Button>
         </View>
     )
 }

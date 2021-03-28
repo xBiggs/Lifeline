@@ -1,14 +1,12 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useRef, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { View, Text, StyleSheet, TouchableOpacity,Image, KeyboardAvoidingViewBase, Dimensions } from "react-native"
-import { ActivityIndicator, Button, Modal } from 'react-native-paper';
-import { LifeLineBlue, LifeLineDarkBlue, LifeLineOrange, VaultStackParamList } from '../../../types';
+import { View, Text, StyleSheet, TouchableOpacity,Image,TextInput } from "react-native"
+import { ActivityIndicator, Button } from 'react-native-paper';
+import { LifeLineBlue, LifeLineDarkBlue, VaultStackParamList } from '../../../types';
 import VaultItemsMenu from './VaultItemsMenu';
-import { FlingGestureHandler, TextInput } from 'react-native-gesture-handler';
 import { User } from '../../../interfaces/User';
 import { FirebaseController } from '../../../firebase/FirebaseController';
-import { ScreenStackHeaderBackButtonImage } from 'react-native-screens';
 import { Video } from 'expo-av';
 import { AddUserData } from '../../../firebase/UserDataHandler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
