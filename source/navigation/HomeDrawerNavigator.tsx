@@ -61,10 +61,15 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={VaultStackNavigator}
       ></Drawer.Screen>
+<<<<<<< HEAD
 
       {/* <Drawer.Screen
+=======
+      <Drawer.Screen
+>>>>>>> 42309ab4df995b563de8c809783cdde3847a2aff
         name="DailyConversations"
         options={{ title: "Daily Conversations" }}
+        initialParams={{ user }}
         component={DailyConversationsScreen}
       ></Drawer.Screen> */}
       
@@ -84,12 +89,6 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         name="Appointments"
         initialParams={{ user }}
         component={AppointmentsScreen}
-      ></Drawer.Screen>
-            <Drawer.Screen
-        name="DailyConversations"
-        options={{ title: "Daily Conversations" }}
-        initialParams={{ user }}
-        component={DailyConversationsScreen}
       ></Drawer.Screen>
     </Drawer.Navigator>
   );

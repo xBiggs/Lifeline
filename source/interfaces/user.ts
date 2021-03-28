@@ -27,5 +27,5 @@ export interface User {
     warningSigns?: WarningSign[]; // new
     settings?:SettingsType;
     vaultItems?:VaultItems;
-    emergencyProviders?: EmergencyLocationProvider[];
+    emergencyProviders?: [{}];
 }

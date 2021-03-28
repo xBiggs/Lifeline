@@ -1,3 +1,4 @@
+import { DailyConversationResponse } from '../interfaces/DailyConversationResponse';
 import { User } from '../interfaces/User';
 import { PhotoVideoEntry } from '../types';
 import { firebase } from './config';
@@ -7,8 +8,15 @@ export class FirebaseController {
 
     static readonly COLLECTION: string = 'users';
 
-    static GetCollectionRef(): firebase.firestore.CollectionReference<firebase.firestore.DocumentData> {
+    static readonly DAILY_CONVERSATIONS_COLLECTION = 'dailyConversations';
+
+    static GetUserCollectionRef(): firebase.firestore.CollectionReference<firebase.firestore.DocumentData> {
         const collectionRef = firebase.firestore().collection(FirebaseController.COLLECTION);
+        return collectionRef;
+    }
+
+    static GetDailyConversationsCollectionRef(): firebase.firestore.CollectionReference<firebase.firestore.DocumentData> {
+        const collectionRef = firebase.firestore().collection(FirebaseController.DAILY_CONVERSATIONS_COLLECTION);
         return collectionRef;
     }
 
@@ -41,7 +49,7 @@ export class FirebaseController {
             throw ('Null firebase.auth.UserCredential.user');
         }
         const uid: string = userCredential.user.uid;
-        const usersRef = FirebaseController.GetCollectionRef();
+        const usersRef = FirebaseController.GetUserCollectionRef();
         const document = await usersRef.doc(uid).get();
         if (!document.exists) {
             throw ("User does not exist anymore.");
@@ -51,8 +59,13 @@ export class FirebaseController {
     }
 
     static async SetUserData(user: User): Promise<void> {
-        const collectionRef = firebase.firestore().collection('users')
-        collectionRef.doc(user.id).set(user);
+        const collectionRef = FirebaseController.GetUserCollectionRef();
+        await collectionRef.doc(user.id).set(user);
+    }
+
+    static async AddDailyConversation(response: DailyConversationResponse) {
+        const collectionRef = FirebaseController.GetDailyConversationsCollectionRef();
+        await collectionRef.doc().set(response);
     }
 
     static async Logout(): Promise<void> {
@@ -65,7 +78,7 @@ export class FirebaseController {
             throw ("User is null.");
         }
         const uid = user.uid;
-        const usersRef = FirebaseController.GetCollectionRef();
+        const usersRef = FirebaseController.GetUserCollectionRef();
         const document = await usersRef.doc(uid).get();
         return document.data();
     }
@@ -76,30 +89,29 @@ export class FirebaseController {
             throw ("User is null.");
         }
         const uid = user.uid;
-        const usersRef = FirebaseController.GetCollectionRef();
+        const usersRef = FirebaseController.GetUserCollectionRef();
         const document = await usersRef.doc(uid).get();
         return document.data();
     }
 
-    static async AddPhotoToVault(user:User,fileInfo:{filePath:string, type:string}|undefined,filename:string):Promise<PhotoVideoEntry|undefined> {
-       
-        if(fileInfo)
-        {
+    static async AddPhotoToVault(user: User, fileInfo: { filePath: string, type: string } | undefined, filename: string): Promise<PhotoVideoEntry | undefined> {
+
+        if (fileInfo) {
             console.log('adding to storage');
             // add to storage
             const response = await fetch(fileInfo.filePath);
             const blob = await response.blob();
             const ref = firebase.storage().ref().child(`/${user.id}/${fileInfo.type}s/${filename}`);
-           const result = await ref.put(blob);
-           const url = await result.ref.getDownloadURL();
+            const result = await ref.put(blob);
+            const url = await result.ref.getDownloadURL();
 
-          // console.log("adding to firebase");
-           return {
-            title:filename,
-            type:fileInfo.type,
-            url:url
-           }
-        }else return undefined
+            // console.log("adding to firebase");
+            return {
+                title: filename,
+                type: fileInfo.type,
+                url: url
+            }
+        } else return undefined;
     }
-      
+
 }

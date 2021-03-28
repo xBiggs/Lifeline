@@ -12,38 +12,45 @@ import {
 import { HomeDrawerParamList } from '../../types';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { DailyConversationResponse } from '../../interfaces/DailyConversationResponse';
-import { riskFactorQuestions } from '../../interfaces/QuestionResponse';
+import { FirebaseController } from '../../firebase/FirebaseController';
+import firebase from 'firebase';
 
 export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDrawerParamList, "DailyConversations">) {
 
     const user: User = props.route.params.user;
     const [text, onChangeText] = React.useState("");
 
-    // useEffect(() => {
-    //
-    // }, [text]);
+    const submit = async () => {
+        if (text.trim().length === 0) {
+            alert("Warning sign cannot be empty!");
+          } else {
 
-    const submit = () => {
+            // Do some ml thing to analyze text here if possible
 
-        // Do some ml thing to analyze text here if possible
+            let risk: number = 0;
+            user.mitigatingFactors?.forEach(factor => {
+                risk -= factor.points;
+            });
+            user.riskFactors?.forEach(factor => {
+                risk += factor.points;
+            });
 
-        let risk: number = 0;
-        user.mitigatingFactors?.forEach(factor => {
-            risk -= factor.points;
-        });
-        user.riskFactors?.forEach(factor => {
-            risk += factor.points;
-        })
+            const response: DailyConversationResponse = {
+                date: firebase.firestore.Timestamp.fromDate(new Date()),
+                owner: user.email,
+                response: text,
+                riskFactors: user.riskFactors? user.riskFactors : [],
+                mitigatingFactors: user.mitigatingFactors? user.mitigatingFactors : [],
+                riskScore: risk
+            }
 
-        const response: DailyConversationResponse = {
-            date: new Date(),
-            owner: user.email,
-            response: text,
-            riskFactors: user.riskFactors? user.riskFactors : [],
-            mitigatingFactors: user.mitigatingFactors? user.mitigatingFactors : [],
-            riskScore: risk
+            try {
+                await FirebaseController.AddDailyConversation(response);
+            } catch (e) {
+                // Do Something with error here
+                alert((e as Error).message);
+            }
         }
-        // Upload text to firebase and run risk assessment
     }
 
     return (
@@ -69,15 +76,15 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
                         borderRadius: 10,
                     }}
                 >
-                <Text
-                    style={{
-                    color: "white",
-                    textAlign: "center",
-                    alignSelf: "center",
-                    }}
-                >Submit
-                </Text>
-        </TouchableOpacity>
+                    <Text
+                        style={{
+                        color: "white",
+                        textAlign: "center",
+                        alignSelf: "center",
+                        }}
+                    >Submit
+                    </Text>
+                </TouchableOpacity>
             </View>
         </KeyboardAwareScrollView>
     )
