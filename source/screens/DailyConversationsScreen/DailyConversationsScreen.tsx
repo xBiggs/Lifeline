@@ -54,8 +54,8 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
     }
 
     return (
-        <KeyboardAwareScrollView>
-            <View style={{ padding: 30, backgroundColor: "#219ebc" }}>
+        <KeyboardAwareScrollView contentContainerStyle={{flexGrow:1,flex:1}}>
+            <View style={{ padding: 30, backgroundColor: "#219ebc",flex:1 }}>
                 <Text>How are you feeling today?</Text>
                 <TextInput
                     onChangeText={onChangeText}

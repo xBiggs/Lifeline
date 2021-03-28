@@ -94,8 +94,8 @@ export default function WarningSignsScreen(
   };
 
   return (
-    <KeyboardAwareScrollView>
-      <View style={{ padding: 30, backgroundColor: "#219ebc" }}>
+    <KeyboardAwareScrollView contentContainerStyle={{flexGrow:1}}>
+      <View style={{ padding: 30, backgroundColor: "#219ebc",flex:1 }}>
         <TextInput
           onChangeText={onChangeText}
           value={text}
@@ -132,6 +132,7 @@ export default function WarningSignsScreen(
             Add Warning Sign +
           </Text>
         </TouchableOpacity>
+        
         <FlatList
           keyExtractor={(item: WarningSignListElement) => item.id}
           data={warningSignList}
