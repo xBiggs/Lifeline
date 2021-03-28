@@ -19,6 +19,12 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
     const [latAndLong, setLatAndLong] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(()=>{
+        //this gurantees that lat and long have the up to date value of location
+      if(location) setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
+    },[location])
+
+
     useEffect(() => {
     
        (async () => {
@@ -38,12 +44,11 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
             const loca = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
             // FIXME: Error
             setLocation(loca);
-            //console.log(loca.coords);
           //  console.log(location);
             
            
             // setLatAndLong('@' + location.coords.latitude + ',' + location.coords.longitude);
-           if(location) setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
+           
           //  console.log(typeof(latAndLong));
             
             // setUrl('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs');
