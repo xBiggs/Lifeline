@@ -23,7 +23,7 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
     const [text3, onChangeText3] = React.useState("");
 
     const submit = async () => {
-        if (text.trim().length === 0) {
+        if (text.trim().length === 0 || text2.trim().length === 0 || text3.trim().length === 0) {
             alert("Response cannot be empty!");
           } else {
 
