@@ -86,11 +86,13 @@ export async function AddContacts(user: User) {
 
 }
 
-export async function AddServiceProvider(user: User, data: EmergencyLocationProvider) {
+export async function AddServiceProvider(user: User){//, data: EmergencyLocationProvider) {
     /* UPDATING THE ENTIRE USER OBJECT */
 
     try {
-        await firebase.firestore().collection('users').doc(user.id).update("serviceProvider", data);
+        console.log("inside firebase call");
+        
+        await firebase.firestore().collection('users').doc(user.id).update("serviceProvider", user.emergencyProviders);
     } catch (error) {
         throw (error as Error).message;
     }

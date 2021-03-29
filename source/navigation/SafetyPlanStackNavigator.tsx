@@ -62,11 +62,11 @@ export default (
         component={LocationServivesScreen}
       ></Stack.Screen>
 
-      <Stack.Screen
+    <Stack.Screen
         name="EmergencyLocations"
         initialParams={{ user }}
         component={EmergencyLocationScreen}
-      ></Stack.Screen>
+   ></Stack.Screen>
 
       <Stack.Screen
         name="Vault"

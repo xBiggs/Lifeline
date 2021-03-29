@@ -20,7 +20,8 @@ export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
     }
     const [option, setOption] = useState<number>(0)
     return (
-        <KeyboardAwareScrollView enableOnAndroid style={{backgroundColor:LifeLineBlue}}>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps='handled' contentContainerStyle={{flexGrow:1}}>
+        <View  style={{backgroundColor:LifeLineBlue,flexGrow:1,flex:1}}>
         <View style={styles.container}>
 
             <View style={styles.header}>
@@ -37,6 +38,7 @@ export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
 
                 </TouchableOpacity>
             </View>
+        </View>
         </View>
         </KeyboardAwareScrollView>
     )
@@ -56,6 +58,7 @@ const Content = (props: { option: number,user:User }) => {
         setLoading(true);
         if(fileName.trim() =='') {
             alert("Please enter file name")
+            setLoading(false);
             return;
         }
       if(fileInfo)
@@ -131,7 +134,7 @@ const Content = (props: { option: number,user:User }) => {
             {
 
                 return (
-                  
+                
                                 <View style={{ alignItems: 'center', justifyContent: 'center',marginTop:30 }}>
                       <Button mode='contained' color={LifeLineDarkBlue} onPress={pickImage}><Text>Choose Photo/Video</Text></Button>
                       {fileInfo?.filePath && <>
