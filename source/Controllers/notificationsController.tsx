@@ -20,6 +20,25 @@ export async function schedulePushNotification(
   });
 }
 
+export async function scheduleRecurringPushNotification(
+  title: string,
+  body: string,
+  data: string,
+  seconds: number
+) {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: title,
+      body: body,
+      data: { data },
+    },
+    trigger: {
+      seconds: seconds,
+      repeats: true
+    },
+  });
+}
+
 export async function sendPushNotification(expoPushToken: any) {
   const message = {
     to: expoPushToken,
