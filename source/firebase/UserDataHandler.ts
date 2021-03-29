@@ -86,17 +86,18 @@ export async function AddContacts(user: User) {
 
 }
 
-// export async function AddServiceProvider(user: User, data: EmergencyLocationProvider) {
-//     /* UPDATING THE ENTIRE USER OBJECT */
+export async function AddServiceProvider(user: User){//, data: EmergencyLocationProvider) {
+    /* UPDATING THE ENTIRE USER OBJECT */
 
-//     // user.emergencyProviders.push(data);
-//     try {
-//         await firebase.firestore().collection('users').doc(user.id).update("serviceProvider", data);
-//     } catch (error) {
-//         throw (error as Error).message;
-//     }
+    try {
+        console.log("inside firebase call");
+        
+        await firebase.firestore().collection('users').doc(user.id).update("serviceProvider", user.emergencyProviders);
+    } catch (error) {
+        throw (error as Error).message;
+    }
 
 
-// }
+}
 
 // commands to test a function: tsc & node firebaseCRUDtest.js

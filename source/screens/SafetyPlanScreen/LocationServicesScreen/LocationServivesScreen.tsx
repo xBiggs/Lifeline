@@ -105,7 +105,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
 
             <View>
                 <TouchableOpacity
-                    style={{ marginTop: 20, marginLeft: 20, marginRight: 20,  height: 50 }}
+                    style={{alignContent: "center", justifyContent: "center", marginTop: 20, marginLeft: 20, marginRight: 20,  height: 50, width: 90, backgroundColor: "cyan", borderRadius:50 }}
                     onPress={
                         async () => {
                             setIsLoading(true);
@@ -132,18 +132,24 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                             console.log('printing data')
                         }}
                 >
-                    <Text>Search</Text>
+                    <Text
+                    style={{justifyContent: "center", alignContent: "center", color: "red", marginLeft: 20}}
+                    >Search</Text>
 
                 </TouchableOpacity>
-            </View>
-
-            <View>
+                
                 <TouchableOpacity
-                style={{justifyContent: "center", alignContent: "center", width: 200, height:50, backgroundColor: "purple", marginLeft: 100}}
+                style={{justifyContent: "center", alignContent: "center", width: 200, height:50, backgroundColor: "#40abed", marginLeft: 100, borderRadius: 30, marginBottom: 10}}
                 onPress={() => props.navigation.navigate('EmergencyLocations', { user })}>
-                    <Text>My emergency providers</Text>
+                    <Text
+                    style={{justifyContent: "center", alignContent: "center", color: "red", marginLeft: 20}}
+                    >My emergency providers</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* <View>
+                
+            </View> */}
 
             <View style={{ flex: 2, backgroundColor:'pink' }}>
                 {/* , backgroundColor: '#2f363c' */}
