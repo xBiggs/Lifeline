@@ -106,7 +106,7 @@ export default (props: {
           <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons
-                name="human-greeting"
+                name="chat"
                 color={color}
                 size={size}
               />
@@ -118,7 +118,7 @@ export default (props: {
           />
           <DrawerItem
             icon={({ color, size }) => (
-              <MaterialCommunityIcons name="book" color={color} size={size} />
+              <MaterialCommunityIcons name="lock" color={color} size={size} />
             )}
             label="Vault"
             onPress={() => {
