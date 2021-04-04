@@ -17,13 +17,17 @@ export interface User {
     lastName: string;
     email: string;
     id: string;
+
+    location?:string; // new - used in EmergencyLocationScreen & LocationServicesScreen
+    phoneNumber?: number;
+
     personalInfo?: PersInfo;
     medInfo?: MedicationInfo;
     riskFactors?: QuestionResponse[];
     mitigatingFactors?: QuestionResponse[];
     copingStrategies?:string[];
     socialEngagements?:SocialEngagement
-    emergencyContacts?: Contacts.Contact[];//Contacts.Contact[]; // new
+    emergencyContacts?: ContactDetails[];//Contacts.Contact[]; // new
     warningSigns?: WarningSign[]; // new
     settings?:SettingsType;
     vaultItems?:VaultItems;

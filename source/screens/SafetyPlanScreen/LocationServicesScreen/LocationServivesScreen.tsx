@@ -12,53 +12,61 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
 
     const { user } = props.route.params;
 
-    const [location, setLocation] = useState<{coords:{latitude:number,longitude:number} }>();
+    const [location, setLocation] = useState<{ coords: { latitude: number, longitude: number } }>();
     const [errorMsg, setErrorMsg] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchData, setSearchData] = useState<{results:any[]}>({results:[]});
+    const [searchData, setSearchData] = useState<{ results: any[] }>({ results: [] });
     const [latAndLong, setLatAndLong] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(()=>{
+    useEffect(() => {
         //this gurantees that lat and long have the up to date value of location
-      if(location) setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
-    },[location])
+        if (location) setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
+
+        if(user.location){
+            user.location = latAndLong; // set the location attribute on user object
+        }
+        else{
+            user.location = "No location found";
+        }
+        
+
+    }, [location])
 
 
     useEffect(() => {
-    
-       (async () => {
-           console.log('getting location info')
-          
+
+        (async () => {
+            console.log('getting location info')
+
 
 
             // TODO: Try Catch ??
-            try{
+            try {
                 let { status } = await Location.requestPermissionsAsync();
-            if (status !== 'granted') {
-                setErrorMsg("Permission to access location was denied");
-                return;
-            }
+                if (status !== 'granted') {
+                    setErrorMsg("Permission to access location was denied");
+                    return;
+                }
 
-            // TODO: Try Catch??
-            const loca = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
-            // FIXME: Error
-            setLocation(loca);
-          //  console.log(location);
-            
-           
-            // setLatAndLong('@' + location.coords.latitude + ',' + location.coords.longitude);
-           
-          //  console.log(typeof(latAndLong));
-            
-            // setUrl('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs');
+                // TODO: Try Catch??
+                const loca = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+                // FIXME: Error
+                setLocation(loca);
+                //  console.log(location);
 
 
-            }catch(e)
-            {
+                // setLatAndLong('@' + location.coords.latitude + ',' + location.coords.longitude);
+
+                //  console.log(typeof(latAndLong));
+
+                // setUrl('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs');
+
+
+            } catch (e) {
                 alert(e)
             }
-            
+
         })()
     }, []);
 
@@ -79,17 +87,17 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
     }, [searchTerm])
 
 
-    const renderItem = ({item}:{item:any}) => {
+    const renderItem = ({ item }: { item: any }) => {
         return (
-            <Text style={{textAlign:'center', alignSelf:'stretch', borderWidth:1,margin:2,borderColor:'blue'}}>{item.name}</Text>
+            <Text style={{ textAlign: 'center', alignSelf: 'stretch', borderWidth: 1, margin: 2, borderColor: 'blue' }}>{item.name}</Text>
         )
     };
 
 
-  
+
 
     return (
-        <View style={{flex:1}}>
+        <View style={{ flex: 1 }}>
             <View>
                 <TextInput
                     placeholder="What can I help you with today!"
@@ -105,7 +113,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
 
             <View>
                 <TouchableOpacity
-                    style={{alignContent: "center", justifyContent: "center", marginTop: 20, marginLeft: 20, marginRight: 20,  height: 50, width: 90, backgroundColor: "cyan", borderRadius:50 }}
+                    style={{ alignContent: "center", justifyContent: "center", marginTop: 20, marginLeft: 20, marginRight: 20, height: 50, width: 90, backgroundColor: "cyan", borderRadius: 50 }}
                     onPress={
                         async () => {
                             setIsLoading(true);
@@ -120,29 +128,29 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                             const key = '&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs';
                             const emergencyServiceUrl = domain + location + type + radius + key
                             // console.log(emergencyServiceUrl);
-                           /* fetch(emergencyServiceUrl)
-                                .then(response => response.json())
-                                .then(result => setSearchData(result))
-                                .catch(e => console.log(e));*/
+                            /* fetch(emergencyServiceUrl)
+                                 .then(response => response.json())
+                                 .then(result => setSearchData(result))
+                                 .catch(e => console.log(e));*/
                             const result = await fetch(emergencyServiceUrl);
                             const json = await result.json();
-                         //   console.log(json);
+                            //   console.log(json);
                             setSearchData(json);
                             setIsLoading(false);
                             console.log('printing data')
                         }}
                 >
                     <Text
-                    style={{justifyContent: "center", alignContent: "center", color: "red", marginLeft: 20}}
+                        style={{ justifyContent: "center", alignContent: "center", color: "red", marginLeft: 20 }}
                     >Search</Text>
 
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity
-                style={{justifyContent: "center", alignContent: "center", width: 200, height:50, backgroundColor: "#40abed", marginLeft: 100, borderRadius: 30, marginBottom: 10}}
-                onPress={() => props.navigation.navigate('EmergencyLocations', { user })}>
+                    style={{ justifyContent: "center", alignContent: "center", width: 200, height: 50, backgroundColor: "#40abed", marginLeft: 100, borderRadius: 30, marginBottom: 10 }}
+                    onPress={() => props.navigation.navigate('EmergencyLocations', { user })}>
                     <Text
-                    style={{justifyContent: "center", alignContent: "center", color: "red", marginLeft: 20}}
+                        style={{ justifyContent: "center", alignContent: "center", color: "red", marginLeft: 20 }}
                     >My emergency providers</Text>
                 </TouchableOpacity>
             </View>
@@ -151,7 +159,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                 
             </View> */}
 
-            <View style={{ flex: 2, backgroundColor:'pink' }}>
+            <View style={{ flex: 2, backgroundColor: 'pink' }}>
                 {/* , backgroundColor: '#2f363c' */}
                 {/* {this.state.isLoading ? ( */}
                 {isLoading ? (
@@ -164,8 +172,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                         <ActivityIndicator size="large" color="#bad555" />
                     </View>
                 ) : <>
-                <FlatList style={{alignSelf:'stretch',borderWidth:1,alignContent:'center',margin:3}} data={searchData.results} keyExtractor={(item,index)=>index.toString()}
-                renderItem={renderItem}></FlatList>
+                    <FlatList style={{ alignSelf: 'stretch', borderWidth: 1, alignContent: 'center', margin: 3 }} data={searchData.results} keyExtractor={(item, index) => index.toString()}
+                        renderItem={renderItem}></FlatList>
                 </>}
 
             </View>
