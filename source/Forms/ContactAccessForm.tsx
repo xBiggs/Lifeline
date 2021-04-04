@@ -6,6 +6,7 @@ import styles from "../screens/ContactScreen/styles";
 import { StackScreenProps } from '@react-navigation/stack';
 import { SafetyPlanStackParamList } from '../types'
 import { AddContacts } from '../firebase/UserDataHandler';
+import { ContactDetails } from '../interfaces/ContactDetails';
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
@@ -108,40 +109,54 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
         onPress={async () => {
-          // user.emergencyContacts?.push(item)
-          // console.log(user);
           let userExist = false;
           // TODO: user and emergencyContacts can be undefined here
-          user.emergencyContacts.forEach(element => {
-            // TODO: item and phoneNumbers can be undefined here
-            if (item.phoneNumbers[0].digits === element.phoneNumbers[0].digits){
-              userExist = true;
-              // break
-              console.log("User ALREADY exist");
-              props.navigation.navigate("EmergencyContact", { user });
-            }
-          });
+          try {
 
-          if(!userExist) {
-            // TODO: What is emergencyContacts is undefined?
-            user.emergencyContacts?.push(item);
-            // TODO: Try catch ??
-            await AddContacts(user);
-            console.log("User added");
+            // user.emergencyContacts.forEach(element => {
+            //   // TODO: item and phoneNumbers can be undefined here
+            //   if (item.phoneNumbers[0].digits === element.phoneNumbers[0].digits) {
+            //     userExist = true;
+            //     alert("User ALREADY exist");
+            //     props.navigation.navigate("EmergencyContact", { user });
+            //   }
+            // });
+
+            var contact: ContactDetails = {
+              firstName: item.firstName,
+              lastName: item.lastName,
+              digits: item.phoneNumbers[0].number + "",
+              id: item.id
+            }
+            // console.log(contact);
+            if (user.emergencyContacts) {
+
+              user.emergencyContacts.forEach(ele => {
+                if (contact.digits === ele.digits) {
+                  // console.log("item.phoneNumbers[0].number = ", contact.digits);
+                  // console.log("ele.digits = ", ele.digits);
+                  userExist = true;
+                  alert("User already exist");
+                  // props.navigation.navigate("EmergencyContact", { user });
+                }
+              });
+
+              if (!userExist) {
+                user.emergencyContacts.push(contact);
+                await AddContacts(user); 
+              }
+            } else {
+              user.emergencyContacts = [];
+              user.emergencyContacts.push(contact);
+              await AddContacts(user);
+            }
+            
             props.navigation.navigate("EmergencyContact", { user });
+
+          } catch (err) {
+            throw (err as Error).message;
           }
 
-          // await AddContacts(user);
-          // props.navigation.navigate("EmergencyContact", { user });
-          // console.log(contacts?.indexOf(item));
-          // return;
-
-          // useEffect(() => {
-          //   (async function AddToContact(user: User) {
-          //     // await AddContacts(user);
-          //     console.log(user);
-          //   });
-          // }, []);
         }}
       >
         <Text style={{ fontSize: 20 }}>+ Add</Text>
