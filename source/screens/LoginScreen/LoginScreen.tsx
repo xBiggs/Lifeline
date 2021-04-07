@@ -12,6 +12,7 @@ export default function LoginScreen( {navigation} : StackScreenProps<AuthStackPa
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading,setLoading] = useState(false);
+    const [error,setError]= useState("");
 
     const onFooterLinkPress = () : void => {
         console.log('footer pressed')
@@ -22,9 +23,12 @@ export default function LoginScreen( {navigation} : StackScreenProps<AuthStackPa
         setLoading(true);
         try {
             const userCredential = await FirebaseController.Login(email, password);
+            
         } catch (error) {
-            // TODO: Do something with error here
-            alert(error);
+           const errObj = error as Error;
+           if(errObj.message)setError(errObj.message)
+           else setError('Login attempt failed, please try again')
+           setLoading(false)
         } 
     }
 
@@ -56,6 +60,7 @@ export default function LoginScreen( {navigation} : StackScreenProps<AuthStackPa
                     underlineColorAndroid="transparent"
                     autoCapitalize="none"
                 />
+                {error?<Text style={{alignSelf:'center',textAlign:'center', fontWeight:'bold',color:'white',backgroundColor:'red',fontSize:15}}>{error}</Text>:<></>}
 
                 <TouchableOpacity
                     style={styles.button}
