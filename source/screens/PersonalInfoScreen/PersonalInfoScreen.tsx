@@ -32,10 +32,10 @@ export default function PersonalInfoScreen(
     militaryStatus: "",
   };
   var tempMedicalInfo: MedicationInfo = {
-    diagnose: "",
+    diagnose: [],
     medication: [],
     regiments: "",
-    familyMedicalHistory: "",
+    familyMedicalHistory: [],
     nextApointment: [],
   };
 
@@ -67,9 +67,9 @@ export default function PersonalInfoScreen(
   const initialValues = {
     age: tempPersonalInfo.age,
     religion: tempPersonalInfo.religion,
-    diagnose: tempMedicalInfo.diagnose,
+    diagnose: tempMedicalInfo.diagnose.join(", "),
     regiments: tempMedicalInfo.regiments,
-    familyMedicalHistory: tempMedicalInfo.familyMedicalHistory,
+    familyMedicalHistory: tempMedicalInfo.familyMedicalHistory.join(", "),
   };
 
   const handleRadioInput = (e: React.SetStateAction<undefined>) => {
@@ -100,8 +100,14 @@ export default function PersonalInfoScreen(
       tempPersonalInfo.religion = values.religion;
       tempPersonalInfo.sexualOrientation = sexualOrientation;
 
-      tempMedicalInfo.diagnose = values.diagnose;
-      tempMedicalInfo.familyMedicalHistory = values.familyMedicalHistory;
+      tempMedicalInfo.diagnose = values.diagnose.split(",").map((word) => {
+        return word.trim();
+      });
+      tempMedicalInfo.familyMedicalHistory = values.familyMedicalHistory
+        .split(",")
+        .map((word) => {
+          return word.trim();
+        });
       tempMedicalInfo.regiments = values.regiments;
       user.medInfo = tempMedicalInfo;
       user.personalInfo = tempPersonalInfo;
@@ -235,6 +241,7 @@ export default function PersonalInfoScreen(
           />
           <View style={styles.inputContainer}>
             <Text style={styles.buttonLabel}>Diagnosis</Text>
+            <Text style={styles.buttonLabel}>(Seperated by Comma)</Text>
             <TextInput
               style={styles.input}
               {...formal.getFieldProps("diagnose")}
@@ -255,6 +262,7 @@ export default function PersonalInfoScreen(
           />
           <View style={styles.inputContainer}>
             <Text style={styles.buttonLabel}>Family Medical History</Text>
+            <Text style={styles.buttonLabel}>(Seperated by Comma)</Text>
             <TextInput
               style={styles.input}
               {...formal.getFieldProps("familyMedicalHistory")}

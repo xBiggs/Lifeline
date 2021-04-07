@@ -23,7 +23,9 @@ const initialValues = {
   usageInstructions: "",
 };
 
-export default function MedicalInfoScreen(props: DrawerScreenProps<HomeDrawerParamList, "Medical_Information">) {
+export default function MedicalInfoScreen(
+  props: DrawerScreenProps<HomeDrawerParamList, "Medical_Information">
+) {
   const formal = useFormal(initialValues, {
     schema,
     onSubmit: (values) => {
@@ -36,6 +38,7 @@ export default function MedicalInfoScreen(props: DrawerScreenProps<HomeDrawerPar
       <View style={styles.container}>
         <View>
           <Text style={styles.title}> Personal Information </Text>
+
           <Divider
             style={{
               backgroundColor: "white",

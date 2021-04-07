@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import * as yup from "yup";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { ListItem } from "react-native-elements";
+import { Icon, ListItem } from "react-native-elements";
 import styles from "./styles";
 import useFormal from "@kevinwolf/formal-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
@@ -50,10 +50,10 @@ export default function MedicationForm(
   //STATE VARIABLES END////////////////////////////
   //////////////////////////Formal Data////////////////
   const medicalFields: MedicationInfo = {
-    diagnose: "",
+    diagnose: [],
     medication: [],
     regiments: "",
-    familyMedicalHistory: "string",
+    familyMedicalHistory: [],
     nextApointment: [],
   };
   const schema = yup.object().shape({
@@ -137,6 +137,14 @@ export default function MedicationForm(
     showMode("date");
   };
 
+  const deleteMedication = (medication: Medication) => {
+    let index: number;
+    if (user.medInfo?.medication) {
+      index = user.medInfo?.medication.indexOf(medication);
+      user.medInfo?.medication.splice(index, 1);
+      FirebaseController.SetUserData(user);
+    }
+  };
   //DATE OBJECT END///////////
 
   //////////////////////////END////////////////
@@ -170,9 +178,11 @@ export default function MedicationForm(
           ? info.map((l, i) => (
               <ListItem key={i * Math.random()} bottomDivider>
                 <ListItem.Content>
-                  <ListItem.Title style={styles.MainTitle}>
-                    Name: {l.name}
-                  </ListItem.Title>
+                  <View style={{ flexDirection: "row" }}>
+                    <ListItem.Title style={styles.MainTitle}>
+                      Name: {l.name}
+                    </ListItem.Title>
+                  </View>
 
                   <ListItem.Subtitle style={styles.subTitle}>
                     Dose: {l.dose}
@@ -186,6 +196,9 @@ export default function MedicationForm(
                   <ListItem.Subtitle style={styles.subTitle}>
                     Refill Date: {l.refillDate}
                   </ListItem.Subtitle>
+                  <TouchableOpacity onPress={() => deleteMedication(l)}>
+                    <Icon name="delete" type="material" color="#517fa4" />
+                  </TouchableOpacity>
                 </ListItem.Content>
               </ListItem>
             ))
