@@ -82,13 +82,17 @@ export default function Vault(
   });
 
   async function playSound() {
-    // console.log("Loading Sound");
-    // const { sound } = await Audio.Sound.createAsync(
-    //   require("assets/.HereComesTheSun.mp3.icloud")
-    // );
-    // setSound(sound);
-    // console.log("Playing Sound");
-    // await sound.playAsync();
+    console.log("Loading Sound");
+    const { sound: playbackObject } = await Audio.Sound.createAsync(
+      {
+        uri:
+          "https://firebasestorage.googleapis.com/v0/b/sdd21-lifeline.appspot.com/o/WhenYou'reGone.mp3?alt=media&token=291c7e7f-5dd0-429c-a7c1-feb2e967b459",
+      },
+      { shouldPlay: true }
+    );
+    setSound(sound);
+    console.log("Playing Sound");
+    if (sound) await sound.playAsync();
   }
 
   React.useEffect(() => {
