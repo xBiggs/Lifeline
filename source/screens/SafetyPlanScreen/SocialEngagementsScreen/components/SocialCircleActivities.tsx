@@ -11,6 +11,14 @@ export default (props: { socialContacts: SocialEngagementContact[],setSocialCont
     const {socialContacts} = props;
     const [update,setUpdate] = useState(true);
 
+    if(socialContacts.length ==0)
+    return (<View style={{flex:1,backgroundColor:LifeLineBlue,justifyContent:'center'}}>
+      <Text style={{alignSelf:'center', fontSize:20,color:'white'}}>No People in Your Social Circle, Add some!</Text>
+
+    </View>
+      
+    )
+
     const removeActivity = (activity:string) =>{
         const index = props.socialContacts[currentIndex].engagements.indexOf(activity)
         props.socialContacts[currentIndex].engagements.splice(index,1);
@@ -72,6 +80,7 @@ const EngagementModal = (props:{contact:SocialEngagementContact})=>{
         <View style={{ flex: 1 }}>
             <View style={{ backgroundColor: LifeLineBlue }}>
                 <Text style={{alignSelf:'center', color:'white',fontSize:20}}>Select a Friend from Social Circle</Text>
+                
                 <Picker
                     selectedValue={props.socialContacts[currentIndex]}
                     mode='dialog'
