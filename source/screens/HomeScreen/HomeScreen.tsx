@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Text, View, TouchableOpacity, ScrollView, Dimensions } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, Dimensions, StatusBar } from "react-native";
 import { FirebaseController } from "../../firebase/FirebaseController";
 import { User } from "../../interfaces/User";
 import styles from "./styles";
@@ -25,6 +25,69 @@ Notifications.setNotificationHandler({
 export default function HomeScreen(
   props: DrawerScreenProps<HomeDrawerParamList, "Home">
 ) {
+
+
+  if(!props.route.params.user.personalInfo)
+  return (
+    <View style={styles.container}>
+          <StatusBar></StatusBar>
+          <Text style={{textAlign:'center',alignSelf:'center',color:'white',fontSize:25}}>To Do:</Text>
+      <TouchableOpacity
+          style={{
+            backgroundColor: "#023047",
+            marginLeft: 0,
+            marginRight: 0,
+            marginTop: 20,
+            height: 48,
+            alignSelf:'stretch',
+            borderRadius: 15,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={async () => {
+           props.navigation.navigate('Information',{user:props.route.params.user})
+          }}
+        >
+          <Text style={styles.buttonLabel}>Enter Personal Information</Text>
+        </TouchableOpacity>
+
+    </View>
+  )
+
+  
+  if(!props.route.params.user.riskFactors || !props.route.params.user.mitigatingFactors)
+  return (
+    <View style={styles.container}>
+      <StatusBar></StatusBar>
+      <Text style={{textAlign:'center',alignSelf:'center',color:'white',fontSize:25}}>To Do:</Text>
+      <TouchableOpacity
+          style={{
+            backgroundColor: "#023047",
+            marginLeft: 0,
+            marginRight: 0,
+            marginTop: 20,
+            height: 48,
+            alignSelf:'stretch',
+            borderRadius: 15,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={async () => {
+           props.navigation.navigate('Assessment',{user:props.route.params.user})
+          }}
+        >
+          <Text style={styles.buttonLabel}>Take Assessment</Text>
+        </TouchableOpacity>
+
+    </View>
+  )
+
+  
+
+  
+
+
+
   // TODO: Variables are never used
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);

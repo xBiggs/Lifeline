@@ -1,6 +1,6 @@
 import { DailyConversationResponse } from '../interfaces/DailyConversationResponse';
 import { User } from '../interfaces/User';
-import { PhotoVideoEntry } from '../types';
+import { MediaEntry } from '../types';
 import { firebase } from './config';
 import { AddUserData } from './UserDataHandler';
 
@@ -94,7 +94,7 @@ export class FirebaseController {
         return document.data();
     }
 
-    static async AddPhotoToVault(user: User, fileInfo: { filePath: string, type: string } | undefined, filename: string): Promise<PhotoVideoEntry | undefined> {
+    static async AddMediaToVault(user: User, fileInfo: { filePath: string, type: string } | undefined, filename: string): Promise<MediaEntry | undefined> {
 
         if (fileInfo) {
             console.log('adding to storage');

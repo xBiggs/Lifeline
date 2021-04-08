@@ -1,7 +1,8 @@
-import { PhotoVideoEntry } from "../types";
+import { MediaEntry } from "../types";
 
 export interface VaultItems {
-    photos:PhotoVideoEntry[],
-    videos:PhotoVideoEntry[],
+    photos:MediaEntry[],
+    videos:MediaEntry[],
     quotes:string[],
+    audio:MediaEntry[],
 }

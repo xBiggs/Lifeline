@@ -92,7 +92,7 @@ export default function PersonalInfoScreen(
 
   const formal = useFormal(initialValues, {
     schema,
-    onSubmit: (values) => {
+    onSubmit:async (values) => {
       tempPersonalInfo.age = values.age;
       tempPersonalInfo.gender = buttonsGender[gender];
       tempPersonalInfo.militaryStatus = militaryStatus;
@@ -106,8 +106,9 @@ export default function PersonalInfoScreen(
       user.medInfo = tempMedicalInfo;
       user.personalInfo = tempPersonalInfo;
 
-      AddUserData(user);
+     await AddUserData(user);
       Alert.alert("Thank You!");
+      props.navigation.navigate('Home',{user})
     },
   });
 
