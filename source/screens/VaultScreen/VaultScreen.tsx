@@ -17,7 +17,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { black } from "react-native-paper/lib/typescript/styles/colors";
 import { StackScreenProps } from "@react-navigation/stack";
 
-
 // Pull info from firebase
 const ENTRIES1 = [
   {
@@ -75,19 +74,17 @@ export default function Vault(
       if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
       if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
       setEntries(entries);
-      
     }
-  })
+  });
 
   async function playSound() {
-    console.log("Loading Sound");
-    const { sound } = await Audio.Sound.createAsync(
-      require("../../../assets/HereComesTheSun.mp3")
-    );
-    setSound(sound);
-
-    console.log("Playing Sound");
-    await sound.playAsync();
+    // console.log("Loading Sound");
+    // const { sound } = await Audio.Sound.createAsync(
+    //   require("assets/.HereComesTheSun.mp3.icloud")
+    // );
+    // setSound(sound);
+    // console.log("Playing Sound");
+    // await sound.playAsync();
   }
 
   React.useEffect(() => {
@@ -106,12 +103,11 @@ export default function Vault(
       if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
       if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
       setEntries(entries);
-      
     }
-  }, [user.vaultItems?.photos,user.vaultItems?.videos]);
+  }, [user.vaultItems?.photos, user.vaultItems?.videos]);
 
   const renderItem = ({ item, index }, parallaxProps) => {
-   // console.log(parallaxProps);
+    // console.log(parallaxProps);
     return (
       <View style={styles.item}>
         {item.type == "image" ? (
@@ -147,18 +143,27 @@ export default function Vault(
 
   return (
     <View style={styles.container}>
-     
-      <View style={{flexDirection:'row'}}>
-      <Text style={styles.quote}>Welcome</Text>
-      <TouchableOpacity style={{
-        backgroundColor:LifeLineBlue,
-        borderRadius:25,
-        alignSelf:'flex-start'
-      }}
-      onPress={()=>{props.navigation.navigate('Manage',{user:props.route.params.user})}}
-      ><MaterialCommunityIcons size={40} color='white' name='plus'></MaterialCommunityIcons></TouchableOpacity>
-      
-     </View>
+      <View style={{ flexDirection: "row" }}>
+        <Text style={styles.quote}>Welcome</Text>
+        <TouchableOpacity
+          style={{
+            backgroundColor: LifeLineBlue,
+            borderRadius: 25,
+            alignSelf: "flex-start",
+          }}
+          onPress={() => {
+            props.navigation.navigate("Manage", {
+              user: props.route.params.user,
+            });
+          }}
+        >
+          <MaterialCommunityIcons
+            size={40}
+            color="white"
+            name="plus"
+          ></MaterialCommunityIcons>
+        </TouchableOpacity>
+      </View>
       <Carousel
         ref={carouselRef}
         sliderWidth={screenWidth}

@@ -1,8 +1,8 @@
 export interface MedicationInfo {
-    diagnose: string;
+    diagnose: string[];
     medication: Medication[];
     regiments: string;
-    familyMedicalHistory: string;
+    familyMedicalHistory: string[];
     nextApointment?: Apointment[];
 }
 
