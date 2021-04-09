@@ -19,6 +19,7 @@ export type MediaEntry ={
   title:string,
   url?:string,
   type:string,
+  path:string,
 }
 
 // type to define route : params for User navigator and screens
