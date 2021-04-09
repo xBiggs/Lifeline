@@ -11,51 +11,20 @@ import {
   Button,
 } from "react-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { HomeDrawerParamList, LifeLineBlue, MediaEntry, VaultStackParamList } from "../../types";
+import {
+  HomeDrawerParamList,
+  LifeLineBlue,
+  MediaEntry,
+  VaultStackParamList,
+} from "../../types";
 import { Video, AVPlaybackStatus } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { black } from "react-native-paper/lib/typescript/styles/colors";
 import { StackScreenProps } from "@react-navigation/stack";
+import { ScrollView } from "react-native-gesture-handler";
 
 // Pull info from firebase
-const ENTRIES1 = [
-  {
-    title: "Beautiful and dramatic Antelope Canyon",
-
-    url: "https://i.imgur.com/UYiroysl.jpg",
-    type: "photo",
-  },
-  {
-    title: "Earlier this morning, NYC",
-
-    url: "https://i.imgur.com/UPrs1EWl.jpg",
-    type: "photo",
-  },
-  {
-    title: "White Pocket Sunset",
-
-    url: "https://i.imgur.com/MABUbpDl.jpg",
-    type: "photo",
-  },
-  {
-    title: "Acrocorinth, Greece",
-
-    url: "https://i.imgur.com/KZsmUi2l.jpg",
-    type: "photo",
-  },
-  {
-    title: "The lone tree, majestic landscape of New Zealand",
-
-    url: "https://i.imgur.com/2nCt3Sbl.jpg",
-    type: "photo",
-  },
-  {
-    title: "The lone tree, majestic landscape of New Zealand",
-
-    url: "http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-    type: "video",
-  },
-];
+const ENTRIES1 = [];
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function Vault(
@@ -63,32 +32,59 @@ export default function Vault(
 ) {
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [entries, setEntries] = useState<MediaEntry[]>([]);
+  const [soundEntries, setSoundEntries] = useState<String[]>([]);
+  const [playStatus, setPlayStatus] = useState("play");
+  const [playIndex, setPlayIndex] = useState(0);
   const carouselRef = useRef(null);
   const user = props.route.params.user;
   const goForward = () => {};
 
-  props.navigation.addListener('focus',()=>{
-    if(user.vaultItems)
-    {
-      const entries:MediaEntry[] = [];
-      if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
-      if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
+  props.navigation.addListener("focus", () => {
+    if (user.vaultItems) {
+      const entries: MediaEntry[] = [];
+      if (user.vaultItems.photos) entries.push(...user.vaultItems.photos);
+      if (user.vaultItems.videos) entries.push(...user.vaultItems.videos);
       setEntries(entries);
+      let audioEntries: String[] = [];
+      user.vaultItems.audio.forEach((item) => {
+        if (item.url) audioEntries.push(item.url);
+      });
+      if (audioEntries) setSoundEntries(audioEntries);
     }
   });
 
+  async function nextSound() {
+    if (playIndex + 1 >= soundEntries.length) {
+      await setPlayIndex(0);
+    } else await setPlayIndex(playIndex + 1);
+    sound?.stopAsync();
+    setPlayStatus("play");
+  }
+
+  async function previousSound() {
+    if (playIndex > 0) {
+      await setPlayIndex(playIndex - 1);
+    } else {
+      await setPlayIndex(soundEntries.length - 1);
+    }
+    sound?.stopAsync();
+    setPlayStatus("play");
+  }
   async function playSound() {
-    console.log("Loading Sound");
-    const { sound: playbackObject } = await Audio.Sound.createAsync(
-      {
-        uri:
-          "https://firebasestorage.googleapis.com/v0/b/sdd21-lifeline.appspot.com/o/WhenYou'reGone.mp3?alt=media&token=291c7e7f-5dd0-429c-a7c1-feb2e967b459",
-      },
-      { shouldPlay: true }
-    );
-    setSound(sound);
-    console.log("Playing Sound");
-    if (sound) await sound.playAsync();
+    if (playStatus == "play") {
+      setPlayStatus("stop");
+
+      const { sound } = await Audio.Sound.createAsync({
+        uri: soundEntries[playIndex].toString(),
+      });
+      await setSound(sound);
+
+      console.log("Playing Sound");
+      await sound.playAsync();
+    } else {
+      setPlayStatus("play");
+      sound?.stopAsync();
+    }
   }
 
   React.useEffect(() => {
@@ -101,11 +97,10 @@ export default function Vault(
   }, [sound]);
 
   useEffect(() => {
-    if(user.vaultItems)
-    {
-      const entries:MediaEntry[] = [];
-      if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
-      if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
+    if (user.vaultItems) {
+      const entries: MediaEntry[] = [];
+      if (user.vaultItems.photos) entries.push(...user.vaultItems.photos);
+      if (user.vaultItems.videos) entries.push(...user.vaultItems.videos);
       setEntries(entries);
     }
   }, [user.vaultItems?.photos, user.vaultItems?.videos]);
@@ -146,66 +141,129 @@ export default function Vault(
   const [status, setStatus] = React.useState({});
 
   return (
-    <View style={styles.container}>
-      <View style={{ flexDirection: "row" }}>
-        <Text style={styles.quote}>Welcome</Text>
-        <TouchableOpacity
-          style={{
-            backgroundColor: LifeLineBlue,
-            borderRadius: 25,
-            alignSelf: "flex-start",
-          }}
-          onPress={() => {
-            props.navigation.navigate("Manage", {
-              user: props.route.params.user,
-            });
-          }}
-        >
-          <MaterialCommunityIcons
-            size={40}
-            color="white"
-            name="plus"
-          ></MaterialCommunityIcons>
-        </TouchableOpacity>
-      </View>
-      <Carousel
-        ref={carouselRef}
-        sliderWidth={screenWidth}
-        sliderHeight={screenWidth}
-        itemWidth={screenWidth - 60}
-        data={entries}
-        renderItem={renderItem}
-        hasParallaxImages={true}
-        layout={"default"}
-      />
+    <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.description}>
-          Now Playing:{"\n"}Here Comes the Sun
-        </Text>
-
-        <TouchableOpacity
-          style={{
-            alignSelf: "center",
-            backgroundColor: "#219ebc",
-            width: screenWidth - 60,
-            borderRadius: 10,
-            elevation: 5,
-          }}
-          onPress={playSound}
-        >
-          <Text
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.quote}>Welcome</Text>
+          <TouchableOpacity
             style={{
-              fontSize: 40,
-              color: "white",
-              textAlign: "center",
-              alignSelf: "center",
+              backgroundColor: LifeLineBlue,
+              borderRadius: 25,
+              alignSelf: "flex-start",
+            }}
+            onPress={() => {
+              props.navigation.navigate("Manage", {
+                user: props.route.params.user,
+              });
             }}
           >
-            <MaterialCommunityIcons name="play" color={"white"} size={40} />
+            <MaterialCommunityIcons
+              size={40}
+              color="white"
+              name="plus"
+            ></MaterialCommunityIcons>
+          </TouchableOpacity>
+        </View>
+        <Carousel
+          ref={carouselRef}
+          sliderWidth={screenWidth}
+          sliderHeight={screenWidth}
+          itemWidth={screenWidth - 60}
+          data={entries}
+          renderItem={renderItem}
+          hasParallaxImages={true}
+          layout={"default"}
+        />
+        <View style={styles.container}>
+          <Text style={styles.description}>
+            Now Playing:{"\n"} {user.vaultItems?.audio[playIndex].title}
           </Text>
-        </TouchableOpacity>
+          <View style={{ flexDirection: "row", marginBottom: 50 }}>
+            <TouchableOpacity
+              style={{
+                width: screenWidth / 5,
+                marginRight: 30,
+                alignSelf: "center",
+                backgroundColor: "#219ebc",
+
+                borderRadius: 10,
+                elevation: 5,
+              }}
+              onPress={previousSound}
+            >
+              <Text
+                style={{
+                  fontSize: 40,
+                  color: "white",
+                  textAlign: "center",
+                  alignSelf: "center",
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  color={"white"}
+                  size={40}
+                />
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                width: screenWidth / 5,
+                alignSelf: "center",
+                backgroundColor: "#219ebc",
+
+                borderRadius: 10,
+                elevation: 5,
+              }}
+              onPress={playSound}
+            >
+              <Text
+                style={{
+                  fontSize: 40,
+                  color: "white",
+                  textAlign: "center",
+                  alignSelf: "center",
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={playStatus}
+                  color={"white"}
+                  size={40}
+                />
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: screenWidth / 5,
+                marginLeft: 30,
+                alignSelf: "center",
+                backgroundColor: "#219ebc",
+
+                borderRadius: 10,
+                elevation: 5,
+              }}
+              onPress={nextSound}
+            >
+              <Text
+                style={{
+                  fontSize: 40,
+                  color: "white",
+                  textAlign: "center",
+                  alignSelf: "center",
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="arrow-right"
+                  color={"white"}
+                  size={40}
+                />
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -240,7 +298,7 @@ const styles = StyleSheet.create({
     elevation: 20,
     marginRight: 20,
     marginBottom: 25,
-    marginTop: -90,
+    marginTop: 20,
   },
   container: {
     paddingTop: 20,
