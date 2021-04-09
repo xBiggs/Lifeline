@@ -2,7 +2,7 @@
 
 import MedicalInfoScreen from "../screens/MedicalInfoScreen/MedicalInfoScreen";
 import MedicationForm from "../screens/MedicationScreen/MedicationScreen";
-import React, { Props, useState } from "react";
+import React, { Props, useEffect, useState } from "react";
 import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
 import { HomeDrawerParamList, UserStackParamList } from "../types";
 import { AssessmentScreen, HomeScreen, PersonalInfoScreen } from "../screens";
@@ -21,17 +21,29 @@ import VaultStackNavigator from "./VaultStackNavigator";
  */
 const Drawer = createDrawerNavigator<HomeDrawerParamList>();
 
+
 export default (props: StackScreenProps<UserStackParamList, "Home">) => {
   // Keyboard.dismiss();
   const user = props.route.params.user;
-  //console.log('drawer user', user);
+
+  const verifySetup = ():boolean|undefined=>{
+    if(!user.personalInfo) return false;
+    else if(!user.mitigatingFactors || !user.riskFactors) return false;
+    else return true;
+  }
+
+
+
+
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => (
         <HomeDrawer drawerProps={props} user={user}></HomeDrawer>
       )}
       screenOptions={{
-        headerShown: true,
+        headerShown: verifySetup(),
+        swipeEnabled:verifySetup(),
         unmountOnBlur: true,
       }}
     >

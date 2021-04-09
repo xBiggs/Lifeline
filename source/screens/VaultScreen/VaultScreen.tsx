@@ -11,12 +11,7 @@ import {
   Button,
 } from "react-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import {
-  HomeDrawerParamList,
-  LifeLineBlue,
-  PhotoVideoEntry,
-  VaultStackParamList,
-} from "../../types";
+import { HomeDrawerParamList, LifeLineBlue, MediaEntry, VaultStackParamList } from "../../types";
 import { Video, AVPlaybackStatus } from "expo-av";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { black } from "react-native-paper/lib/typescript/styles/colors";
@@ -67,16 +62,17 @@ export default function Vault(
   props: StackScreenProps<VaultStackParamList, "Vault">
 ) {
   const [sound, setSound] = React.useState<Audio.Sound>();
-  const [entries, setEntries] = useState<PhotoVideoEntry[]>([]);
+  const [entries, setEntries] = useState<MediaEntry[]>([]);
   const carouselRef = useRef(null);
   const user = props.route.params.user;
   const goForward = () => {};
 
-  props.navigation.addListener("focus", () => {
-    if (user.vaultItems) {
-      const entries: PhotoVideoEntry[] = [];
-      if (user.vaultItems.photos) entries.push(...user.vaultItems.photos);
-      if (user.vaultItems.videos) entries.push(...user.vaultItems.videos);
+  props.navigation.addListener('focus',()=>{
+    if(user.vaultItems)
+    {
+      const entries:MediaEntry[] = [];
+      if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
+      if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
       setEntries(entries);
     }
   });
@@ -105,10 +101,11 @@ export default function Vault(
   }, [sound]);
 
   useEffect(() => {
-    if (user.vaultItems) {
-      const entries: PhotoVideoEntry[] = [];
-      if (user.vaultItems.photos) entries.push(...user.vaultItems.photos);
-      if (user.vaultItems.videos) entries.push(...user.vaultItems.videos);
+    if(user.vaultItems)
+    {
+      const entries:MediaEntry[] = [];
+      if(user.vaultItems.photos) entries.push(...user.vaultItems.photos)
+      if(user.vaultItems.videos) entries.push(...user.vaultItems.videos)
       setEntries(entries);
     }
   }, [user.vaultItems?.photos, user.vaultItems?.videos]);

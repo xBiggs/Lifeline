@@ -15,7 +15,7 @@ export type UserStackParamList = {
 };
 
 
-export type PhotoVideoEntry ={
+export type MediaEntry ={
   title:string,
   url?:string,
   type:string,

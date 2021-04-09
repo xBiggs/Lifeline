@@ -25,6 +25,7 @@ export default function SignupScreen(
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error,setError]=useState("");
   const [loading, setLoading] = useState(false);
 
   const onFooterLinkPress = () => {
@@ -46,13 +47,14 @@ export default function SignupScreen(
 
   const onRegisterPress = async () => {
     setLoading(true);
-    if (password !== confirmPassword) {
-      alert("Passwords don't match.");
-      setLoading(false)
-      return;
-    }
+   
+   
+    
 
     try {
+      validateFirstName(firstName)
+      validateLastName(lastName)
+      validatePasswords(password,confirmPassword);
       const user: User = await FirebaseController.SignUp(
         firstName,
         lastName,
@@ -62,12 +64,10 @@ export default function SignupScreen(
       await FirebaseController.SetUserData(user);
       await FirebaseController.Login(email, password);
     } catch (error) {
-      // Do something with error here
-      alert(error);
-    } finally {
+      console.log(error);
+      setError((error as Error).message);
       setLoading(false);
-    }
-    setLoading(false);
+    } 
   };
 
   return (
@@ -127,6 +127,7 @@ export default function SignupScreen(
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
+             {error?<Text style={{alignSelf:'center',textAlign:'center', fontWeight:'bold',color:'white',backgroundColor:'red',fontSize:15}}>{error}</Text>:<></>}
         <TouchableOpacity
           style={styles.button}
           onPress={() => onRegisterPress()}
@@ -134,7 +135,7 @@ export default function SignupScreen(
           <Text style={styles.buttonTitle}>Create account</Text>
         </TouchableOpacity>
         {loading ? (
-          <ActivityIndicator color="blue" size="large"></ActivityIndicator>
+          <ActivityIndicator color="white" size="large"></ActivityIndicator>
         ) : (
           <></>
         )}
@@ -150,3 +151,15 @@ export default function SignupScreen(
     </View>
   );
 }
+function validateFirstName(firstName: string) {
+  if(firstName.trim().length==0) throw {message:"First Name cannot be empty"};
+}
+function validateLastName(lastName:string)
+{
+  if(lastName.trim().length==0) throw {message:"First Name cannot be empty"};
+}
+
+function validatePasswords(password: string, confirmPassword: string) {
+  if(password !== confirmPassword) throw {message:'Passwords do not match, please try again'}
+}
+

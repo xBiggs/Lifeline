@@ -172,8 +172,8 @@ export default function MedicationForm(
   //GET INFO END///////////////////////
 
   return (
-    <ScrollView>
-      <View style={{ backgroundColor: "#219ebc" }}>
+    <ScrollView contentContainerStyle={{flexGrow:1}}>
+      <View style={{ backgroundColor: "#219ebc",flex:1 }}>
         {info
           ? info.map((l, i) => (
               <ListItem key={i * Math.random()} bottomDivider>
