@@ -1,6 +1,8 @@
+// EmergencyLocationScreen.tsx
+
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, SafeAreaView } from "react-native";
 import { ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SafetyPlanStackParamList } from "../../../types";
 import { EmergencyLocationProvider } from '../../../interfaces/EmergencyLocationProvider';
@@ -27,7 +29,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
     const [_physicianName, setPhysicianName] = useState("");
     const [_serviceType, setServiceType] = useState("");
 
-    const [ placesPrediction, setPlacePrediction ] = useState([]);
+    const [placesPrediction, setPlacePrediction] = useState([]);
 
     const [servicesList, setServiceList] = useState<EmergencyLocationProvider[]>();
 
@@ -62,6 +64,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
             let er = (err as Error).message;
             alert(err);
         }
+        setServiceList(user.emergencyProviders);
     };
 
     useEffect(() => {
@@ -79,9 +82,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         const input = `&input=${_name}`
         const radius = '&radius=2000';
         const key = '&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs';//getApiKey;
-        const url = domain + key + input + location +  radius;
+        const url = domain + key + input + location + radius;
         // console.log(url);
-        
+
         return url;
     }
 
@@ -104,130 +107,133 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         var cleaned = ('' + _phone).replace(/\D/g, '');
         var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
         if (match) {
-          return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+            return '(' + match[1] + ') ' + match[2] + '-' + match[3];
         }
         return "";
-      }
+    }
 
     useEffect(() => {
         (async () => {
             // setServiceList(cont => user.emergencyProviders);
             await AddServiceProvider(user);
         });
+        setServiceList(user.emergencyProviders);
     }, [user.emergencyProviders]);
 
     return (
-        <ScrollView>
-            <View>
-                <TextInput
-                    style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
-                    onChangeText={(text) => onChangeVicinityName(text)}// setName(text)}
-                    defaultValue={_name}
-                    placeholder={"Service Provider Name"}
-                />
-                <TextInput
-                    style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
-                    onChangeText={(text) => setVicinity(text)}
-                    defaultValue={_vicinity}
-                    placeholder={"Service Provider Address"}
-                />
-                <TextInput
-                    style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
-                    onChangeText={(text) => setPhone(text)}
-                    defaultValue={_phone}
-                    placeholder={"Service Provider Phone"}
-                />
-                <TextInput
-                    style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
-                    onChangeText={(text) => setPhysicianName(text)}
-                    defaultValue={_physicianName}
-                    placeholder={"Your Physician's Name"}
-                />
-                <TextInput
-                    style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
-                    onChangeText={(text) => setServiceType(text)}
-                    defaultValue={_serviceType}
-                    placeholder={"Type of service"}
-                />
+        <View>
+            <ScrollView>
+                <View>
+                    <TextInput
+                        style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
+                        onChangeText={(text) => onChangeVicinityName(text)}// setName(text)}
+                        defaultValue={""}
+                        placeholder={"Service Provider Name"}
+                    />
+                    <TextInput
+                        style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
+                        onChangeText={(text) => setVicinity(text)}
+                        defaultValue={_vicinity}
+                        placeholder={"Service Provider Address"}
+                    />
+                    <TextInput
+                        style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
+                        onChangeText={(text) => setPhone(text)}
+                        defaultValue={_phone}
+                        placeholder={"Service Provider Phone"}
+                    />
+                    <TextInput
+                        style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
+                        onChangeText={(text) => setPhysicianName(text)}
+                        defaultValue={_physicianName}
+                        placeholder={"Your Physician's Name"}
+                    />
+                    <TextInput
+                        style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
+                        onChangeText={(text) => setServiceType(text)}
+                        defaultValue={_serviceType}
+                        placeholder={"Type of service"}
+                    />
 
-            </View>
+                </View>
 
-            <View>
-                <TouchableOpacity
-                    style={{ marginLeft: 150, height: 50, width: 100, marginTop: 10, backgroundColor: "#40abed", borderRadius: 50 }}
-                    onPress={async () => {
+                <View>
+                    <TouchableOpacity
+                        style={{ marginLeft: 150, height: 50, width: 100, marginTop: 10, backgroundColor: "#40abed", borderRadius: 50 }}
+                        onPress={async () => {
 
-                        try {
+                            try {
 
-                            let serviceExist = false;
-                            
-                            if(_name.length == 0 || _phone.length == 0 || _physicianName.length == 0 || _vicinity.length == 0 || _serviceType.length == 0){
-                                alert("One or more fields are empty");
-                                return;
-                            }else if (_phone.length < 10){
-                                alert("Please check if phone number has at least 10 digits");
-                                return;
-                            }
+                                let serviceExist = false;
 
-                            setPhone(formatPhoneNumber());
-                            // console.log(_phone);
+                                if (_name.length == 0 || _phone.length == 0 || _physicianName.length == 0 || _vicinity.length == 0 || _serviceType.length == 0) {
+                                    alert("One or more fields are empty");
+                                    return;
+                                } else if (_phone.length < 10) {
+                                    alert("Please check if phone number has at least 10 digits");
+                                    return;
+                                }
 
-                            let provider: EmergencyLocationProvider = {
-                                name: _name,
-                                vicinity: _vicinity,
-                                phone: _phone,
-                                physicianName: _physicianName,
-                                serviceType: _serviceType
-                            }
+                                setPhone(formatPhoneNumber());
+                                // console.log(_phone);
 
-                            if (user.emergencyProviders) {
-                                user.emergencyProviders.forEach(element => {
-                                    if (element.serviceType == provider.serviceType) {
-                                        serviceExist = true;
-                                        return;
+                                let provider: EmergencyLocationProvider = {
+                                    name: _name,
+                                    vicinity: _vicinity,
+                                    phone: _phone,
+                                    physicianName: _physicianName,
+                                    serviceType: _serviceType
+                                }
+
+                                if (user.emergencyProviders) {
+                                    user.emergencyProviders.forEach(element => {
+                                        if (element.serviceType == provider.serviceType) {
+                                            serviceExist = true;
+                                            return;
+                                        }
+                                    });
+                                    if (!serviceExist) {
+                                        user.emergencyProviders.push(provider);
+                                        await AddServiceProvider(user);
+                                    } else {
+                                        // Show an alert
+                                        alert("PROVIDER ALREADY EXIST");
                                     }
-                                });
-                                if (!serviceExist) {
+                                    // user.emergencyProviders.push(provider);
+                                }
+                                else {
+                                    user.emergencyProviders = [];
                                     user.emergencyProviders.push(provider);
                                     await AddServiceProvider(user);
-                                } else {
-                                    // Show an alert
-                                    alert("PROVIDER ALREADY EXIST");
                                 }
-                                // user.emergencyProviders.push(provider);
-                            }
-                            else {
-                                user.emergencyProviders = [];
-                                user.emergencyProviders.push(provider);
-                                await AddServiceProvider(user);
+
+                            } catch (err) {
+                                throw (err as Error).message;
                             }
 
-                        } catch (err) {
-                            throw (err as Error).message;
-                        }
-
-                    }}//addProviderInfo()}
-                >
-
-                    <Text
-                        style={{ justifyContent: "center", alignContent: "center", marginLeft: 35, marginTop: 15 }}
+                        }}//addProviderInfo()}
                     >
-                        Add
-                    </Text>
-                </TouchableOpacity>
-            </View>
+
+                        <Text
+                            style={{ justifyContent: "center", alignContent: "center", marginLeft: 35, marginTop: 15 }}
+                        >
+                            Add
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
 
             <FlatList
-                // data={contactsData}
-                data={user.emergencyProviders}
+                data={servicesList}
+                // data={user.emergencyProviders}
                 // renderItem={renderItem}
                 renderItem={(element) => (
                     <EmergencyLocationCard
                         locationProvider={element.item}
                         onPressTrash={() => {
-                            console.log("BEFORE DELETING", user.emergencyProviders);
+                            // console.log("BEFORE DELETING", user.emergencyProviders);
                             removeProvider(element.item.serviceType);
-                            console.log("AFTER DELETING", user.emergencyProviders);
+                            // console.log("AFTER DELETING", user.emergencyProviders);
                         }}
                     />
                 )}
@@ -251,6 +257,42 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                 )}
             />
 
-        </ScrollView>
+        </View>
+
     );
 }
+
+
+{/* <FlatList
+    // data={contactsData}
+    data={user.emergencyProviders}
+    // renderItem={renderItem}
+    renderItem={(element) => (
+        <EmergencyLocationCard
+            locationProvider={element.item}
+            onPressTrash={() => {
+                console.log("BEFORE DELETING", user.emergencyProviders);
+                removeProvider(element.item.serviceType);
+                console.log("AFTER DELETING", user.emergencyProviders);
+            }}
+        />
+    )}
+    keyExtractor={(item, index) => index.toString()}
+    // refreshing ={refreshing}
+    // onRefresh={() => setRefreshing(false)}
+    ListEmptyComponent={() => (
+        <View
+            // style={styles.flatListView}
+            style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 50
+            }}
+        >
+            <Text style={{ color: 'blue' }}>No Services Listed</Text>
+
+        </View>
+
+    )}
+/> */}

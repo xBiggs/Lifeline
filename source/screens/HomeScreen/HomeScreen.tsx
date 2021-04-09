@@ -166,8 +166,8 @@ export default function HomeScreen(
       imageList.push(require("./research.png"));
     }
   });
-  console.log("==============");
-  console.log(userNotifications);
+  // console.log("==============");
+  // console.log(userNotifications);
 
   const windowWidth = Dimensions.get("window").width;
   return (

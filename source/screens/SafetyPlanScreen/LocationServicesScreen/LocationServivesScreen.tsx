@@ -1,3 +1,5 @@
+// LocationServicesScreen.tsx
+
 import { StackScreenProps } from "@react-navigation/stack";
 import { View, Text, Linking, ActivityIndicator } from "react-native";
 import { SafetyPlanStackParamList } from "../../../types";
