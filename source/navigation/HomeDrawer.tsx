@@ -9,6 +9,7 @@ import { Avatar, Title, Drawer } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { User } from "../interfaces/User";
 import { FirebaseController } from "../firebase/FirebaseController";
+import { LifeLineBlue, LifeLineDarkBlue, LifeLineOrange } from "../types";
 
 export default (props: {
   drawerProps: DrawerContentComponentProps;
@@ -26,13 +27,11 @@ export default (props: {
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerContent}>
         <View style={styles.userInfoSection}>
-          <Avatar.Image
-            source={{
-              uri:
-                "assetsicon.png://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg",
-            }}
-            size={50}
-          />
+        <Avatar.Icon color={'white'} style={{backgroundColor:LifeLineOrange}} icon='face'>
+          
+
+        </Avatar.Icon>
+
           <Title
             style={styles.title}
           >{`Hello ${user.firstName} ${user.lastName}!`}</Title>
@@ -154,6 +153,7 @@ export default (props: {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
+    backgroundColor:LifeLineBlue
   },
   userInfoSection: {
     paddingLeft: 20,
