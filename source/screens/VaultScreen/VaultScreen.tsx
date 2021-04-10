@@ -1,6 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, Component } from "react";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
 import { Audio } from "expo-av";
+import Collapsible from "react-native-collapsible";
 import {
   View,
   Text,
@@ -9,6 +10,7 @@ import {
   TouchableOpacity,
   Platform,
   Button,
+  Animated,
 } from "react-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import {
@@ -22,6 +24,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { black } from "react-native-paper/lib/typescript/styles/colors";
 import { StackScreenProps } from "@react-navigation/stack";
 import { ScrollView } from "react-native-gesture-handler";
+import { Divider } from "react-native-elements";
 
 // Pull info from firebase
 const ENTRIES1 = [];
@@ -30,14 +33,42 @@ const { width: screenWidth } = Dimensions.get("window");
 export default function Vault(
   props: StackScreenProps<VaultStackParamList, "Vault">
 ) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const fadeIn = () => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.timing(fadeAnim, {
+      useNativeDriver: true,
+      toValue: 1,
+      duration: 1000,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    // Will change fadeAnim value to 0 in 5 seconds
+    Animated.timing(fadeAnim, {
+      useNativeDriver: true,
+      toValue: 0,
+      duration: 1000,
+    }).start();
+  };
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [entries, setEntries] = useState<MediaEntry[]>([]);
+  const [quoteEntries, setQuoteEntries] = useState<
+    { quote: String; author: String }[]
+  >();
   const [soundEntries, setSoundEntries] = useState<String[]>([]);
   const [playStatus, setPlayStatus] = useState("play");
   const [playIndex, setPlayIndex] = useState(0);
+  const [isMusicVisible, setIsMusicVisible] = useState(true);
+  const [isMediaVisible, setIsMediaVisible] = useState(true);
+  const [isQuotesVisible, setIsQuotesVisible] = useState(true);
+  const [dailyQuote, setDailyQuote] = useState();
+  const [dailyAuthor, setDailyAuthor] = useState();
+
   const carouselRef = useRef(null);
+
   const user = props.route.params.user;
-  const goForward = () => {};
 
   props.navigation.addListener("focus", () => {
     if (user.vaultItems) {
@@ -45,6 +76,7 @@ export default function Vault(
       if (user.vaultItems.photos) entries.push(...user.vaultItems.photos);
       if (user.vaultItems.videos) entries.push(...user.vaultItems.videos);
       setEntries(entries);
+      if (user.vaultItems.quotes) setQuoteEntries(user.vaultItems.quotes);
       let audioEntries: String[] = [];
       user.vaultItems.audio.forEach((item) => {
         if (item.url) audioEntries.push(item.url);
@@ -102,10 +134,18 @@ export default function Vault(
       if (user.vaultItems.photos) entries.push(...user.vaultItems.photos);
       if (user.vaultItems.videos) entries.push(...user.vaultItems.videos);
       setEntries(entries);
+      fetch("https://type.fit/api/quotes")
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          setDailyQuote(data[0].text);
+          setDailyAuthor(data[0].author);
+        });
     }
   }, [user.vaultItems?.photos, user.vaultItems?.videos]);
 
-  const renderItem = ({ item, index }, parallaxProps) => {
+  const renderItem = ({ item, index }: any, parallaxProps: any) => {
     // console.log(parallaxProps);
     return (
       <View style={styles.item}>
@@ -137,19 +177,48 @@ export default function Vault(
       </View>
     );
   };
+  const renderItemString = ({ item, index }: any, parallaxProps: any) => {
+    // console.log(parallaxProps);
+    return (
+      <View
+        style={{
+          marginBottom: 60,
+          marginTop: 30,
+          padding: 15,
+          backgroundColor: "#219ebc",
+          borderRadius: 10,
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 40, textAlign: "center" }}>
+          {item.quote}
+        </Text>
+        <Text
+          style={{
+            color: "white",
+            fontSize: 20,
+            textAlign: "right",
+            marginTop: 10,
+          }}
+        >
+          - {item.author}
+        </Text>
+      </View>
+    );
+  };
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <View style={styles.container}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.quote}>Welcome</Text>
+        <Text style={styles.quote}>Welcome</Text>
+        <View style={{ flexDirection: "row", marginBottom: 30 }}>
           <TouchableOpacity
             style={{
               backgroundColor: LifeLineBlue,
               borderRadius: 25,
               alignSelf: "flex-start",
+              marginTop: 10,
             }}
             onPress={() => {
               props.navigation.navigate("Manage", {
@@ -159,26 +228,165 @@ export default function Vault(
           >
             <MaterialCommunityIcons
               size={40}
+              style={{ padding: 10 }}
               color="white"
               name="plus"
             ></MaterialCommunityIcons>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: LifeLineBlue,
+              borderRadius: 25,
+              alignSelf: "flex-start",
+              marginTop: 10,
+              marginLeft: 10,
+            }}
+            onPress={() => {
+              fadeIn();
+              if (!isMusicVisible) {
+                fadeIn();
+                setIsMusicVisible(true);
+              } else {
+                fadeOut();
+                setIsMusicVisible(false);
+              }
+            }}
+          >
+            <MaterialCommunityIcons
+              size={40}
+              color="white"
+              name="music"
+              style={{ padding: 10 }}
+            ></MaterialCommunityIcons>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: LifeLineBlue,
+              borderRadius: 25,
+              alignSelf: "flex-start",
+              marginTop: 10,
+              marginLeft: 10,
+            }}
+            onPress={() => {
+              fadeIn();
+              if (!isQuotesVisible) {
+                fadeIn();
+                setIsQuotesVisible(true);
+              } else {
+                fadeOut();
+                setIsQuotesVisible(false);
+              }
+            }}
+          >
+            <MaterialCommunityIcons
+              size={40}
+              style={{ padding: 10 }}
+              color="white"
+              name="text"
+            ></MaterialCommunityIcons>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: LifeLineBlue,
+              borderRadius: 25,
+              alignSelf: "flex-start",
+              marginTop: 10,
+              marginLeft: 10,
+            }}
+            onPress={() => {
+              fadeIn();
+              if (!isMediaVisible) {
+                setIsMediaVisible(true);
+              } else {
+                fadeOut();
+                setIsMediaVisible(false);
+              }
+            }}
+          >
+            <MaterialCommunityIcons
+              size={40}
+              color="white"
+              name="camera"
+              style={{ padding: 10 }}
+            ></MaterialCommunityIcons>
+          </TouchableOpacity>
         </View>
-        <Carousel
-          ref={carouselRef}
-          sliderWidth={screenWidth}
-          sliderHeight={screenWidth}
-          itemWidth={screenWidth - 60}
-          data={entries}
-          renderItem={renderItem}
-          hasParallaxImages={true}
-          layout={"default"}
-        />
-        <View style={styles.container}>
-          <Text style={styles.description}>
-            Now Playing:{"\n"} {user.vaultItems?.audio[playIndex].title}
+        <Collapsible
+          collapsed={!isMusicVisible || !isMediaVisible || !isQuotesVisible}
+        >
+          <View
+            style={{
+              marginBottom: 60,
+              marginTop: 30,
+              padding: 15,
+              backgroundColor: "white",
+            }}
+          >
+            <Text
+              style={{ color: "#219ebc", fontSize: 40, textAlign: "center" }}
+            >
+              Daily Quote:
+            </Text>
+            <Divider
+              style={{
+                height: 1,
+                marginTop: 10,
+                backgroundColor: "#219ebc",
+                marginBottom: 10,
+                width: screenWidth - 40,
+              }}
+            ></Divider>
+            <Text
+              style={{ color: "#219ebc", fontSize: 40, textAlign: "center" }}
+            >
+              {dailyQuote}
+            </Text>
+            <Text
+              style={{
+                color: "#219ebc",
+                fontSize: 20,
+                textAlign: "center",
+                marginTop: 10,
+              }}
+            >
+              - {dailyAuthor}
+            </Text>
+          </View>
+        </Collapsible>
+
+        <Collapsible
+          collapsed={isMusicVisible}
+          style={{
+            flex: 1,
+            alignItems: "center",
+            backgroundColor: "white",
+          }}
+        >
+          <Divider
+            style={{
+              height: 5,
+              marginTop: 20,
+              backgroundColor: "#219ebc",
+              marginBottom: 20,
+              width: screenWidth - 65,
+            }}
+          ></Divider>
+          <Text
+            style={{
+              fontSize: 30,
+              alignSelf: "center",
+              color: "#219ebc",
+              textAlign: "left",
+              fontWeight: "bold",
+              elevation: 20,
+              marginRight: 0,
+              marginBottom: 25,
+              marginTop: 0,
+            }}
+          >
+            Now Playing: {user.vaultItems?.audio[playIndex].title}
           </Text>
-          <View style={{ flexDirection: "row", marginBottom: 50 }}>
+          <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <TouchableOpacity
               style={{
                 width: screenWidth / 5,
@@ -261,7 +469,40 @@ export default function Vault(
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+          <Divider
+            style={{
+              height: 5,
+              marginTop: 0,
+              backgroundColor: "#219ebc",
+              marginBottom: 20,
+              width: screenWidth - 65,
+            }}
+          ></Divider>
+        </Collapsible>
+        <Collapsible collapsed={isMediaVisible}>
+          <Carousel
+            ref={carouselRef}
+            sliderWidth={screenWidth}
+            sliderHeight={screenWidth}
+            itemWidth={screenWidth - 60}
+            data={entries}
+            renderItem={renderItem}
+            hasParallaxImages={true}
+            layout={"default"}
+          />
+        </Collapsible>
+        <Collapsible collapsed={isQuotesVisible}>
+          <Carousel
+            ref={carouselRef}
+            sliderWidth={screenWidth}
+            sliderHeight={20}
+            itemWidth={screenWidth - 60}
+            itemHeight={20}
+            data={user.vaultItems?.quotes}
+            renderItem={renderItemString}
+            layout={"default"}
+          />
+        </Collapsible>
       </View>
     </ScrollView>
   );
@@ -287,7 +528,7 @@ const styles = StyleSheet.create({
 
     marginLeft: 20,
     marginRight: 20,
-    marginBottom: 25,
+    marginBottom: 10,
   },
   description: {
     fontSize: 30,
@@ -296,7 +537,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontWeight: "bold",
     elevation: 20,
-    marginRight: 20,
+    marginRight: 0,
     marginBottom: 25,
     marginTop: 20,
   },

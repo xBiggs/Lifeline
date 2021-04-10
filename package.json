@@ -28,6 +28,7 @@
     "expo-cli": "^4.2.1",
     "expo-contacts": "~8.6.0",
     "expo-device": "~2.4.0",
+    "expo-document-picker": "~8.4.1",
     "expo-image-picker": "~9.2.0",
     "expo-location": "~10.0.0",
     "expo-notifications": "^0.9.0",
@@ -40,6 +41,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
+    "react-native-collapsible": "^1.5.3",
     "react-native-date-picker": "^3.2.10",
     "react-native-elements": "^3.2.0",
     "react-native-fontawesome": "^7.0.0",
@@ -56,8 +58,7 @@
     "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
     "undefined": "react-native-picker/picker",
-    "yup": "^0.32.9",
-    "expo-document-picker": "~8.4.1"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
