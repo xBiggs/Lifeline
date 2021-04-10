@@ -63,7 +63,7 @@ export default function PersonalInfoScreen(
     diagnose: yup.string().required(),
     regiments: yup.string().required(),
     familyMedicalHistory: yup.string().required(),
-    phone: yup.string().required(),
+    phone: yup.string().matches(phoneRegExp, "Phone number is not valid"),
   });
 
   const initialValues = {
