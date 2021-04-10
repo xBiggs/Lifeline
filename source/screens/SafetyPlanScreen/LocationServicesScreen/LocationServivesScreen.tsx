@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { number } from "yup/lib/locale";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 
 
@@ -181,5 +182,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
             </View>
 
         </View>
+     
     );
 }

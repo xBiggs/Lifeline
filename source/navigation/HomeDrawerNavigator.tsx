@@ -42,9 +42,8 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         <HomeDrawer drawerProps={props} user={user}></HomeDrawer>
       )}
       screenOptions={{
-        headerShown: verifySetup(),
-        swipeEnabled:verifySetup(),
-        unmountOnBlur: true,
+        headerShown:true,
+        unmountOnBlur:true
       }}
     >
       <Drawer.Screen

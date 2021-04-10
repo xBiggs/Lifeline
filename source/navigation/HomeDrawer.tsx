@@ -10,6 +10,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { User } from "../interfaces/User";
 import { FirebaseController } from "../firebase/FirebaseController";
 import { LifeLineBlue, LifeLineDarkBlue, LifeLineOrange } from "../types";
+import { Text } from "react-native-elements";
 
 export default (props: {
   drawerProps: DrawerContentComponentProps;
@@ -23,11 +24,20 @@ export default (props: {
     navigation.navigate(route, { user });
   };
 
+  const verifySetup = ():boolean|undefined=>{
+    if(!user.personalInfo) return false;
+    else if(!user.mitigatingFactors || !user.riskFactors) return false;
+    else return true;
+  }
+
+  
+
   return (
-    <DrawerContentScrollView {...props}>
+    <DrawerContentScrollView contentContainerStyle={{flexGrow:1}} {...props}>
       <View style={styles.drawerContent}>
         <View style={styles.userInfoSection}>
         <Avatar.Icon color={'white'} style={{backgroundColor:LifeLineOrange}} icon='face'>
+
           
 
         </Avatar.Icon>
@@ -38,6 +48,7 @@ export default (props: {
           <View style={styles.row}></View>
         </View>
         <Drawer.Section style={styles.drawerSection}>
+        
           <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -46,8 +57,11 @@ export default (props: {
             onPress={() => {
               navigation.navigate("Home", { user });
             }}
+            
           />
-          <DrawerItem
+            {
+            verifySetup()?<>
+             <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons
                 name="circle-edit-outline"
@@ -133,6 +147,11 @@ export default (props: {
               navigation.navigate("Settings", { user });
             }}
           />
+            
+            </>:<><Text style={{textAlign:'center',fontSize:20,fontWeight:'bold',color:'white'}}>Please complete To Do's on Home Screen to access application features</Text></>
+          }
+
+         
         </Drawer.Section>
         <Drawer.Section title="Logout">
           <DrawerItem
@@ -182,6 +201,7 @@ const styles = StyleSheet.create({
   },
   drawerSection: {
     marginTop: 15,
+    flex:1,
   },
   preference: {
     flexDirection: "row",
