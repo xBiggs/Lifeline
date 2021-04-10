@@ -27,11 +27,14 @@ export default function HomeScreen(
 ) {
 
 
-  if(!props.route.params.user.personalInfo)
+  if(!props.route.params.user.personalInfo || !props.route.params.user.riskFactors || !props.route.params.user.mitigatingFactors)
   return (
     <View style={styles.container}>
           <StatusBar></StatusBar>
           <Text style={{textAlign:'center',alignSelf:'center',color:'white',fontSize:25}}>To Do:</Text>
+          {
+            !props.route.params.user.personalInfo &&
+          
       <TouchableOpacity
           style={{
             backgroundColor: "#023047",
@@ -49,39 +52,37 @@ export default function HomeScreen(
           }}
         >
           <Text style={styles.buttonLabel}>Enter Personal Information</Text>
-        </TouchableOpacity>
-
+        </TouchableOpacity>}
+          {
+            (!props.route.params.user.riskFactors || !props.route.params.user.mitigatingFactors ) &&
+          
+            <TouchableOpacity
+            style={{
+              backgroundColor: "#023047",
+              marginLeft: 0,
+              marginRight: 0,
+              marginTop: 20,
+              height: 48,
+              alignSelf:'stretch',
+              borderRadius: 15,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={async () => {
+              if(!props.route.params.user.personalInfo)
+              {
+                alert("Please provide personal information before taking assessment")
+                
+              }else
+             props.navigation.navigate('Assessment',{user:props.route.params.user})
+            }}
+          >
+            <Text style={styles.buttonLabel}>Take Assessment</Text>
+          </TouchableOpacity>}
     </View>
   )
 
   
-  if(!props.route.params.user.riskFactors || !props.route.params.user.mitigatingFactors)
-  return (
-    <View style={styles.container}>
-      <StatusBar></StatusBar>
-      <Text style={{textAlign:'center',alignSelf:'center',color:'white',fontSize:25}}>To Do:</Text>
-      <TouchableOpacity
-          style={{
-            backgroundColor: "#023047",
-            marginLeft: 0,
-            marginRight: 0,
-            marginTop: 20,
-            height: 48,
-            alignSelf:'stretch',
-            borderRadius: 15,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={async () => {
-           props.navigation.navigate('Assessment',{user:props.route.params.user})
-          }}
-        >
-          <Text style={styles.buttonLabel}>Take Assessment</Text>
-        </TouchableOpacity>
-
-    </View>
-  )
-
   
 
   
