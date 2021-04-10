@@ -30,41 +30,35 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
     const [_serviceType, setServiceType] = useState("");
 
     const [placesPrediction, setPlacePrediction] = useState([]);
+    
+    const populateServiceList = () => {
+        const list: EmergencyLocationProvider[] = [];
+        if (user.emergencyProviders) {
+          user.emergencyProviders.forEach((ele) => {
+            list.push(ele);
+          });
+        }
+        // console.log(list);
+        return list;
+      };
+    const initialServiceList: EmergencyLocationProvider[] = populateServiceList()
+    const [servicesList, setServiceList] = useState(initialServiceList);
 
-    const [servicesList, setServiceList] = useState<EmergencyLocationProvider[]>();
+    
 
-
-    // const renderItem = ({ item }: { item: EmergencyLocationProvider }) => (
-    //     <View style={{ marginTop: 10, marginBottom: 50, marginLeft: 20, marginRight: 20 }}>
-    //         <TouchableOpacity style={{
-    //             alignItems: 'center', justifyContent: 'center',
-    //             backgroundColor: '#51a4e8', height: 50,
-    //             borderRadius: 15, width: 300,
-    //             marginTop: 5, marginBottom: 15, marginLeft: 40
-    //         }}
-    //         // onPress={}
-    //         >
-    //             <Text style={{ fontSize: 20 }}>{item.name} - {item.physicianName} - {item.serviceType}</Text>
-    //         </TouchableOpacity>
-    //     </View >
-    // );
-
-    const removeProvider = async (servicesType: string): Promise<void> => {
+    const removeProvider = async (item: EmergencyLocationProvider): Promise<void> => {
 
         try {
-            if (user.emergencyProviders) {
-                const filteredList: EmergencyLocationProvider[] = user.emergencyProviders.filter(
-                    (element) => element.serviceType !== servicesType
+            if (servicesList) {
+                const filteredList: EmergencyLocationProvider[] = servicesList.filter(
+                    (ele) => ele.serviceType !== item.serviceType
                 );
-                user.emergencyProviders = filteredList;
+                setServiceList(filteredList);
             }
-            await AddServiceProvider(user);
-            // setWarningSignList(filteredList);
         } catch (err) {
             let er = (err as Error).message;
             alert(err);
         }
-        setServiceList(user.emergencyProviders);
     };
 
     useEffect(() => {
@@ -87,6 +81,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
 
         return url;
     }
+    
 
     const onChangeVicinityName = async (text: string) => {
         try {
@@ -103,8 +98,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         }
     }
 
-    const formatPhoneNumber = () => {
-        var cleaned = ('' + _phone).replace(/\D/g, '');
+    const formatPhoneNumber = (phone: string) => {
+        var cleaned = ('' + phone).replace(/\D/g, '');
         var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
         if (match) {
             return '(' + match[1] + ') ' + match[2] + '-' + match[3];
@@ -112,13 +107,34 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         return "";
     }
 
+    // useEffect(() => {
+    //     // (async () => {
+
+    //     // });
+    //     setServiceList(cont => user.emergencyProviders);
+    //     console.log(servicesList);
+    //     console.log();
+
+    // }, [user.emergencyProviders]);
+
+
     useEffect(() => {
         (async () => {
-            // setServiceList(cont => user.emergencyProviders);
+            user.emergencyProviders = servicesList;
             await AddServiceProvider(user);
-        });
-        setServiceList(user.emergencyProviders);
-    }, [user.emergencyProviders]);
+            // console.log("INSIDE ASYNC FIREBASE");
+            
+        })();
+        // console.log("CHANGE DETECTED IN servicesList");
+        // console.log(servicesList);
+        // console.log();
+
+    }, [servicesList]);
+
+    // useEffect(() => {
+    //     setServiceList(user.emergencyProviders);
+    // },[]);
+
 
     return (
         <View>
@@ -127,31 +143,31 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                     <TextInput
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => onChangeVicinityName(text)}// setName(text)}
-                        defaultValue={""}
+                        // defaultValue={""}
                         placeholder={"Service Provider Name"}
                     />
                     <TextInput
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setVicinity(text)}
-                        defaultValue={_vicinity}
+                        // defaultValue={_vicinity}
                         placeholder={"Service Provider Address"}
                     />
                     <TextInput
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setPhone(text)}
-                        defaultValue={_phone}
+                        // defaultValue={_phone}
                         placeholder={"Service Provider Phone"}
                     />
                     <TextInput
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setPhysicianName(text)}
-                        defaultValue={_physicianName}
+                        // defaultValue={_physicianName}
                         placeholder={"Your Physician's Name"}
                     />
                     <TextInput
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setServiceType(text)}
-                        defaultValue={_serviceType}
+                        // defaultValue={_serviceType}
                         placeholder={"Type of service"}
                     />
 
@@ -173,39 +189,91 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                     alert("Please check if phone number has at least 10 digits");
                                     return;
                                 }
+                                // if(!Number(_phone)){
+                                //     alert("Please enter all numbers");
+                                //     return;
+                                // }
 
-                                setPhone(formatPhoneNumber());
-                                // console.log(_phone);
+                                setPhone(formatPhoneNumber(_phone));
+                                // console.log(formatPhoneNumber(_phone));
 
                                 let provider: EmergencyLocationProvider = {
                                     name: _name,
                                     vicinity: _vicinity,
-                                    phone: _phone,
+                                    phone: formatPhoneNumber(_phone),
                                     physicianName: _physicianName,
                                     serviceType: _serviceType
                                 }
 
-                                if (user.emergencyProviders) {
-                                    user.emergencyProviders.forEach(element => {
+                                
+                                if (servicesList) {
+                                    // console.log("servicesList NOT empty");
+                                    var nList: EmergencyLocationProvider[] = [];
+                                    servicesList.forEach(element => {
                                         if (element.serviceType == provider.serviceType) {
                                             serviceExist = true;
-                                            return;
                                         }
                                     });
+
                                     if (!serviceExist) {
-                                        user.emergencyProviders.push(provider);
-                                        await AddServiceProvider(user);
+                                        servicesList.forEach(ele => {
+                                            nList.push(ele);
+                                        });
+                                        nList.push(provider);
+                                        setServiceList(nList);
                                     } else {
-                                        // Show an alert
-                                        alert("PROVIDER ALREADY EXIST");
+                                        alert("Provider already exist!");
                                     }
-                                    // user.emergencyProviders.push(provider);
+                                    
+                                    // servicesList.forEach(ele => {
+                                    //     if (ele.serviceType == provider.serviceType) {
+                                    //         serviceExist = true;
+                                    //     }
+                                    // });
+
+                                    // if (serviceExist) {
+                                    //     alert("Provider already exist!");
+                                    // } else {
+                                    //     servicesList.forEach(ele => {
+                                    //         nList.push(ele);
+                                    //     });
+                                    //     nList.push(provider);
+                                    //     setServiceList(nList);
+                                    // }
                                 }
                                 else {
-                                    user.emergencyProviders = [];
-                                    user.emergencyProviders.push(provider);
-                                    await AddServiceProvider(user);
+                                    // console.log("servicesList IS empty");
+                                    var nList: EmergencyLocationProvider[] = [];
+                                    nList.push(provider);
+                                    setServiceList(nList);
+                                    // console.log(servicesList);
                                 }
+
+                                // if (user.emergencyProviders) {
+                                //     user.emergencyProviders.forEach(element => {
+                                //         if (element.serviceType == provider.serviceType) {
+                                //             serviceExist = true;
+                                //             return;
+                                //         }
+                                //     });
+                                //     if (!serviceExist) {
+                                //         user.emergencyProviders.push(provider);
+                                //         setServiceList(user.emergencyProviders);
+                                //         // await AddServiceProvider(user);
+                                //         // props.navigation.navigate('EmergencyLocations', { user })
+                                //     } else {
+                                //         // Show an alert
+                                //         alert("PROVIDER ALREADY EXIST");
+                                //     }
+                                //     // user.emergencyProviders.push(provider);
+                                // }
+                                // else {
+                                //     user.emergencyProviders = [];
+                                //     user.emergencyProviders.push(provider);
+                                //     setServiceList(user.emergencyProviders)
+                                //     // await AddServiceProvider(user);
+                                //     // props.navigation.navigate('EmergencyLocations', { user });
+                                // }
 
                             } catch (err) {
                                 throw (err as Error).message;
@@ -223,11 +291,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                 </View>
             </ScrollView>
 
-            <FlatList
-                data={servicesList}
-                // data={user.emergencyProviders}
-                // renderItem={renderItem}
-                renderItem={(element) => (
+            {/* renderItem={(element) => (
                     <EmergencyLocationCard
                         locationProvider={element.item}
                         onPressTrash={() => {
@@ -236,63 +300,45 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                             // console.log("AFTER DELETING", user.emergencyProviders);
                         }}
                     />
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                // refreshing ={refreshing}
-                // onRefresh={() => setRefreshing(false)}
-                ListEmptyComponent={() => (
-                    <View
-                        // style={styles.flatListView}
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginTop: 50
-                        }}
-                    >
-                        <Text style={{ color: 'blue' }}>No Services Listed</Text>
+                )} */}
 
-                    </View>
+            <ScrollView>
+                <View>
+                    <FlatList
+                        data={servicesList}
+                        // extraData={servicesList}
+                        renderItem={(ele) => (
+                            <EmergencyLocationCard
+                                locationProvider={ele.item}
+                                onPressTrash={() => {
+                                    // console.log("BEFORE DELETING", user.emergencyProviders);
+                                    removeProvider(ele.item);
+                                    // console.log("AFTER DELETING", user.emergencyProviders);
+                                }}
+                            />
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        ListEmptyComponent={() => (
+                            <View
+                                // style={styles.flatListView}
+                                style={{
+                                    flex: 1,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginTop: 50
+                                }}
+                            >
+                                <Text style={{ color: 'blue' }}>No Services Listed</Text>
 
-                )}
-            />
+                            </View>
+
+                        )}
+                    />
+                </View>
+            </ScrollView>
+
 
         </View>
 
     );
 }
-
-
-{/* <FlatList
-    // data={contactsData}
-    data={user.emergencyProviders}
-    // renderItem={renderItem}
-    renderItem={(element) => (
-        <EmergencyLocationCard
-            locationProvider={element.item}
-            onPressTrash={() => {
-                console.log("BEFORE DELETING", user.emergencyProviders);
-                removeProvider(element.item.serviceType);
-                console.log("AFTER DELETING", user.emergencyProviders);
-            }}
-        />
-    )}
-    keyExtractor={(item, index) => index.toString()}
-    // refreshing ={refreshing}
-    // onRefresh={() => setRefreshing(false)}
-    ListEmptyComponent={() => (
-        <View
-            // style={styles.flatListView}
-            style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 50
-            }}
-        >
-            <Text style={{ color: 'blue' }}>No Services Listed</Text>
-
-        </View>
-
-    )}
-/> */}

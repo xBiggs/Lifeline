@@ -68,7 +68,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                         let lst: DemographicContacts[] = []
                         contactSuggestions.forEach(element => {
                             if (element.persInfo) {
-                                if ( element.persInfo.sexualOrientation == "Homosexual") {//user.personalInfo?.sexualOrientation /* && (Number(element.persInfo.age) <= Number(user.personalInfo?.age) + 50) */) {
+                                if ( element.persInfo.sexualOrientation == user.personalInfo?.sexualOrientation) {//user.personalInfo?.sexualOrientation /* && (Number(element.persInfo.age) <= Number(user.personalInfo?.age) + 50) */) {
                                     // console.log(element.persInfo.sexualOrientation);
                                     lst.push(element);
                                 }

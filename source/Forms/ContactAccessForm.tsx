@@ -27,6 +27,20 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   const [searchResults, setSearchResults] = useState<Contacts.Contact[]>();
   const [person, setPerson] = useState<Contacts.Contact>();
 
+  const populateInitialContact = () => {
+    const list: ContactDetails[] = [];
+    if (user.emergencyContacts) {
+      user.emergencyContacts.forEach((ele) => {
+        list.push(ele);
+      });
+    }
+    // console.log(list);
+    return list;
+  };
+  const initialContacts: ContactDetails[] = populateInitialContact();
+  const [firebaseContacts, setFirebaseContacs] = useState(initialContacts);
+
+
   // useEffect(() => {
   //   (async () => {
   //     console.log(demogContats);
@@ -77,15 +91,22 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       } catch (e) {
         throw (e as Error).message;
       }
-      console.log(contactSuggestions);
+      // console.log(contactSuggestions);
 
     })();
   }, []);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   loadContacts();
-  // });
+  useEffect(() => {
+    (async () => {
+      user.emergencyContacts = firebaseContacts;
+      await AddContacts(user);
+      console.log("INSIDE ASYNC FIREBASE");
+      
+  })();
+    // console.log("Firebase contact object changed");
+    // console.log(firebaseContacts);
+
+  }, [firebaseContacts]);
 
   useEffect(() => {
     const getSearchResult = async () => {
@@ -98,41 +119,14 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     getSearchResult();
   }, []);
 
-  const addContact = (cont: ContactDetails) => {
-    (async () => {
-      let userExist = false;
-
-      try {
-        if (user.emergencyContacts) {
-
-          user.emergencyContacts.forEach(ele => {
-            if (cont.digits === ele.digits) {
-              // console.log("item.phoneNumbers[0].number = ", contact.digits);
-              // console.log("ele.digits = ", ele.digits);
-              userExist = true;
-              alert("User already exist");
-              // props.navigation.navigate("EmergencyContact", { user });
-            }
-          });
-
-          if (!userExist) {
-            user.emergencyContacts.push(cont);
-            // await AddContacts(user);
-            console.log(user.emergencyContacts);
-            
-          }
-        } else {
-          user.emergencyContacts = [];
-          user.emergencyContacts.push(cont);
-          // await AddContacts(user);
-          console.log(user.emergencyContacts);
-        }
-      } catch (err) {
-        throw (err as Error).message;
-      }
-    });
+  const formatPhoneNumber = (phone: string) => {
+    var cleaned = ('' + phone).replace(/\D/g, '');
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+    }
+    return "";
   }
-
 
   const renderDemographicSuggestions = ({ item }: { item: DemographicContacts }) => (
     <View style={{ marginTop: 10, marginBottom: 10, marginLeft: 20, marginRight: 20 }}>
@@ -142,23 +136,81 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         borderRadius: 15, width: 300,
         marginTop: 5, marginBottom: 15, marginLeft: 40
       }}
-      onPress={async () => {
-        if (!item.persInfo.phone){
-          alert("This user has no phone number!");
-          return
-        }
-        else{
-          var contact: ContactDetails = {
-            firstName: item.firstName,
-            lastName: item.lastName,
-            digits: item.persInfo.phone ,
-            id: item.id
+        onPress={async () => {
+
+          try {
+
+            if (item.persInfo.phone) {
+              var contact: ContactDetails = {
+                firstName: item.firstName,
+                lastName: item.lastName,
+                digits: formatPhoneNumber(item.persInfo.phone),
+                id: item.id
+              }
+
+              if (firebaseContacts) {
+                let userExist = false;
+                firebaseContacts.forEach(ele => {
+                  if (contact.digits == ele.digits) {
+                    userExist = true;
+                  }
+                });
+
+                if (userExist) {
+                  alert("Contact already exist");
+                  return;
+                } else {
+                  var tmpContactList: ContactDetails[] = [];
+                  firebaseContacts.forEach(ele => {
+                    tmpContactList.push(ele);
+                  });
+                  tmpContactList.push(contact);
+                  setFirebaseContacs(tmpContactList);
+                }
+              } else {
+                var tmpContactList: ContactDetails[] = [];
+                tmpContactList.push(contact);
+                setFirebaseContacs(tmpContactList);
+              }
+
+            }
+            else {
+
+              alert("This user has no phone number!");
+              return;
+            }
+
+
+            // if (user.emergencyContacts) {
+            //   let userExist = false;
+            //   user.emergencyContacts.forEach(ele => {
+            //     if (contact.digits === ele.digits) {
+            //       // console.log("item.phoneNumbers[0].number = ", contact.digits);
+            //       // console.log("ele.digits = ", ele.digits);
+            //       userExist = true;
+            //       alert("Contact already exist");
+            //       // props.navigation.navigate("EmergencyContact", { user });
+            //     }
+            //   });
+
+            //   if (!userExist) {
+            //     user.emergencyContacts.push(contact);
+            //     await AddContacts(user);
+            //     props.navigation.navigate("EmergencyContact", { user });
+            //   }
+
+            // } else {
+            //   user.emergencyContacts = [];
+            //   user.emergencyContacts.push(contact);
+            //   await AddContacts(user);
+            //   props.navigation.navigate("EmergencyContact", { user });
+            // }
+
+          } catch (er) {
+            throw (er as Error).message;
           }
-          addContact(contact);
-          props.navigation.navigate("EmergencyContact", { user });
-        }
-        
-      }}
+
+        }}
       >
         <Text style={{ fontSize: 20 }}>Add {item.firstName} {item.lastName}</Text>
         <Text>Age: {item.persInfo.age}    Orientation: {item.persInfo.sexualOrientation}</Text>
@@ -188,14 +240,54 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       }}
         onPress={async () => {
           // let userExist = false;
-          // try {
+          try {
 
-            var contact: ContactDetails = {
-              firstName: item.firstName,
-              lastName: item.lastName,
-              digits: item.phoneNumbers[0].number + "",
-              id: item.id
+            if (item.phoneNumbers[0].number) {
+              var contact: ContactDetails = {
+                firstName: item.firstName,
+                lastName: item.lastName,
+                digits: formatPhoneNumber(item.phoneNumbers[0].number + ""),// item.phoneNumbers[0].number + "",
+                id: item.id
+              }
+
+              if (firebaseContacts) {
+                let userExist = false;
+                firebaseContacts.forEach(ele => {
+                  if (contact.digits == ele.digits) {
+                    userExist = true;
+                  }
+                });
+
+                if (userExist) {
+                  alert("Contact already exist");
+                  return;
+                } else {
+                  var tmpContactList: ContactDetails[] = [];
+                  firebaseContacts.forEach(ele => {
+                    tmpContactList.push(ele);
+                  });
+                  tmpContactList.push(contact);
+                  setFirebaseContacs(tmpContactList);
+                }
+              } else {
+                var tmpContactList: ContactDetails[] = [];
+                tmpContactList.push(contact);
+                setFirebaseContacs(tmpContactList);
+              }
+
             }
+            else {
+
+              alert("This user has no phone number!");
+              return;
+            }
+
+            // var contact: ContactDetails = {
+            //   firstName: item.firstName,
+            //   lastName: item.lastName,
+            //   digits: formatPhoneNumber(item.phoneNumbers[0].number + ""),// item.phoneNumbers[0].number + "",
+            //   id: item.id
+            // }
             // if (user.emergencyContacts) {
 
             //   user.emergencyContacts.forEach(ele => {
@@ -203,8 +295,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
             //       // console.log("item.phoneNumbers[0].number = ", contact.digits);
             //       // console.log("ele.digits = ", ele.digits);
             //       userExist = true;
-            //       alert("User already exist");
-            //       // props.navigation.navigate("EmergencyContact", { user });
+            //       alert("Contact already exist");
+            //       props.navigation.navigate("EmergencyContact", { user });
             //     }
             //   });
 
@@ -217,13 +309,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
             //   user.emergencyContacts.push(contact);
             //   await AddContacts(user);
             // }
-            addContact(contact);
+            // // addContact(contact);
 
-            props.navigation.navigate("EmergencyContact", { user });
+            // props.navigation.navigate("EmergencyContact", { user });
 
-          // } catch (err) {
-          //   throw (err as Error).message;
-          // }
+          } catch (err) {
+            throw (err as Error).message;
+          }
 
         }}
       >
