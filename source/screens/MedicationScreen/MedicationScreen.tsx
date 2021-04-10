@@ -75,6 +75,16 @@ export default function MedicationForm(
     usageInstructions: "string",
     refillDate: "string", // Date;
   };
+
+  const deleteMedication = async (medication: Medication) => {
+    let index: number;
+    if (user.medInfo?.medication) {
+      index = user.medInfo?.medication.indexOf(medication);
+      user.medInfo?.medication.splice(index, 1);
+      await FirebaseController.SetUserData(user);
+    }
+    setUserData(user.medInfo);
+  };
   //FORM SUBMISSION
   const formal = useFormal(initialValues, {
     schema,
@@ -112,7 +122,6 @@ export default function MedicationForm(
         );
       }
 
-      // TODO: What happens if userData is undefined? Do you need a try catch block to handle error?
       userData?.medication.push(medication);
       if (userData) AddMedicalData(user, userData);
 
@@ -137,14 +146,6 @@ export default function MedicationForm(
     showMode("date");
   };
 
-  const deleteMedication = (medication: Medication) => {
-    let index: number;
-    if (user.medInfo?.medication) {
-      index = user.medInfo?.medication.indexOf(medication);
-      user.medInfo?.medication.splice(index, 1);
-      FirebaseController.SetUserData(user);
-    }
-  };
   //DATE OBJECT END///////////
 
   //////////////////////////END////////////////
@@ -172,8 +173,8 @@ export default function MedicationForm(
   //GET INFO END///////////////////////
 
   return (
-    <ScrollView contentContainerStyle={{flexGrow:1}}>
-      <View style={{ backgroundColor: "#219ebc",flex:1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={{ backgroundColor: "#219ebc", flex: 1 }}>
         {info
           ? info.map((l, i) => (
               <ListItem key={i * Math.random()} bottomDivider>
