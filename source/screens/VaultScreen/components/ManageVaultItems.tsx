@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from "react-native"
 import { ActivityIndicator, Button,  Divider } from 'react-native-paper';
-import { LifeLineBlue, LifeLineDarkBlue, LifeLineOrange, MediaEntry, VaultStackParamList } from '../../../types';
+import { LifeLineBlue, LifeLineDarkBlue, MediaEntry, VaultStackParamList } from '../../../types';
 import VaultItemsMenu from './VaultItemsMenu';
 import { User } from '../../../interfaces/User';
 import * as DocumentPicker from 'expo-document-picker';
@@ -13,8 +13,6 @@ import { AddUserData } from '../../../firebase/UserDataHandler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVPlaybackSource, AVPlaybackStatus } from 'expo-av/build/AV';
-import { string } from 'yup/lib/locale';
-import { add } from 'react-native-reanimated';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
