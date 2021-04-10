@@ -1,3 +1,5 @@
+//user.ts
+
 import { PersInfo } from "./PersonalInfo";
 import { MedicationInfo } from "./MedicalInfo";
 import { QuestionResponse } from "./QuestionResponse";
@@ -19,7 +21,6 @@ export interface User {
     id: string;
 
     location?:string; // new - used in EmergencyLocationScreen & LocationServicesScreen
-    phoneNumber?: number;
 
     personalInfo?: PersInfo;
     medInfo?: MedicationInfo;

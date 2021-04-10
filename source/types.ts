@@ -1,4 +1,5 @@
 import { User } from "./interfaces/User";
+import { DemographicContacts } from "./interfaces/DemographicContacts";
 
 export const LifeLineOrange ='#FB8500'
 export const LifeLineDarkBlue ='#023047'
@@ -15,10 +16,11 @@ export type UserStackParamList = {
 };
 
 
-export type PhotoVideoEntry ={
+export type MediaEntry ={
   title:string,
   url?:string,
   type:string,
+  path:string,
 }
 
 // type to define route : params for User navigator and screens
@@ -48,7 +50,7 @@ export type SafetyPlanStackParamList = {
     SocialEngagements:{user:User},
     Help:{user:User},
     EmergencyContact:{user:User},
-    AccessDeviceContacts: {user:User},
+    AccessDeviceContacts: {user:User, contactSuggestions: DemographicContacts[]},
     LocationServices: {user: User},
     Vault:{user:User},
     EmergencyLocations: {user: User},

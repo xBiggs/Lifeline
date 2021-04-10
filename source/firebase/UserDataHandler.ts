@@ -4,6 +4,7 @@ import { MedicationInfo } from "../interfaces/MedicalInfo"
 import { User } from '../interfaces/User';
 import { NotificationType } from '../interfaces/Notification';
 import { EmergencyLocationProvider } from '../interfaces/EmergencyLocationProvider';
+import { DemographicContacts } from '../interfaces/DemographicContacts'
 
 // TODO: Why does this even exist
 
@@ -86,12 +87,12 @@ export async function AddContacts(user: User) {
 
 }
 
-export async function AddServiceProvider(user: User){//, data: EmergencyLocationProvider) {
+export async function AddServiceProvider(user: User) {//, data: EmergencyLocationProvider) {
     /* UPDATING THE ENTIRE USER OBJECT */
 
     try {
-        console.log("inside firebase call");
-        
+        // console.log("inside firebase call");
+
         await firebase.firestore().collection('users').doc(user.id).update("serviceProvider", user.emergencyProviders);
     } catch (error) {
         throw (error as Error).message;
@@ -100,4 +101,44 @@ export async function AddServiceProvider(user: User){//, data: EmergencyLocation
 
 }
 
-// commands to test a function: tsc & node firebaseCRUDtest.js
+
+export async function GetAllUser(user: User) {
+
+    try {
+
+        // const snapshot = await firebase.firestore().collection('users').get();
+        // const data = snapshot.docs.map(doc => doc.data());
+        // data.forEach(element => {
+        //     console.log(element.firstName);
+        // });
+
+        const snapshot = await firebase.firestore().collection('users').get();
+        let demogInfo: DemographicContacts[] = [];
+        snapshot.forEach(doc => {
+            // console.log(doc.id, '=> [ ', doc.data().firstName, " --> ", doc.data().personalInfo);
+            // console.log("\n\n");
+            if (doc && doc.id !== user.id) {
+                // if (user.personalInfo?.sexualOrientation == doc.data().personalInfo.sexualOrientation){
+                //     console.log("SAME");
+                    
+                // }                
+                let tmpList: DemographicContacts = {
+                    firstName: doc.data().firstName,
+                    lastName: doc.data().lastName,
+                    id: doc.id,
+                    persInfo: doc.data().personalInfo  // can be undefined
+                }
+                demogInfo.push(tmpList);
+            }
+
+        });
+        // console.log(demogInfo);
+        // console.log(snapshot.docs.map(doc => doc.data()));
+        return demogInfo;
+
+    } catch (error) {
+        throw (error as Error).message;
+    }
+
+
+}

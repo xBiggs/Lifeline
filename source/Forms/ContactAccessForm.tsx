@@ -7,10 +7,13 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { SafetyPlanStackParamList } from '../types'
 import { AddContacts } from '../firebase/UserDataHandler';
 import { ContactDetails } from '../interfaces/ContactDetails';
+import { ScrollView } from 'react-native-gesture-handler';
+import { DemographicContacts } from '../interfaces/DemographicContacts';
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
-  const user = props.route.params.user;
+  // const { user } = props.route.params.user;
+  const { user, contactSuggestions } = props.route.params;
 
   // TODO: Variable never used
   const device = Devices.osName;
@@ -23,6 +26,12 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   // TODO: Variables never used
   const [searchResults, setSearchResults] = useState<Contacts.Contact[]>();
   const [person, setPerson] = useState<Contacts.Contact>();
+
+  // useEffect(() => {
+  //   (async () => {
+  //     console.log(demogContats);
+  //   })();
+  // }, [demogContats]);
 
   // const loadContacts = async () => {
   //   const permissions = await Contacts.requestPermissionsAsync();
@@ -56,16 +65,19 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       }
 
       // TODO: Try Catch??
-      const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
-      });
-
-      if (data.length > 0) {
-        setContacts(data);
-        setIsLoading(false);
-        // console.log(data);
-
+      try {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
+        });
+        if (data.length > 0) {
+          setContacts(data);
+          setIsLoading(false);
+          // console.log(data);
+        }
+      } catch (e) {
+        throw (e as Error).message;
       }
+      console.log(contactSuggestions);
 
     })();
   }, []);
@@ -86,7 +98,73 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     getSearchResult();
   }, []);
 
+  const addContact = (cont: ContactDetails) => {
+    (async () => {
+      let userExist = false;
 
+      try {
+        if (user.emergencyContacts) {
+
+          user.emergencyContacts.forEach(ele => {
+            if (cont.digits === ele.digits) {
+              // console.log("item.phoneNumbers[0].number = ", contact.digits);
+              // console.log("ele.digits = ", ele.digits);
+              userExist = true;
+              alert("User already exist");
+              // props.navigation.navigate("EmergencyContact", { user });
+            }
+          });
+
+          if (!userExist) {
+            user.emergencyContacts.push(cont);
+            // await AddContacts(user);
+            console.log(user.emergencyContacts);
+            
+          }
+        } else {
+          user.emergencyContacts = [];
+          user.emergencyContacts.push(cont);
+          // await AddContacts(user);
+          console.log(user.emergencyContacts);
+        }
+      } catch (err) {
+        throw (err as Error).message;
+      }
+    });
+  }
+
+
+  const renderDemographicSuggestions = ({ item }: { item: DemographicContacts }) => (
+    <View style={{ marginTop: 10, marginBottom: 10, marginLeft: 20, marginRight: 20 }}>
+      <TouchableOpacity style={{
+        alignItems: 'center', justifyContent: 'center',
+        backgroundColor: '#51a4e8', height: 50,
+        borderRadius: 15, width: 300,
+        marginTop: 5, marginBottom: 15, marginLeft: 40
+      }}
+      onPress={async () => {
+        if (!item.persInfo.phone){
+          alert("This user has no phone number!");
+          return
+        }
+        else{
+          var contact: ContactDetails = {
+            firstName: item.firstName,
+            lastName: item.lastName,
+            digits: item.persInfo.phone ,
+            id: item.id
+          }
+          addContact(contact);
+          props.navigation.navigate("EmergencyContact", { user });
+        }
+        
+      }}
+      >
+        <Text style={{ fontSize: 20 }}>Add {item.firstName} {item.lastName}</Text>
+        <Text>Age: {item.persInfo.age}    Orientation: {item.persInfo.sexualOrientation}</Text>
+      </TouchableOpacity>
+    </View >
+  );
 
   // might throw an error here!!!
   // renderItem = ({ item }: { item: ContactDetails }) => (
@@ -109,18 +187,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
         onPress={async () => {
-          let userExist = false;
-          // TODO: user and emergencyContacts can be undefined here
-          try {
-
-            // user.emergencyContacts.forEach(element => {
-            //   // TODO: item and phoneNumbers can be undefined here
-            //   if (item.phoneNumbers[0].digits === element.phoneNumbers[0].digits) {
-            //     userExist = true;
-            //     alert("User ALREADY exist");
-            //     props.navigation.navigate("EmergencyContact", { user });
-            //   }
-            // });
+          // let userExist = false;
+          // try {
 
             var contact: ContactDetails = {
               firstName: item.firstName,
@@ -128,34 +196,34 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
               digits: item.phoneNumbers[0].number + "",
               id: item.id
             }
-            // console.log(contact);
-            if (user.emergencyContacts) {
+            // if (user.emergencyContacts) {
 
-              user.emergencyContacts.forEach(ele => {
-                if (contact.digits === ele.digits) {
-                  // console.log("item.phoneNumbers[0].number = ", contact.digits);
-                  // console.log("ele.digits = ", ele.digits);
-                  userExist = true;
-                  alert("User already exist");
-                  // props.navigation.navigate("EmergencyContact", { user });
-                }
-              });
+            //   user.emergencyContacts.forEach(ele => {
+            //     if (contact.digits === ele.digits) {
+            //       // console.log("item.phoneNumbers[0].number = ", contact.digits);
+            //       // console.log("ele.digits = ", ele.digits);
+            //       userExist = true;
+            //       alert("User already exist");
+            //       // props.navigation.navigate("EmergencyContact", { user });
+            //     }
+            //   });
 
-              if (!userExist) {
-                user.emergencyContacts.push(contact);
-                await AddContacts(user); 
-              }
-            } else {
-              user.emergencyContacts = [];
-              user.emergencyContacts.push(contact);
-              await AddContacts(user);
-            }
-            
+            //   if (!userExist) {
+            //     user.emergencyContacts.push(contact);
+            //     await AddContacts(user);
+            //   }
+            // } else {
+            //   user.emergencyContacts = [];
+            //   user.emergencyContacts.push(contact);
+            //   await AddContacts(user);
+            // }
+            addContact(contact);
+
             props.navigation.navigate("EmergencyContact", { user });
 
-          } catch (err) {
-            throw (err as Error).message;
-          }
+          // } catch (err) {
+          //   throw (err as Error).message;
+          // }
 
         }}
       >
@@ -204,16 +272,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={{ marginTop: 10 }} />
-      {/* <TextInput
-        placeholder="Search"
-        placeholderTextColor="black"
-        style={styles.searchBox}
-        // onChangeText={value => searchContacts(value)}
-        onChangeText={value => setSearchResults({ value })}
-      /> */}
       <View style={{ flex: 1 }}>
-        {/* , backgroundColor: '#2f363c' */}
-        {/* {this.state.isLoading ? ( */}
         {isLoading ? (
           <View
             style={styles.activityIndicatorView}
@@ -236,8 +295,30 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
 
           )}
         />
-
       </View>
+
+      <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
+      <Text style={{ backgroundColor: "#e6e69c", paddingLeft: 20, fontSize: 20, marginLeft: 10, marginRight: 10 }}>Suggestions</Text>
+      <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
+
+      <View style={{ flex: 1 }}>
+        <FlatList
+          // data={this.state.contacts}
+          data={contactSuggestions}
+          renderItem={renderDemographicSuggestions}
+          keyExtractor={(item, index) => index.toString()}
+          ListEmptyComponent={() => (
+            <View
+              style={styles.flatListView}
+            >
+              <Text style={{ color: 'blue' }}>No Suggestions</Text>
+
+            </View>
+
+          )}
+        />
+      </View>
+
     </View>
   );
 }

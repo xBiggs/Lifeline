@@ -1,6 +1,6 @@
 import { DailyConversationResponse } from '../interfaces/DailyConversationResponse';
 import { User } from '../interfaces/User';
-import { PhotoVideoEntry } from '../types';
+import { MediaEntry } from '../types';
 import { firebase } from './config';
 import { AddUserData } from './UserDataHandler';
 
@@ -94,7 +94,21 @@ export class FirebaseController {
         return document.data();
     }
 
-    static async AddPhotoToVault(user: User, fileInfo: { filePath: string, type: string } | undefined, filename: string): Promise<PhotoVideoEntry | undefined> {
+    static async RemoveMediaFromVault(path:string)
+    {
+        try{
+            const ref = firebase.storage().ref().child(path);
+            await ref.delete();
+            return true;
+
+        }catch(error)
+        {
+            alert((error as Error).message)
+            return false;
+        }
+    }
+
+    static async AddMediaToVault(user: User, fileInfo: { filePath: string, type: string } | undefined, filename: string): Promise<MediaEntry | undefined> {
 
         if (fileInfo) {
             console.log('adding to storage');
@@ -104,12 +118,14 @@ export class FirebaseController {
             const ref = firebase.storage().ref().child(`/${user.id}/${fileInfo.type}s/${filename}`);
             const result = await ref.put(blob);
             const url = await result.ref.getDownloadURL();
+            
 
             // console.log("adding to firebase");
             return {
                 title: filename,
                 type: fileInfo.type,
-                url: url
+                url: url,
+                path:result.ref.fullPath
             }
         } else return undefined;
     }

@@ -29,6 +29,13 @@ export default (props:{setOption:(option:number)=>void})=>{
                 </Card>
 
                 </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{props.setOption(3)}}>
+                <Card style={styles.menuItem}>
+                    <MaterialCommunityIcons style={styles.menuIcon} name='trash-can'></MaterialCommunityIcons>
+                    <Text style={styles.menuTitle}>Delete Items</Text>
+                </Card>
+
+                </TouchableOpacity>
               
             </View>
             <View></View>

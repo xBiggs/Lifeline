@@ -30,12 +30,13 @@ export default function PersonalInfoScreen(
     sexualOrientation: "",
     religion: "",
     militaryStatus: "",
+    phone: "",
   };
   var tempMedicalInfo: MedicationInfo = {
-    diagnose: "",
+    diagnose: [],
     medication: [],
     regiments: "",
-    familyMedicalHistory: "",
+    familyMedicalHistory: [],
     nextApointment: [],
   };
 
@@ -55,21 +56,23 @@ export default function PersonalInfoScreen(
   }
 
   const [gender, setRadio] = useState(initialValue);
-
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const schema = yup.object().shape({
     age: yup.number().required(),
     religion: yup.string().required(),
     diagnose: yup.string().required(),
     regiments: yup.string().required(),
     familyMedicalHistory: yup.string().required(),
+    phone: yup.string().matches(phoneRegExp, "Phone number not valid"),
   });
 
   const initialValues = {
     age: tempPersonalInfo.age,
     religion: tempPersonalInfo.religion,
-    diagnose: tempMedicalInfo.diagnose,
+    diagnose: tempMedicalInfo.diagnose.join(", "),
     regiments: tempMedicalInfo.regiments,
-    familyMedicalHistory: tempMedicalInfo.familyMedicalHistory,
+    familyMedicalHistory: tempMedicalInfo.familyMedicalHistory.join(", "),
+    phone: tempPersonalInfo.phone,
   };
 
   const handleRadioInput = (e: React.SetStateAction<undefined>) => {
@@ -92,22 +95,30 @@ export default function PersonalInfoScreen(
 
   const formal = useFormal(initialValues, {
     schema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       tempPersonalInfo.age = values.age;
       tempPersonalInfo.gender = buttonsGender[gender];
       tempPersonalInfo.militaryStatus = militaryStatus;
       tempPersonalInfo.race = race;
       tempPersonalInfo.religion = values.religion;
       tempPersonalInfo.sexualOrientation = sexualOrientation;
+      tempPersonalInfo.phone = values.phone;
 
-      tempMedicalInfo.diagnose = values.diagnose;
-      tempMedicalInfo.familyMedicalHistory = values.familyMedicalHistory;
+      tempMedicalInfo.diagnose = values.diagnose.split(",").map((word) => {
+        return word.trim();
+      });
+      tempMedicalInfo.familyMedicalHistory = values.familyMedicalHistory
+        .split(",")
+        .map((word) => {
+          return word.trim();
+        });
       tempMedicalInfo.regiments = values.regiments;
       user.medInfo = tempMedicalInfo;
       user.personalInfo = tempPersonalInfo;
 
-      AddUserData(user);
+      await AddUserData(user);
       Alert.alert("Thank You!");
+      props.navigation.navigate("Home", { user });
     },
   });
 
@@ -235,6 +246,7 @@ export default function PersonalInfoScreen(
           />
           <View style={styles.inputContainer}>
             <Text style={styles.buttonLabel}>Diagnosis</Text>
+            <Text style={styles.buttonLabel}>(Seperated by Comma)</Text>
             <TextInput
               style={styles.input}
               {...formal.getFieldProps("diagnose")}
@@ -255,6 +267,7 @@ export default function PersonalInfoScreen(
           />
           <View style={styles.inputContainer}>
             <Text style={styles.buttonLabel}>Family Medical History</Text>
+            <Text style={styles.buttonLabel}>(Seperated by Comma)</Text>
             <TextInput
               style={styles.input}
               {...formal.getFieldProps("familyMedicalHistory")}
@@ -303,6 +316,25 @@ export default function PersonalInfoScreen(
             />
             {formal.errors.religion && (
               <Text style={styles.error}>{formal.errors.religion}</Text>
+            )}
+          </View>
+          <Divider
+            style={{
+              backgroundColor: "white",
+              width: 360,
+              height: 1,
+              alignSelf: "center",
+              marginBottom: 30,
+            }}
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.buttonLabel}>Phone Number</Text>
+            <TextInput
+              style={styles.input}
+              {...formal.getFieldProps("phone")}
+            />
+            {formal.errors.phone && (
+              <Text style={styles.error}>{formal.errors.phone}</Text>
             )}
           </View>
           <Divider

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import * as yup from "yup";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { ListItem } from "react-native-elements";
+import { Icon, ListItem } from "react-native-elements";
 import styles from "./styles";
 import useFormal from "@kevinwolf/formal-native";
 import { DrawerScreenProps } from "@react-navigation/drawer";
@@ -50,10 +50,10 @@ export default function MedicationForm(
   //STATE VARIABLES END////////////////////////////
   //////////////////////////Formal Data////////////////
   const medicalFields: MedicationInfo = {
-    diagnose: "",
+    diagnose: [],
     medication: [],
     regiments: "",
-    familyMedicalHistory: "string",
+    familyMedicalHistory: [],
     nextApointment: [],
   };
   const schema = yup.object().shape({
@@ -74,6 +74,16 @@ export default function MedicationForm(
     numTimesDay: 4,
     usageInstructions: "string",
     refillDate: "string", // Date;
+  };
+
+  const deleteMedication = async (medication: Medication) => {
+    let index: number;
+    if (user.medInfo?.medication) {
+      index = user.medInfo?.medication.indexOf(medication);
+      user.medInfo?.medication.splice(index, 1);
+      await FirebaseController.SetUserData(user);
+    }
+    setUserData(user.medInfo);
   };
   //FORM SUBMISSION
   const formal = useFormal(initialValues, {
@@ -112,7 +122,6 @@ export default function MedicationForm(
         );
       }
 
-      // TODO: What happens if userData is undefined? Do you need a try catch block to handle error?
       userData?.medication.push(medication);
       if (userData) AddMedicalData(user, userData);
 
@@ -164,15 +173,17 @@ export default function MedicationForm(
   //GET INFO END///////////////////////
 
   return (
-    <ScrollView>
-      <View style={{ backgroundColor: "#219ebc" }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={{ backgroundColor: "#219ebc", flex: 1 }}>
         {info
           ? info.map((l, i) => (
               <ListItem key={i * Math.random()} bottomDivider>
                 <ListItem.Content>
-                  <ListItem.Title style={styles.MainTitle}>
-                    Name: {l.name}
-                  </ListItem.Title>
+                  <View style={{ flexDirection: "row" }}>
+                    <ListItem.Title style={styles.MainTitle}>
+                      Name: {l.name}
+                    </ListItem.Title>
+                  </View>
 
                   <ListItem.Subtitle style={styles.subTitle}>
                     Dose: {l.dose}
@@ -186,6 +197,9 @@ export default function MedicationForm(
                   <ListItem.Subtitle style={styles.subTitle}>
                     Refill Date: {l.refillDate}
                   </ListItem.Subtitle>
+                  <TouchableOpacity onPress={() => deleteMedication(l)}>
+                    <Icon name="delete" type="material" color="#517fa4" />
+                  </TouchableOpacity>
                 </ListItem.Content>
               </ListItem>
             ))
