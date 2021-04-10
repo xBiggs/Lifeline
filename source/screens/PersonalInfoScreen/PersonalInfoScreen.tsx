@@ -56,14 +56,14 @@ export default function PersonalInfoScreen(
   }
 
   const [gender, setRadio] = useState(initialValue);
-  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+  const phoneRegExp = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
   const schema = yup.object().shape({
     age: yup.number().required(),
     religion: yup.string().required(),
     diagnose: yup.string().required(),
     regiments: yup.string().required(),
     familyMedicalHistory: yup.string().required(),
-    phone: yup.string().matches(phoneRegExp, "Phone number not valid"),
+    phone: yup.string().required(),
   });
 
   const initialValues = {
