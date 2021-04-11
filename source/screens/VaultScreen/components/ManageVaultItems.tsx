@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useRef, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput,ScrollView } from "react-native"
 import { ActivityIndicator, Button,  Divider } from 'react-native-paper';
 import { LifeLineBlue, LifeLineDarkBlue, MediaEntry, VaultStackParamList } from '../../../types';
 import VaultItemsMenu from './VaultItemsMenu';
@@ -13,7 +13,6 @@ import { AddUserData } from '../../../firebase/UserDataHandler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVPlaybackSource, AVPlaybackStatus } from 'expo-av/build/AV';
-import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
@@ -155,7 +154,7 @@ const Content = (props: { option: number, user: User }) => {
                 })
 
             }
-            else if(entry.type='photo')
+            else if(entry.type=='image')
             {
                 setPhotos(prev=>{
                    
@@ -170,7 +169,7 @@ const Content = (props: { option: number, user: User }) => {
                 })
 
             }
-            else if(entry.type='video')
+            else if(entry.type=='video')
             {
                 setVideos(prev=>{
                    
@@ -178,6 +177,7 @@ const Content = (props: { option: number, user: User }) => {
                     {
                         const newArr = [...prev]
                         const index = newArr.indexOf(entry);
+                        console.log("index:",index);
                         newArr.splice(index,1);
                         return newArr;
                     }
@@ -185,8 +185,10 @@ const Content = (props: { option: number, user: User }) => {
                 })
 
             }
+            else{
+               return;
+            }
         }
-
     }
 
     const addMediaToVault = async () => {
@@ -197,6 +199,7 @@ const Content = (props: { option: number, user: User }) => {
             return;
         }
         if (fileInfo) {
+            
 
             const entry = await FirebaseController.AddMediaToVault(props.user, fileInfo, fileName)
             switch (entry?.type) {
@@ -253,6 +256,7 @@ const Content = (props: { option: number, user: User }) => {
 
             setLoading(false);
             alert("You file has been added to the vault");
+            setFileName("")
             setFileInfo(undefined)
             setImage(undefined)
             setVideo(undefined)
@@ -270,7 +274,6 @@ const Content = (props: { option: number, user: User }) => {
     },[audioSource])
 
     const playPauseAudio = async ()=>{
-      
         if(audioIsPlaying)
         {
            if(playback) await playback.sound.pauseAsync();
@@ -281,7 +284,8 @@ const Content = (props: { option: number, user: User }) => {
             if(playback) await playback.sound.playAsync();
             
         }
-        setAudioIsPlaying(!audioIsPlaying)
+
+      setAudioIsPlaying(!audioIsPlaying)
     }
 
     const pickAudio = async () => {
@@ -307,6 +311,7 @@ const Content = (props: { option: number, user: User }) => {
         });
 
         if (!result.cancelled && (result.type == 'image' || result.type == 'video')) {
+            console.log(result.type);
 
             setFileInfo({
                 filePath: result.uri,
@@ -411,7 +416,8 @@ const Content = (props: { option: number, user: User }) => {
         case 3:
             {
                 return (
-                    <ScrollView style={{margin:10}}>
+                    <ScrollView>
+                        <View style={{flex:1}}>
                         <Divider style={{borderColor:'white',borderWidth:1}}/>
                         <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Quotes</Text>
                         {quotes?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Quotes</Text>:<>
@@ -428,24 +434,35 @@ const Content = (props: { option: number, user: User }) => {
                         <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Photos</Text>
                         {photos?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Photos</Text>:<>
                         {
-                            photos?.map(item=><View style={{flexDirection:'row'}} key={item.url}>
-                            <Text style={{flex:1,fontSize:25}}>{item.title}</Text>
+                            photos?.map(item=><View style={{flexDirection:'row',borderWidth:2,margin:1,borderColor:LifeLineDarkBlue}} key={item.url}>
+                            <Image source={{ uri: item.url }} style={{ width: 250,flex:1, height: 200 }} />
                            <TouchableOpacity
                            onPress={async()=>{
                                await removeMediaFromVault(item);
-                           }}><MaterialCommunityIcons size={25} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
+                           }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
                         </View>)
                         }</>}
                         <Divider style={{borderColor:'white',borderWidth:1}}/>
                         <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Videos</Text>
                         {videos?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Videos</Text>:<>
                         {
-                            videos?.map(item=><View style={{flexDirection:'row'}} key={item.url}>
-                            <Text style={{flex:1,fontSize:25}}>{item.title}</Text>
+                            videos?.map(item=><View style={{flexDirection:'row',margin:3,justifyContent:'space-around',borderBottomWidth:1,borderBottomColor:LifeLineDarkBlue}} key={item.url}>
+                            <Video
+                            style={{ height: 250, width: 250 }}
+                            ref={videoRef}
+                            source={{
+                                uri: item.url?item.url:"",
+                            }}
+                            resizeMode="contain"
+                            useNativeControls
+                            usePoster
+
+                        />
+
                            <TouchableOpacity
                            onPress={async()=>{
                                await removeMediaFromVault(item);
-                           }}><MaterialCommunityIcons size={25} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
+                           }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
                         </View>)
 
                         }
@@ -454,14 +471,20 @@ const Content = (props: { option: number, user: User }) => {
                           <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Audio</Text>
                         {audio?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Audio</Text>:<>
                         {
-                            audio?.map(item=><View style={{flexDirection:'row'}} key={item.url}>
-                                <Text style={{flex:1,fontSize:25}}>{item.title}</Text>
-                               <TouchableOpacity onPress={async()=>{
+                            audio?.map(item=><View style={{flexDirection:'row',borderWidth:2,margin:1,borderColor:LifeLineDarkBlue}} key={item.url}>
+                                <Text style={{fontSize:25,flex:1}}>{item.title}</Text>
+                                <Button style={{margin:5}} mode='contained' color={LifeLineDarkBlue} onPress={()=>{
+                                    setAudioSource({uri:item.url||""})
+                                    playPauseAudio()}} ><MaterialCommunityIcons  name="play" color={LifeLineBlue} size={15} >
+                                <Text>{audioIsPlaying?'Pause':'Play'}</Text>
+                                </MaterialCommunityIcons></Button>
+                               <TouchableOpacity style={{marginRight:10}} onPress={async()=>{
                                    await removeMediaFromVault(item);
-                               }}><MaterialCommunityIcons size={25} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
+                               }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
                             </View>)
                         }</>}
                         <Divider style={{borderColor:'white',borderWidth:1}}/>
+                        </View>
                        
                      
                     </ScrollView>
