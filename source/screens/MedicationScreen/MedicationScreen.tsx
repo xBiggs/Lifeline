@@ -26,6 +26,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import {
   getSecondsBetweenDates,
   schedulePushNotification,
+  scheduleRecurringPushNotification,
 } from "../../Controllers/notificationsController";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -40,8 +41,9 @@ export default function MedicationForm(
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [info, setInfo] = useState<Medication[]>([]);
   const user = props.route.params.user;
-  const [userData, setUserData] = useState<MedicationInfo>();
+
   const [userNotifications, setUserNotifications] = useState<
     NotificationType[]
   >([]);
@@ -52,7 +54,7 @@ export default function MedicationForm(
   const medicalFields: MedicationInfo = {
     diagnose: [],
     medication: [],
-    regiments: "",
+
     familyMedicalHistory: [],
     nextApointment: [],
   };
@@ -61,12 +63,14 @@ export default function MedicationForm(
     dose: yup.string().required(),
     numTimesDay: yup.number().required(),
     usageInstructions: yup.string().required(),
+    timeInBetween: yup.number().required(),
   });
   const initialValues = {
     dose: "",
     name: "",
     numTimesDay: 0,
     usageInstructions: "",
+    timeInBetween: 0,
   };
   var tempMedication = {
     name: "string",
@@ -74,6 +78,7 @@ export default function MedicationForm(
     numTimesDay: 4,
     usageInstructions: "string",
     refillDate: "string", // Date;
+    timeInBetween: 0,
   };
 
   const deleteMedication = async (medication: Medication) => {
@@ -83,12 +88,14 @@ export default function MedicationForm(
       user.medInfo?.medication.splice(index, 1);
       await FirebaseController.SetUserData(user);
     }
-    setUserData(user.medInfo);
+
+    if (user.medInfo) setInfo(user.medInfo.medication);
   };
   //FORM SUBMISSION
   const formal = useFormal(initialValues, {
     schema,
     onSubmit: async (values) => {
+      console.log(values);
       // TODO: Don't use keyword var, user keywords let or const instead
       var medication: Medication = {
         name: values.name,
@@ -96,6 +103,7 @@ export default function MedicationForm(
         numTimesDay: values.numTimesDay,
         usageInstructions: values.usageInstructions,
         refillDate: date.toString(),
+        timeInBetween: values.timeInBetween,
       };
       // TODO: Don't use keyword var, user keywords let or const instead
       var notification: NotificationType = {
@@ -120,10 +128,16 @@ export default function MedicationForm(
           "click to view instructions",
           secondsBetweenDates
         );
+        scheduleRecurringPushNotification(
+          "Medication Alert",
+          "Need to take medication: " + values.name,
+          "click to view instructions",
+          values.timeInBetween * 60
+        );
       }
 
-      userData?.medication.push(medication);
-      if (userData) AddMedicalData(user, userData);
+      if (user.medInfo) user.medInfo.medication.push(medication);
+      if (user.medInfo) AddMedicalData(user, user.medInfo);
 
       if (userNotifications) AddNotification(user, notification);
       setModalVisible(!modalVisible);
@@ -153,7 +167,7 @@ export default function MedicationForm(
   //GET INFO///////////////////////
   useEffect(() => {
     const getinfo = async () => {
-      setUserData(user.medInfo);
+      if (user.medInfo) setInfo(user.medInfo.medication);
       if (user.notifications) setUserNotifications(user.notifications);
       else setUserNotifications([]);
     };
@@ -162,13 +176,6 @@ export default function MedicationForm(
   }, []);
 
   // TODO: Stop using keyword var, use keywords let or const instead
-  var info: Medication[] = [];
-  if (userData && !userData?.medication) {
-    userData.medication = [];
-  }
-
-  if (userData) info = userData.medication;
-  else info = [];
 
   //GET INFO END///////////////////////
 
@@ -190,6 +197,10 @@ export default function MedicationForm(
                   </ListItem.Subtitle>
                   <ListItem.Subtitle style={styles.subTitle}>
                     Number Of Times Per Day: {l.numTimesDay.toString()}
+                  </ListItem.Subtitle>
+                  <ListItem.Subtitle style={styles.subTitle}>
+                    Time In Between Dosage(minutes){" "}
+                    {l.timeInBetween.toLocaleString()}
                   </ListItem.Subtitle>
                   <ListItem.Subtitle style={styles.subTitle}>
                     Usage Instructions: {l.usageInstructions}
@@ -272,11 +283,23 @@ export default function MedicationForm(
                   </Text>
                   <TextInput
                     style={styles.input}
-                    {...formal.getFieldProps("numTimesDay").value}
+                    {...formal.getFieldProps("numTimesDay")}
                   />
                   {formal.errors.numTimesDay && (
                     <Text style={styles.error}>
                       {formal.errors.numTimesDay}
+                    </Text>
+                  )}
+                  <Text style={styles.buttonLabel}>
+                    Time in between doses (minutes)
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    {...formal.getFieldProps("timeInBetween")}
+                  />
+                  {formal.errors.timeInBetween && (
+                    <Text style={styles.error}>
+                      {formal.errors.timeInBetween}
                     </Text>
                   )}
                   <Text style={styles.buttonLabel}>Instructions</Text>

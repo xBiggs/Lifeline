@@ -34,9 +34,13 @@ export async function scheduleRecurringPushNotification(
     },
     trigger: {
       seconds: seconds,
-      repeats: true
+      repeats: true,
     },
   });
+}
+
+export async function cancelNotifications() {
+  Notifications.cancelAllScheduledNotificationsAsync();
 }
 
 export async function sendPushNotification(expoPushToken: any) {

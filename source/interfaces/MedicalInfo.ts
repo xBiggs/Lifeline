@@ -1,7 +1,6 @@
 export interface MedicationInfo {
     diagnose: string[];
     medication: Medication[];
-    regiments: string;
     familyMedicalHistory: string[];
     nextApointment?: Apointment[];
 }
@@ -12,6 +11,7 @@ export interface Medication{
     numTimesDay: number;
     usageInstructions: string;
     refillDate?: string; // Date;
+    timeInBetween:number;
 }
 export interface Apointment{
     date: firebase.default.firestore.Timestamp; // Date;

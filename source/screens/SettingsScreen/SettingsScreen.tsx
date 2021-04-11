@@ -3,6 +3,12 @@ import { DrawerScreenProps } from "@react-navigation/drawer";
 import React, { useEffect, useState } from "react";
 import { Switch, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-elements";
+import {
+  cancelNotifications,
+  getSecondsBetweenDates,
+  schedulePushNotification,
+  scheduleRecurringPushNotification,
+} from "../../Controllers/notificationsController";
 import { AddUserData } from "../../firebase/UserDataHandler";
 import { HomeDrawerParamList } from "../../types";
 import styles from "../MedicalInfoScreen/styles";
@@ -26,6 +32,42 @@ export default function Settings(
   };
 
   async function save() {
+    if (!user.settings?.notificationsOn) cancelNotifications();
+    else {
+      user.medInfo?.medication.forEach((med) => {
+        scheduleRecurringPushNotification(
+          "Medication Alert",
+          "Need to take medication: " + med.name,
+          "click to view instructions",
+          med.timeInBetween * 60
+        );
+        const today: Date = new Date();
+
+        const refill: Date = new Date(med.refillDate?.toString());
+        const secondsBetweenDates = getSecondsBetweenDates(today, refill);
+
+        schedulePushNotification(
+          "Medication Alert",
+          "Need to refill: " + med.name,
+          "click to view instructions",
+          secondsBetweenDates
+        );
+      });
+      user.medInfo?.nextApointment?.forEach((appointment) => {
+        const today: Date = new Date();
+        const secondsBetweenDates = getSecondsBetweenDates(
+          today,
+          appointment.date.toDate()
+        );
+
+        schedulePushNotification(
+          "Apointment Alert",
+          "You have an upcoming appointment",
+          "click to view reason",
+          secondsBetweenDates - 86400
+        );
+      });
+    }
     await AddUserData(user);
     saved = true;
     alert("Settings have been saved");
