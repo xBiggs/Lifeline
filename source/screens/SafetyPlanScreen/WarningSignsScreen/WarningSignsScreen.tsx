@@ -131,7 +131,7 @@ export default function WarningSignsScreen(
             Add Warning Sign +
           </Text>
         </TouchableOpacity>
-        
+
         <FlatList
           keyExtractor={(item: WarningSignListElement) => item.id}
           data={warningSignList}

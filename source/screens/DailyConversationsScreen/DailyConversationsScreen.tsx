@@ -11,13 +11,15 @@ import {
   } from "react-native";
 import { HomeDrawerParamList } from '../../types';
 import { DrawerScreenProps } from '@react-navigation/drawer';
-import { DailyConversationResponse } from '../../interfaces/DailyConversationResponse';
+import { BAD, DailyConversationResponse, DailyConversationResponseValue, GOOD, OK, TERRIBLE } from '../../interfaces/DailyConversationResponse';
 import { FirebaseController } from '../../firebase/FirebaseController';
 import firebase from 'firebase';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 
 export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDrawerParamList, "DailyConversations">) {
 
     const user: User = props.route.params.user;
+    const [index, setIndex] = React.useState(0);
     const [text, onChangeText] = React.useState("");
     const [text2, onChangeText2] = React.useState("");
     const [text3, onChangeText3] = React.useState("");
@@ -36,10 +38,12 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
             user.riskFactors?.forEach(factor => {
                 risk += factor.points;
             });
+            risk += (index - 1) as DailyConversationResponseValue;
 
             const response: DailyConversationResponse = {
                 date: firebase.firestore.Timestamp.fromDate(new Date()),
                 owner: user.email,
+                points: (index - 1) as DailyConversationResponseValue,
                 response: text,
                 response2: text2,
                 response3: text3,
@@ -55,7 +59,13 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
                 alert((e as Error).message);
             }
 
-            alert("Submission Sucessful");
+            if (risk > 0 ) {
+                alert("Submission Sucessful");
+                props.navigation.navigate("Vault", {user});
+            } else {
+                alert("Submission Sucessful");
+                props.navigation.navigate("Home", {user});
+            }
         }
     }
 
@@ -63,6 +73,13 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
         <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{flexGrow:1,flex:1}}>
             <View style={{ padding: 30, backgroundColor: "#219ebc",flex:1 }}>
                 <Text>How are you feeling today?</Text>
+                <SegmentedControl
+                    values={[GOOD, OK, BAD, TERRIBLE]}
+                    selectedIndex={index}
+                    onChange={(event) => {
+                        setIndex(event.nativeEvent.selectedSegmentIndex);
+                    }}
+                />
                 <TextInput
                     onChangeText={onChangeText}
                     value={text}

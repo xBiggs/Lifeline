@@ -34,40 +34,67 @@ export default function Settings(
   async function save() {
     if (!user.settings?.notificationsOn) cancelNotifications();
     else {
-      user.medInfo?.medication.forEach((med) => {
-        scheduleRecurringPushNotification(
-          "Medication Alert",
-          "Need to take medication: " + med.name,
-          "click to view instructions",
-          med.timeInBetween * 60
-        );
-        const today: Date = new Date();
 
-        const refill: Date = new Date(med.refillDate?.toString());
-        const secondsBetweenDates = getSecondsBetweenDates(today, refill);
+      try {
+        user.medInfo?.medication.forEach(async (med) => {
+          scheduleRecurringPushNotification(
+            "Medication Alert",
+            "Need to take medication: " + med.name,
+            "click to view instructions",
+            med.timeInBetween * 60
+          );
+          const today: Date = new Date();
 
-        schedulePushNotification(
-          "Medication Alert",
-          "Need to refill: " + med.name,
-          "click to view instructions",
-          secondsBetweenDates
-        );
-      });
-      user.medInfo?.nextApointment?.forEach((appointment) => {
-        const today: Date = new Date();
-        const secondsBetweenDates = getSecondsBetweenDates(
-          today,
-          appointment.date.toDate()
-        );
+          const refill: Date = new Date(med.refillDate?.toString());
+          const secondsBetweenDates = getSecondsBetweenDates(today, refill);
 
-        schedulePushNotification(
-          "Apointment Alert",
-          "You have an upcoming appointment",
-          "click to view reason",
-          secondsBetweenDates - 86400
+          await schedulePushNotification(
+            "Medication Alert",
+            "Need to refill: " + med.name,
+            "click to view instructions",
+            secondsBetweenDates
+          );
+        });
+      } catch (e) {
+        alert((e as Error).message);
+      }
+
+      try {
+        user.medInfo?.nextApointment?.forEach(async (appointment) => {
+          const today: Date = new Date();
+          const secondsBetweenDates = getSecondsBetweenDates(
+            today,
+            appointment.date.toDate()
+          );
+
+          await schedulePushNotification(
+            "Apointment Alert",
+            "You have an upcoming appointment",
+            "click to view reason",
+            secondsBetweenDates - 86400
+          );
+        });
+      } catch (e) {
+        alert((e as Error).message);
+      }
+
+      try {
+        // const today: Date = new Date();
+        // const tomorrow: Date = new Date(
+        //   today.setMinutes(today.getDays() + 12)
+        // );
+        await scheduleRecurringPushNotification(
+          "Daily Conversations Alert",
+          "Response to daily conversations",
+          "DailyConversations",
+          60*60*24
+          // getSecondsBetweenDates(today, tomorrow)
         );
-      });
+      } catch (e) {
+        alert((e as Error).message);
+      }
     }
+
     await AddUserData(user);
     saved = true;
     alert("Settings have been saved");
