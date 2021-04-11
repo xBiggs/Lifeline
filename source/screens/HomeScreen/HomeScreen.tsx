@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Text, View, TouchableOpacity, ScrollView, Dimensions, StatusBar } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+  StatusBar,
+} from "react-native";
 import { FirebaseController } from "../../firebase/FirebaseController";
 import { User } from "../../interfaces/User";
 import styles from "./styles";
@@ -25,69 +32,76 @@ Notifications.setNotificationHandler({
 export default function HomeScreen(
   props: DrawerScreenProps<HomeDrawerParamList, "Home">
 ) {
-
-
-  if(!props.route.params.user.personalInfo || !props.route.params.user.riskFactors || !props.route.params.user.mitigatingFactors)
-  return (
-    <View style={styles.container}>
-          <StatusBar></StatusBar>
-          <Text style={{textAlign:'center',alignSelf:'center',color:'white',fontSize:25}}>To Do:</Text>
-          {
-            !props.route.params.user.personalInfo &&
-          
-      <TouchableOpacity
+  if (
+    !props.route.params.user.personalInfo ||
+    !props.route.params.user.riskFactors ||
+    !props.route.params.user.mitigatingFactors
+  )
+    return (
+      <View style={styles.container}>
+        <StatusBar></StatusBar>
+        <Text
           style={{
-            backgroundColor: "#023047",
-            marginLeft: 0,
-            marginRight: 0,
-            marginTop: 20,
-            height: 48,
-            alignSelf:'stretch',
-            borderRadius: 15,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={async () => {
-           props.navigation.navigate('Information',{user:props.route.params.user})
+            textAlign: "center",
+            alignSelf: "center",
+            color: "white",
+            fontSize: 25,
           }}
         >
-          <Text style={styles.buttonLabel}>Enter Personal Information</Text>
-        </TouchableOpacity>}
-          {
-            (!props.route.params.user.riskFactors || !props.route.params.user.mitigatingFactors ) &&
-          
-            <TouchableOpacity
+          To Do:
+        </Text>
+        {!props.route.params.user.personalInfo && (
+          <TouchableOpacity
             style={{
               backgroundColor: "#023047",
               marginLeft: 0,
               marginRight: 0,
               marginTop: 20,
               height: 48,
-              alignSelf:'stretch',
+              alignSelf: "stretch",
               borderRadius: 15,
               alignItems: "center",
               justifyContent: "center",
             }}
             onPress={async () => {
-              if(!props.route.params.user.personalInfo)
-              {
-                alert("Please provide personal information before taking assessment")
-                
-              }else
-             props.navigation.navigate('Assessment',{user:props.route.params.user})
+              props.navigation.navigate("Information", {
+                user: props.route.params.user,
+              });
+            }}
+          >
+            <Text style={styles.buttonLabel}>Enter Personal Information</Text>
+          </TouchableOpacity>
+        )}
+        {(!props.route.params.user.riskFactors ||
+          !props.route.params.user.mitigatingFactors) && (
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#023047",
+              marginLeft: 0,
+              marginRight: 0,
+              marginTop: 20,
+              height: 48,
+              alignSelf: "stretch",
+              borderRadius: 15,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={async () => {
+              if (!props.route.params.user.personalInfo) {
+                alert(
+                  "Please provide personal information before taking assessment"
+                );
+              } else
+                props.navigation.navigate("Assessment", {
+                  user: props.route.params.user,
+                });
             }}
           >
             <Text style={styles.buttonLabel}>Take Assessment</Text>
-          </TouchableOpacity>}
-    </View>
-  )
-
-  
-  
-
-  
-
-
+          </TouchableOpacity>
+        )}
+      </View>
+    );
 
   // TODO: Variables are never used
   const [expoPushToken, setExpoPushToken] = useState("");
@@ -119,20 +133,28 @@ export default function HomeScreen(
     );
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-          // FIXME: ERROR
+    // FIXME: ERROR
     notificationListener.current = Notifications.addNotificationReceivedListener(
       (notification) => {
-              // FIXME: ERROR
+        // FIXME: ERROR
         setNotification(notification);
       }
     );
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-          // FIXME: ERROR
+    // FIXME: ERROR
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (response) => {
-        if (response.notification.request.content.data.data === "DailyConversations") {
-          props.navigation.navigate("DailyConversations", {user});
+        if (
+          response.notification.request.content.data.data ===
+          "DailyConversations"
+        ) {
+          props.navigation.navigate("DailyConversations", { user });
+        }
+        if (
+          response.notification.request.content.data.data === "MedicationScreen"
+        ) {
+          props.navigation.navigate("Medication", { user });
         }
         // console.log(response);
       }
@@ -140,10 +162,10 @@ export default function HomeScreen(
 
     return () => {
       Notifications.removeNotificationSubscription(
-              // FIXME: ERROR
+        // FIXME: ERROR
         notificationListener.current
       );
-            // FIXME: ERROR
+      // FIXME: ERROR
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
@@ -152,7 +174,6 @@ export default function HomeScreen(
   // TODO: Stop using var
   var testDate = new Date();
   var notificationList: NotificationType[] = [];
-
 
   // TODO: What if notification is null?
   const userNotifications: NotificationType[] = user.notifications;

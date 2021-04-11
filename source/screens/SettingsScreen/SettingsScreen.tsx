@@ -38,7 +38,7 @@ export default function Settings(
         scheduleRecurringPushNotification(
           "Medication Alert",
           "Need to take medication: " + med.name,
-          "click to view instructions",
+          "MedicationScreen",
           med.timeInBetween * 60
         );
         const today: Date = new Date();
@@ -49,7 +49,7 @@ export default function Settings(
         schedulePushNotification(
           "Medication Alert",
           "Need to refill: " + med.name,
-          "click to view instructions",
+          "MedicationScreen",
           secondsBetweenDates
         );
       });

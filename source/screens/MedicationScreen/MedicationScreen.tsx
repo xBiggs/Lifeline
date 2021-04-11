@@ -131,13 +131,13 @@ export default function MedicationForm(
         schedulePushNotification(
           "Medication Alert",
           "Need to refill: " + values.name,
-          "click to view instructions",
+          "MedicationScreen",
           secondsBetweenDates
         );
         scheduleRecurringPushNotification(
           "Medication Alert",
           "Need to take medication: " + values.name,
-          "click to view instructions",
+          "MedicationScreen",
           values.timeInBetween * 60
         );
       }
