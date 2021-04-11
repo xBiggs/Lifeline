@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, Button, Modal, Dimensions } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import * as Devices from 'expo-device';
 import styles from "../screens/ContactScreen/styles";
@@ -7,25 +7,32 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { SafetyPlanStackParamList } from '../types'
 import { AddContacts } from '../firebase/UserDataHandler';
 import { ContactDetails } from '../interfaces/ContactDetails';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { DemographicContacts } from '../interfaces/DemographicContacts';
+import { Guid } from 'guid-typescript';
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
   // const { user } = props.route.params.user;
   const { user, contactSuggestions } = props.route.params;
 
-  // TODO: Variable never used
-  const device = Devices.osName;
+  const { width } = Dimensions.get("window");
 
   const [contacts, setContacts] = useState<Contacts.Contact[]>();
-  // const [inMemoryContacts, setInMemoryContacts] = useState<Contacts.Contact[]>();
+  const [inMemoryContacts, setInMemoryContacts] = useState<Contacts.Contact[]>();
   const [isLoading, setIsLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
-  // TODO: Variables never used
-  const [searchResults, setSearchResults] = useState<Contacts.Contact[]>();
-  const [person, setPerson] = useState<Contacts.Contact>();
+
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [fName, setFirstName] = useState("");
+  const [lName, setLastName] = useState("");
+  const [phoneNum, setPhoneNumber] = useState("");
+
+  const toggleModalVisibility = () => {
+    setModalVisible(!isModalVisible);
+  };
+
 
   const populateInitialContact = () => {
     const list: ContactDetails[] = [];
@@ -55,6 +62,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         });
         if (data.length > 0) {
           setContacts(data);
+          setInMemoryContacts(data);
           setIsLoading(false);
           // console.log(data);
         }
@@ -71,20 +79,28 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       user.emergencyContacts = firebaseContacts;
       await AddContacts(user);
       // console.log("INSIDE ASYNC FIREBASE");
+      setFirstName("");
+      setLastName("");
+      setPhoneNumber("");
     })();
-    
+
   }, [firebaseContacts]);
 
   useEffect(() => {
-    const getSearchResult = async () => {
-      contacts?.filter(person => {
-        return person.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
-        // console.log(person.firstName?.toLowerCase().includes(searchTerm.toLowerCase()));
-      })
-    };
-    // setContacts(getSearchResult);
-    getSearchResult();
-  }, []);
+    (async () => {
+      var filteredDeviceContacts = inMemoryContacts?.filter(
+        item => {
+          var contactLowercase = (item.firstName + " " + item.lastName).toLowerCase();
+          var searchTermLowerCase = searchTerm.toLowerCase();
+
+          return contactLowercase.indexOf(searchTermLowerCase) > -1;
+        }
+      );
+
+      // console.log(filteredDeviceContacts);
+      setContacts(filteredDeviceContacts);
+    })();
+  }, [searchTerm]);
 
   const formatPhoneNumber = (phone: string) => {
     var cleaned = ('' + phone).replace(/\D/g, '');
@@ -148,33 +164,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
               alert("This user has no phone number!");
               return;
             }
-
-
-            // if (user.emergencyContacts) {
-            //   let userExist = false;
-            //   user.emergencyContacts.forEach(ele => {
-            //     if (contact.digits === ele.digits) {
-            //       // console.log("item.phoneNumbers[0].number = ", contact.digits);
-            //       // console.log("ele.digits = ", ele.digits);
-            //       userExist = true;
-            //       alert("Contact already exist");
-            //       // props.navigation.navigate("EmergencyContact", { user });
-            //     }
-            //   });
-
-            //   if (!userExist) {
-            //     user.emergencyContacts.push(contact);
-            //     await AddContacts(user);
-            //     props.navigation.navigate("EmergencyContact", { user });
-            //   }
-
-            // } else {
-            //   user.emergencyContacts = [];
-            //   user.emergencyContacts.push(contact);
-            //   await AddContacts(user);
-            //   props.navigation.navigate("EmergencyContact", { user });
-            // }
-
           } catch (er) {
             throw (er as Error).message;
           }
@@ -187,19 +176,12 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     </View >
   );
 
-  // might throw an error here!!!
-  // renderItem = ({ item }: { item: ContactDetails }) => (
   const renderItem = ({ item }: { item: Contacts.Contact }) => (
     <View style={styles.renderItemView}>
       <Text style={styles.renderItemText}>
         {item.firstName + ' '}
         {item.lastName}
       </Text>
-      {/* <Text style={{ color: '#79c96d', fontWeight: 'bold' }}>
-                {item.phoneNumbers[0].digits}
-            </Text> */}
-      {/* <Button title="+ Add" onPress={() => { console.log(item.phoneNumbers[0].number) }} />  */}
-      {/* style={{ alignItems: 'center', justifyContent: 'center' }} */}
 
       <TouchableOpacity style={{
         alignItems: 'center', justifyContent: 'center',
@@ -208,7 +190,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         marginTop: 5, marginBottom: 15, marginLeft: 150
       }}
         onPress={async () => {
-          // let userExist = false;
           try {
 
             if (item.phoneNumbers[0].number) {
@@ -252,38 +233,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
               alert("This user has no phone number!");
               return;
             }
-
-            // var contact: ContactDetails = {
-            //   firstName: item.firstName,
-            //   lastName: item.lastName,
-            //   digits: formatPhoneNumber(item.phoneNumbers[0].number + ""),// item.phoneNumbers[0].number + "",
-            //   id: item.id
-            // }
-            // if (user.emergencyContacts) {
-
-            //   user.emergencyContacts.forEach(ele => {
-            //     if (contact.digits === ele.digits) {
-            //       // console.log("item.phoneNumbers[0].number = ", contact.digits);
-            //       // console.log("ele.digits = ", ele.digits);
-            //       userExist = true;
-            //       alert("Contact already exist");
-            //       props.navigation.navigate("EmergencyContact", { user });
-            //     }
-            //   });
-
-            //   if (!userExist) {
-            //     user.emergencyContacts.push(contact);
-            //     await AddContacts(user);
-            //   }
-            // } else {
-            //   user.emergencyContacts = [];
-            //   user.emergencyContacts.push(contact);
-            //   await AddContacts(user);
-            // }
-            // // addContact(contact);
-
-            // props.navigation.navigate("EmergencyContact", { user });
-
           } catch (err) {
             throw (err as Error).message;
           }
@@ -295,46 +244,144 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     </View>
   );
 
-  // IF NOT WORKING, REMOVE THE 'string'
-  // const searchContacts = (value: string) => {
-  //   // code changed here (original right below, modified one below the the original)
-  //   // const filteredContacts = inMemoryContacts?.filter(contact => {
-  //   const filteredContacts = inMemoryContacts?.filter(person => person.firstName?.toLowerCase().includes(value));
-  //   //   (contact: { firstName: string; lastName: string; }) => {
-  //   //   let contactLowercase = (
-  //   //     contact.firstName +
-  //   //     ' ' +
-  //   //     contact.lastName
-  //   //   ).toLowerCase();
 
-  //   //   let searchTermLowercase = value.toLowerCase();
-
-  //   //   return contactLowercase.indexOf(searchTermLowercase) > -1;
-
-  //   // });
-  //   setContacts(filteredContacts);
-  // };
-
-
-  // const searchContacts = (value: string) => {
-  //   setSearchTerm(value);
-  //   useEffect(() => {
-  //     const result = contacts?.filter
-  //   }, [searchTerm]);
-  // };
-
-  // useEffect(() => {
-  //   const result = inMemoryContacts.filter()
-  // }, [searchTerm]);
-
-
-  // render() {
-
-  // }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingBottom: 20 }}>
       <SafeAreaView style={{ marginTop: 10 }} />
+
+      <Button title="Add contact manually" onPress={toggleModalVisibility} />
+
+      {/** This is our modal component containing textinput and a button */}
+      <Modal animationType="slide"
+        transparent visible={isModalVisible}
+        presentationStyle="overFullScreen"
+        onDismiss={toggleModalVisibility}>
+        <View style={{
+          flex: 1,
+          // paddingTop: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+        }}>
+          <View style={{
+            alignItems: "center",
+            justifyContent: "center",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            elevation: 5,
+            transform: [{ translateX: -(width * 0.4) },
+            { translateY: -90 }],
+            height: 250,
+            width: width * 0.8,
+            backgroundColor: "#fff",
+            borderRadius: 7,
+          }}>
+            <TextInput placeholder="Enter first name"
+              value={fName}
+              style={{
+                width: "80%",
+                borderRadius: 5,
+                paddingVertical: 8,
+                paddingHorizontal: 16,
+                borderColor: "rgba(0, 0, 0, 0.2)",
+                borderWidth: 1,
+                marginBottom: 8,
+              }}
+              onChangeText={(value) => setFirstName(value)} />
+
+            <TextInput placeholder="Enter last name"
+              value={lName}
+              style={{
+                width: "80%",
+                borderRadius: 5,
+                paddingVertical: 8,
+                paddingHorizontal: 16,
+                borderColor: "rgba(0, 0, 0, 0.2)",
+                borderWidth: 1,
+                marginBottom: 8,
+              }}
+              onChangeText={(value) => setLastName(value)} />
+
+            <TextInput placeholder="Enter phone number (10 digits only)"
+              style={{
+                width: "80%",
+                borderRadius: 5,
+                paddingVertical: 8,
+                paddingHorizontal: 16,
+                borderColor: "rgba(0, 0, 0, 0.2)",
+                borderWidth: 1,
+                marginBottom: 8,
+              }}
+              onChangeText={(value) => setPhoneNumber(value)} />
+
+            {/** This button is responsible to close the modal */}
+            <Button title="Close" onPress={toggleModalVisibility} />
+            <Button title="Add" onPress={() => {
+
+              if (!Number(phoneNum) || phoneNum.length != 10) {
+                alert("Please check phone number:\n\t* Must be all number.\n\t* Must have 10 digits.");
+                return;
+              }
+
+              const num = formatPhoneNumber(phoneNum);
+              setPhoneNumber(num);
+              // console.log(num);
+              const tId = () => {
+                var S4 = function () {
+                  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+                };
+                return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+              }
+
+              const cont: ContactDetails = {
+                firstName: fName,
+                lastName: lName,
+                id: tId(),
+                digits: num
+              }
+
+              if (firebaseContacts) {
+                let userExist = false;
+                firebaseContacts.forEach(ele => {
+                  if (cont.digits == ele.digits) {
+                    userExist = true;
+                  }
+                });
+
+                if (userExist) {
+                  alert("Contact already exist");
+                  return;
+                } else {
+                  var tmpContactList: ContactDetails[] = [];
+                  firebaseContacts.forEach(ele => {
+                    tmpContactList.push(ele);
+                  });
+                  tmpContactList.push(cont);
+                  setFirebaseContacs(tmpContactList);
+                  toggleModalVisibility();
+                  props.navigation.navigate("EmergencyContact", { user });
+                }
+              } else {
+                var tmpContactList: ContactDetails[] = [];
+                tmpContactList.push(cont);
+                setFirebaseContacs(tmpContactList);
+                toggleModalVisibility();
+                props.navigation.navigate("EmergencyContact", { user });
+              }
+
+            }} />
+          </View>
+        </View>
+      </Modal>
+
+      <TextInput
+        style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
+        onChangeText={(text) => setSearchTerm(text)}
+        placeholder={"Search for contact"}
+      />
+
       <View style={{ flex: 1 }}>
         {isLoading ? (
           <View
@@ -364,7 +411,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       <Text style={{ backgroundColor: "#e6e69c", paddingLeft: 20, fontSize: 20, marginLeft: 10, marginRight: 10 }}>Suggestions</Text>
       <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
 
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingBottom: 20 }}>
         <FlatList
           // data={this.state.contacts}
           data={contactSuggestions}

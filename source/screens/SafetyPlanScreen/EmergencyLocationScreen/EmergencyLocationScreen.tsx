@@ -107,17 +107,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         return "";
     }
 
-    // useEffect(() => {
-    //     // (async () => {
-
-    //     // });
-    //     setServiceList(cont => user.emergencyProviders);
-    //     console.log(servicesList);
-    //     console.log();
-
-    // }, [user.emergencyProviders]);
-
-
     useEffect(() => {
         (async () => {
             user.emergencyProviders = servicesList;
@@ -125,16 +114,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
             // console.log("INSIDE ASYNC FIREBASE");
             
         })();
-        // console.log("CHANGE DETECTED IN servicesList");
-        // console.log(servicesList);
-        // console.log();
 
     }, [servicesList]);
-
-    // useEffect(() => {
-    //     setServiceList(user.emergencyProviders);
-    // },[]);
-
 
     return (
         <View>
@@ -185,14 +166,14 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                 if (_name.length == 0 || _phone.length == 0 || _physicianName.length == 0 || _vicinity.length == 0 || _serviceType.length == 0) {
                                     alert("One or more fields are empty");
                                     return;
-                                } else if (_phone.length < 10) {
-                                    alert("Please check if phone number has at least 10 digits");
+                                } else if (_phone.length !== 10) {
+                                    alert("Phone number should be exactly 10 digits.");
+                                    return;
+                                } else if (!Number(_phone)) {
+                                    alert("Phone numbers should only contain digits.");
                                     return;
                                 }
-                                // if(!Number(_phone)){
-                                //     alert("Please enter all numbers");
-                                //     return;
-                                // }
+                                
 
                                 setPhone(formatPhoneNumber(_phone));
                                 // console.log(formatPhoneNumber(_phone));
@@ -225,21 +206,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                         alert("Provider already exist!");
                                     }
                                     
-                                    // servicesList.forEach(ele => {
-                                    //     if (ele.serviceType == provider.serviceType) {
-                                    //         serviceExist = true;
-                                    //     }
-                                    // });
-
-                                    // if (serviceExist) {
-                                    //     alert("Provider already exist!");
-                                    // } else {
-                                    //     servicesList.forEach(ele => {
-                                    //         nList.push(ele);
-                                    //     });
-                                    //     nList.push(provider);
-                                    //     setServiceList(nList);
-                                    // }
                                 }
                                 else {
                                     // console.log("servicesList IS empty");
@@ -249,37 +215,11 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                     // console.log(servicesList);
                                 }
 
-                                // if (user.emergencyProviders) {
-                                //     user.emergencyProviders.forEach(element => {
-                                //         if (element.serviceType == provider.serviceType) {
-                                //             serviceExist = true;
-                                //             return;
-                                //         }
-                                //     });
-                                //     if (!serviceExist) {
-                                //         user.emergencyProviders.push(provider);
-                                //         setServiceList(user.emergencyProviders);
-                                //         // await AddServiceProvider(user);
-                                //         // props.navigation.navigate('EmergencyLocations', { user })
-                                //     } else {
-                                //         // Show an alert
-                                //         alert("PROVIDER ALREADY EXIST");
-                                //     }
-                                //     // user.emergencyProviders.push(provider);
-                                // }
-                                // else {
-                                //     user.emergencyProviders = [];
-                                //     user.emergencyProviders.push(provider);
-                                //     setServiceList(user.emergencyProviders)
-                                //     // await AddServiceProvider(user);
-                                //     // props.navigation.navigate('EmergencyLocations', { user });
-                                // }
-
                             } catch (err) {
                                 throw (err as Error).message;
                             }
 
-                        }}//addProviderInfo()}
+                        }}
                     >
 
                         <Text
@@ -290,17 +230,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-
-            {/* renderItem={(element) => (
-                    <EmergencyLocationCard
-                        locationProvider={element.item}
-                        onPressTrash={() => {
-                            // console.log("BEFORE DELETING", user.emergencyProviders);
-                            removeProvider(element.item.serviceType);
-                            // console.log("AFTER DELETING", user.emergencyProviders);
-                        }}
-                    />
-                )} */}
 
             <ScrollView>
                 <View>

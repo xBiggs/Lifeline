@@ -9,6 +9,7 @@ import _ from 'lodash';
 import * as Contacts from 'expo-contacts';
 import { GetAllUser } from '../../../firebase/UserDataHandler';
 import { DemographicContacts } from '../../../interfaces/DemographicContacts';
+import * as WebBrowser from 'expo-web-browser';
 
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
@@ -101,13 +102,41 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 alignItems: 'center', justifyContent: 'center',
                 backgroundColor: '#e64c4c', height: 30,
                 borderRadius: 15, width: 200,
-                marginTop: 5, marginBottom: 15, marginLeft: 110
+                marginTop: 5, marginBottom: 10, marginLeft: 110
             }}
             onPress={() => {
                 dialNumber("911");
             }}
             >
                 <Text style={{ fontSize: 20 }}>Call 911</Text>
+            </TouchableOpacity>
+            <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
+
+            <TouchableOpacity style={{
+                alignItems: 'center', justifyContent: 'center',
+                backgroundColor: '#e64c4c', height: 30,
+                borderRadius: 15, width: 200,
+                marginTop: 5, marginBottom: 10, marginLeft: 110
+            }}
+            onPress={() => {
+                dialNumber("(888) 843-4564");
+            }}
+            >
+                <Text style={{ fontSize: 20 }}>LGBT National Hotlne</Text>
+            </TouchableOpacity>
+            <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
+
+            <TouchableOpacity style={{
+                alignItems: 'center', justifyContent: 'center',
+                backgroundColor: '#e64c4c', height: 30,
+                borderRadius: 15, width: 200,
+                marginTop: 5, marginBottom: 10, marginLeft: 110
+            }}
+            onPress={async () => {
+                await WebBrowser.openBrowserAsync('https://rainbowmobile.org/community-resources/hotlines/');
+            }}
+            >
+                <Text style={{ fontSize: 20 }}>Other help hotline</Text>
             </TouchableOpacity>
             <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
 
