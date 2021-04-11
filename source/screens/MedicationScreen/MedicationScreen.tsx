@@ -88,8 +88,7 @@ export default function MedicationForm(
       user.medInfo?.medication.splice(index, 1);
       await FirebaseController.SetUserData(user);
     }
-
-    if (user.medInfo) setInfo(user.medInfo.medication);
+    if (user.medInfo?.medication) setInfo(user.medInfo?.medication);
   };
   //FORM SUBMISSION
   const formal = useFormal(initialValues, {
