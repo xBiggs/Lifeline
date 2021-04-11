@@ -71,9 +71,9 @@ export default function MedicationForm(
   const initialValues = {
     dose: "",
     name: "",
-    numTimesDay: 0,
+    numTimesDay: "",
     usageInstructions: "",
-    timeInBetween: 0,
+    timeInBetween: "",
   };
   var tempMedication = {
     name: "string",
@@ -87,8 +87,12 @@ export default function MedicationForm(
   const deleteMedication = async (medication: Medication) => {
     let index: number;
     if (info) {
-      index = info.indexOf(medication);
-      setInfo((info) => info.splice(index, 1));
+      setInfo((prev) => {
+        const index = prev.indexOf(medication);
+        const newArr = [...prev];
+        newArr.splice(index, 1);
+        return newArr;
+      });
     }
 
     await FirebaseController.SetUserData(user);
@@ -96,7 +100,7 @@ export default function MedicationForm(
   //FORM SUBMISSION
   const formal = useFormal(initialValues, {
     schema,
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       console.log(values);
       // TODO: Don't use keyword var, user keywords let or const instead
       var medication: Medication = {

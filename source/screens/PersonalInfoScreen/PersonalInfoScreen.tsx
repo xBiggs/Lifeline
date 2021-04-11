@@ -35,7 +35,7 @@ export default function PersonalInfoScreen(
   var tempMedicalInfo: MedicationInfo = {
     diagnose: [],
     medication: [],
-    regiments: "",
+
     familyMedicalHistory: [],
     nextApointment: [],
   };
@@ -61,7 +61,7 @@ export default function PersonalInfoScreen(
     age: yup.number().required(),
     religion: yup.string().required(),
     diagnose: yup.string().required(),
-    regiments: yup.string().required(),
+
     familyMedicalHistory: yup.string().required(),
     phone: yup
       .string()
@@ -73,7 +73,7 @@ export default function PersonalInfoScreen(
     age: tempPersonalInfo.age,
     religion: tempPersonalInfo.religion,
     diagnose: tempMedicalInfo.diagnose.join(", "),
-    regiments: tempMedicalInfo.regiments,
+
     familyMedicalHistory: tempMedicalInfo.familyMedicalHistory.join(", "),
     phone: tempPersonalInfo.phone,
   };
@@ -98,7 +98,7 @@ export default function PersonalInfoScreen(
 
   const formal = useFormal(initialValues, {
     schema,
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       tempPersonalInfo.age = values.age;
       tempPersonalInfo.gender = buttonsGender[gender];
       tempPersonalInfo.militaryStatus = militaryStatus;
@@ -115,11 +115,11 @@ export default function PersonalInfoScreen(
         .map((word) => {
           return word.trim();
         });
-      tempMedicalInfo.regiments = values.regiments;
+
       user.medInfo = tempMedicalInfo;
       user.personalInfo = tempPersonalInfo;
 
-      await AddUserData(user);
+      AddUserData(user);
       Alert.alert("Thank You!");
       props.navigation.navigate("Home", { user });
     },
@@ -291,16 +291,6 @@ export default function PersonalInfoScreen(
               marginBottom: 30,
             }}
           />
-          <View style={styles.inputContainer}>
-            <Text style={styles.buttonLabel}>Regiments</Text>
-            <TextInput
-              style={styles.input}
-              {...formal.getFieldProps("regiments")}
-            />
-            {formal.errors.regiments && (
-              <Text style={styles.error}>{formal.errors.regiments}</Text>
-            )}
-          </View>
 
           <Divider
             style={{
