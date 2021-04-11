@@ -310,8 +310,9 @@ export default function Vault(
             }}
             onPress={() => {
               if (
-                user.vaultItems?.photos &&
-                user.vaultItems.photos.length > 0
+                (user.vaultItems?.photos &&
+                  user.vaultItems.photos.length > 0) ||
+                (user.vaultItems?.videos && user.vaultItems.videos.length > 0)
               ) {
                 fadeIn();
                 if (!isMediaVisible) {
