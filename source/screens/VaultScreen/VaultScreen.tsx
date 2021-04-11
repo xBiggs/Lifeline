@@ -145,6 +145,14 @@ export default function Vault(
     }
   }, [user.vaultItems?.photos, user.vaultItems?.videos]);
 
+  let quoteEntriesList = [
+    {
+      quote: "No Quote Added",
+      author: "",
+    },
+  ];
+  if (user.vaultItems?.quotes) quoteEntriesList = user.vaultItems.quotes;
+
   const renderItem = ({ item, index }: any, parallaxProps: any) => {
     // console.log(parallaxProps);
     return (
@@ -242,13 +250,15 @@ export default function Vault(
               marginLeft: 10,
             }}
             onPress={() => {
-              fadeIn();
-              if (!isMusicVisible) {
+              if (user.vaultItems?.audio && user.vaultItems.audio.length > 0) {
                 fadeIn();
-                setIsMusicVisible(true);
-              } else {
-                fadeOut();
-                setIsMusicVisible(false);
+                if (!isMusicVisible) {
+                  fadeIn();
+                  setIsMusicVisible(true);
+                } else {
+                  fadeOut();
+                  setIsMusicVisible(false);
+                }
               }
             }}
           >
@@ -268,13 +278,18 @@ export default function Vault(
               marginLeft: 10,
             }}
             onPress={() => {
-              fadeIn();
-              if (!isQuotesVisible) {
+              if (
+                user.vaultItems?.quotes &&
+                user.vaultItems.quotes.length > 0
+              ) {
                 fadeIn();
-                setIsQuotesVisible(true);
-              } else {
-                fadeOut();
-                setIsQuotesVisible(false);
+                if (!isQuotesVisible) {
+                  fadeIn();
+                  setIsQuotesVisible(true);
+                } else {
+                  fadeOut();
+                  setIsQuotesVisible(false);
+                }
               }
             }}
           >
@@ -294,12 +309,17 @@ export default function Vault(
               marginLeft: 10,
             }}
             onPress={() => {
-              fadeIn();
-              if (!isMediaVisible) {
-                setIsMediaVisible(true);
-              } else {
-                fadeOut();
-                setIsMediaVisible(false);
+              if (
+                user.vaultItems?.photos &&
+                user.vaultItems.photos.length > 0
+              ) {
+                fadeIn();
+                if (!isMediaVisible) {
+                  setIsMediaVisible(true);
+                } else {
+                  fadeOut();
+                  setIsMediaVisible(false);
+                }
               }
             }}
           >
@@ -384,7 +404,10 @@ export default function Vault(
               marginTop: 0,
             }}
           >
-            Now Playing: {user.vaultItems?.audio[playIndex].title}
+            Now Playing:
+            {user.vaultItems?.audio[playIndex]
+              ? user.vaultItems?.audio[playIndex].title
+              : "No Songs Uploaded"}
           </Text>
           <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <TouchableOpacity
@@ -498,7 +521,7 @@ export default function Vault(
             sliderHeight={20}
             itemWidth={screenWidth - 60}
             itemHeight={20}
-            data={user.vaultItems?.quotes}
+            data={quoteEntriesList}
             renderItem={renderItemString}
             layout={"default"}
           />
