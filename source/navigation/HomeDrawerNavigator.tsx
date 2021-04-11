@@ -26,12 +26,6 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
   // Keyboard.dismiss();
   const user = props.route.params.user;
 
-  const verifySetup = ():boolean|undefined=>{
-    if(!user.personalInfo) return false;
-    else if(!user.mitigatingFactors || !user.riskFactors) return false;
-    else return true;
-  }
-
 
 
 

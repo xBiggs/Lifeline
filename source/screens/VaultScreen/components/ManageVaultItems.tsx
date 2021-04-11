@@ -170,7 +170,7 @@ const Content = (props: { option: number, user: User }) => {
                 })
 
             }
-            else if(entry.title='video')
+            else if(entry.type='video')
             {
                 setVideos(prev=>{
                    
