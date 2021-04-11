@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core'
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Linking, Platform } from 'react-native'
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafetyPlanStackParamList } from '../../../types';
 import { ContactDetails } from "../../../interfaces/ContactDetails";
@@ -14,17 +14,28 @@ import { DemographicContacts } from '../../../interfaces/DemographicContacts';
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
     const { user } = props.route.params
     // TODO: Variables never used
-    const [contactsData, setContactsData] = useState<Contacts.Contact[]>();
+    const [contactsData, setContactsData] = useState<ContactDetails[]>();
     let [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
-    
+
     useEffect(() => {
         if (user.emergencyContacts) {
             setContactsData(cont => user.emergencyContacts);
         }
     }, [user.emergencyContacts]);
 
+    const dialNumber = (num: string) => {
+        let phoneNumber = '';
+        if (Platform.OS === 'android') {
+            phoneNumber = `tel:${num}`;
+        }
+        else {
+            phoneNumber =  `telprompt:${num}`;
+        }
 
-    const renderItem = ({ item }: { item: Contacts.Contact }) => (
+        Linking.openURL(phoneNumber);
+    };
+
+    const renderItem = ({ item }: { item: ContactDetails }) => (
         <View style={{ marginTop: 10, marginBottom: 50, marginLeft: 20, marginRight: 20 }}>
             <TouchableOpacity style={{
                 alignItems: 'center', justifyContent: 'center',
@@ -32,7 +43,14 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 borderRadius: 15, width: 300,
                 marginTop: 5, marginBottom: 15, marginLeft: 40
             }}
-            // onPress={}
+            onPress={() => {
+                if(item.digits) {
+                    dialNumber(item.digits+'');
+                }
+                else {
+                    alert("This person has no number");
+                }
+            }}
             >
                 <Text style={{ fontSize: 20 }}>Call {item.firstName} {item.lastName}</Text>
             </TouchableOpacity>
@@ -54,7 +72,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                         let lst: DemographicContacts[] = []
                         contactSuggestions.forEach(element => {
                             if (element.persInfo) {
-                                if ( element.persInfo.sexualOrientation == user.personalInfo?.sexualOrientation) {//user.personalInfo?.sexualOrientation /* && (Number(element.persInfo.age) <= Number(user.personalInfo?.age) + 50) */) {
+                                if (element.persInfo.sexualOrientation == user.personalInfo?.sexualOrientation) {//user.personalInfo?.sexualOrientation /* && (Number(element.persInfo.age) <= Number(user.personalInfo?.age) + 50) */) {
                                     // console.log(element.persInfo.sexualOrientation);
                                     lst.push(element);
                                 }
@@ -85,7 +103,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 borderRadius: 15, width: 200,
                 marginTop: 5, marginBottom: 15, marginLeft: 110
             }}
-            // onPress={this.addToFirebase}
+            onPress={() => {
+                dialNumber("911");
+            }}
             >
                 <Text style={{ fontSize: 20 }}>Call 911</Text>
             </TouchableOpacity>
