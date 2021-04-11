@@ -136,14 +136,15 @@ export default (
                 secondsBetweenDates
               );
 
-              const tomorrow: Date = new Date(date.setMinutes(date.getMinutes() + 2));
+              const tomorrow: Date = new Date(
+                date.setMinutes(date.getMinutes() + 2)
+              );
               await scheduleRecurringPushNotification(
                 "Daily Conversations Alert",
                 "Response to daily conversations",
                 "DailyConversations",
                 getSecondsBetweenDates(today, tomorrow)
               );
-
             } catch (e) {
               alert((e as Error).message);
             }
