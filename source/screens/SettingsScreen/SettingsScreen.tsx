@@ -71,13 +71,29 @@ export default function Settings(
       try {
         // const today: Date = new Date();
         // const tomorrow: Date = new Date(
-        //   today.setMinutes(today.getDays() + 12)
+        //   today.setHours(today.getHours() + 24)
         // );
         await scheduleRecurringPushNotification(
           "Daily Conversations Alert",
-          "Response to daily conversations",
+          "Respond to daily conversations",
           "DailyConversations",
           60*60*24
+          // getSecondsBetweenDates(today, tomorrow)
+        );
+      } catch (e) {
+        alert((e as Error).message);
+      }
+
+      try {
+        // const today: Date = new Date();
+        // const tomorrow: Date = new Date(
+        //   today.setHours(today.getHours() + 24*3)
+        // );
+        await scheduleRecurringPushNotification(
+          "Vault Alert",
+          "Check out the Vault!",
+          "Vault",
+          60*60*24*3
           // getSecondsBetweenDates(today, tomorrow)
         );
       } catch (e) {

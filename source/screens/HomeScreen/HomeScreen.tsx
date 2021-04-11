@@ -156,6 +156,11 @@ export default function HomeScreen(
         ) {
           props.navigation.navigate("Medication", { user });
         }
+        if (
+          response.notification.request.content.data.data === "Vault"
+        ) {
+          props.navigation.navigate("Vault", { user });
+        }
         // console.log(response);
       }
     );
