@@ -1,7 +1,7 @@
 // LocationServicesScreen.tsx
 
 import { StackScreenProps } from "@react-navigation/stack";
-import { View, Text, Linking, ActivityIndicator } from "react-native";
+import { View, Text, Linking, ActivityIndicator, Platform } from "react-native";
 import { SafetyPlanStackParamList } from "../../../types";
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
@@ -26,13 +26,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
         //this gurantees that lat and long have the up to date value of location
         if (location) setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
 
-        if(user.location){
+        if (user.location) {
             user.location = latAndLong; // set the location attribute on user object
         }
-        else{
+        else {
             user.location = "No location found";
         }
-        
+
 
     }, [location])
 
@@ -92,7 +92,49 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
 
     const renderItem = ({ item }: { item: any }) => {
         return (
-            <Text style={{ textAlign: 'center', alignSelf: 'stretch', borderWidth: 1, margin: 2, borderColor: 'blue' }}>{item.name}</Text>
+            // <Text style={{ textAlign: 'center', alignSelf: 'stretch', borderWidth: 1, margin: 2, borderColor: 'blue' }}>{item.name}</Text>
+
+            <TouchableOpacity
+                style={{
+
+                    justifyContent: "center",
+                    backgroundColor: "#eddd77",
+                    margin: 10,
+                    padding: 5,
+                    height: 40,
+                    borderWidth: 1,
+                    borderStyle: "dashed",
+                    borderRadius: 10
+                }}
+                onPress={() => {
+                    if (item.vicinity) {
+                        let fullAddress = item.vicinity;
+                        const url = Platform.select({
+                            ios: `maps:0,0?q=${fullAddress}`,
+                            android: `geo:0,0?q=${fullAddress}`,
+                        });
+
+                        if (url) {
+                            Linking.openURL(url);
+                        }
+
+                    } else {
+                        alert("Could not find an address for this place!");
+                    }
+                }}
+            >
+
+                <Text style={{
+                    textAlign: "center",
+                    justifyContent: "center",
+                    fontSize: 17,
+                    fontStyle: "italic",
+                }}
+                >
+                    {item.name}
+                </Text>
+
+            </TouchableOpacity>
         )
     };
 
@@ -140,7 +182,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                             //   console.log(json);
                             setSearchData(json);
                             setIsLoading(false);
-                            console.log('printing data')
+                            console.log(searchData.results[0]);
                         }}
                 >
                     <Text
@@ -162,7 +204,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                 
             </View> */}
 
-            <View style={{ flex: 2, backgroundColor: 'pink' }}>
+            <View style={{ flex: 2 }}>
                 {/* , backgroundColor: '#2f363c' */}
                 {/* {this.state.isLoading ? ( */}
                 {isLoading ? (
@@ -182,6 +224,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
             </View>
 
         </View>
-     
+
     );
 }
