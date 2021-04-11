@@ -67,6 +67,22 @@ export default function Settings(
           secondsBetweenDates - 86400
         );
       });
+
+      try {
+        // const today: Date = new Date();
+        // const tomorrow: Date = new Date(
+        //   today.setMinutes(today.getDays() + 12)
+        // );
+        await scheduleRecurringPushNotification(
+          "Daily Conversations Alert",
+          "Response to daily conversations",
+          "DailyConversations",
+          60*60*24
+          // getSecondsBetweenDates(today, tomorrow)
+        );
+      } catch (e) {
+        alert((e as Error).message);
+      }
     }
     await AddUserData(user);
     saved = true;
