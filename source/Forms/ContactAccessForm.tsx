@@ -40,45 +40,15 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   const initialContacts: ContactDetails[] = populateInitialContact();
   const [firebaseContacts, setFirebaseContacs] = useState(initialContacts);
 
-
-  // useEffect(() => {
-  //   (async () => {
-  //     console.log(demogContats);
-  //   })();
-  // }, [demogContats]);
-
-  // const loadContacts = async () => {
-  //   const permissions = await Contacts.requestPermissionsAsync();
-
-  //   if (permissions.status !== 'granted') {
-  //     return;
-  //   }
-
-  //   const { data } = await Contacts.getContactsAsync({
-  //     fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
-  //   });
-
-  //   setContacts(data);
-  //   // setInMemoryContacts(data);
-  //   setIsLoading(false);
-  // };
-
-  // componentDidMount() {
-  //   this.setState({ isLoading: true });
-  //   this.loadContacts();
-  // }
-
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      // TODO: Try Catch??
       const permissions = await Contacts.requestPermissionsAsync();
 
       if (permissions.status !== 'granted') {
         return;
       }
 
-      // TODO: Try Catch??
       try {
         const { data } = await Contacts.getContactsAsync({
           fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails]
@@ -100,12 +70,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     (async () => {
       user.emergencyContacts = firebaseContacts;
       await AddContacts(user);
-      console.log("INSIDE ASYNC FIREBASE");
-      
-  })();
-    // console.log("Firebase contact object changed");
-    // console.log(firebaseContacts);
-
+      // console.log("INSIDE ASYNC FIREBASE");
+    })();
+    
   }, [firebaseContacts]);
 
   useEffect(() => {
@@ -166,11 +133,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                   });
                   tmpContactList.push(contact);
                   setFirebaseContacs(tmpContactList);
+                  props.navigation.navigate("EmergencyContact", { user });
                 }
               } else {
                 var tmpContactList: ContactDetails[] = [];
                 tmpContactList.push(contact);
                 setFirebaseContacs(tmpContactList);
+                props.navigation.navigate("EmergencyContact", { user });
               }
 
             }
@@ -268,11 +237,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                   });
                   tmpContactList.push(contact);
                   setFirebaseContacs(tmpContactList);
+                  props.navigation.navigate("EmergencyContact", { user });
                 }
               } else {
                 var tmpContactList: ContactDetails[] = [];
                 tmpContactList.push(contact);
                 setFirebaseContacs(tmpContactList);
+                props.navigation.navigate("EmergencyContact", { user });
               }
 
             }

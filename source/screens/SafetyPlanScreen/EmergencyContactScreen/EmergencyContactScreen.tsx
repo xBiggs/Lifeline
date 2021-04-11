@@ -16,21 +16,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
     // TODO: Variables never used
     const [contactsData, setContactsData] = useState<Contacts.Contact[]>();
     let [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
-
-
-    // useEffect(() => {
-    //     navigation.addListener('blur', e => {
-    //         navigation.goBack();
-    //     })
-    // })
-
-    // useEffect(() => {
-    //     (async () => {
-    //         setContactSuggestions(await GetAllUser(user));
-    //     })();
-    // }, []);
-
-
+    
     useEffect(() => {
         if (user.emergencyContacts) {
             setContactsData(cont => user.emergencyContacts);
