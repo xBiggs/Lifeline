@@ -41,12 +41,15 @@ export default function MedicationForm(
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [info, setInfo] = useState<Medication[]>([]);
-  const user = props.route.params.user;
+
+  let user = props.route.params.user;
 
   const [userNotifications, setUserNotifications] = useState<
     NotificationType[]
-  >([]);
+  >(user.notifications);
+
+  const [info, setInfo] = useState<Medication[]>(user.medInfo.medication);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   //STATE VARIABLES END////////////////////////////
@@ -83,12 +86,12 @@ export default function MedicationForm(
 
   const deleteMedication = async (medication: Medication) => {
     let index: number;
-    if (user.medInfo?.medication) {
-      index = user.medInfo?.medication.indexOf(medication);
-      user.medInfo?.medication.splice(index, 1);
-      await FirebaseController.SetUserData(user);
+    if (info) {
+      index = info.indexOf(medication);
+      setInfo((info) => info.splice(index, 1));
     }
-    if (user.medInfo?.medication) setInfo(user.medInfo?.medication);
+
+    await FirebaseController.SetUserData(user);
   };
   //FORM SUBMISSION
   const formal = useFormal(initialValues, {
@@ -164,15 +167,10 @@ export default function MedicationForm(
   //////////////////////////END////////////////
 
   //GET INFO///////////////////////
-  useEffect(() => {
-    const getinfo = async () => {
-      if (user.medInfo) setInfo(user.medInfo.medication);
-      if (user.notifications) setUserNotifications(user.notifications);
-      else setUserNotifications([]);
-    };
 
-    getinfo();
-  }, []);
+  useEffect(() => {
+    if (user.medInfo) user.medInfo.medication = info;
+  }, [info]);
 
   // TODO: Stop using keyword var, use keywords let or const instead
 
