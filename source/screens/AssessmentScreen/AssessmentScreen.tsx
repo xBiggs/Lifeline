@@ -7,6 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   getSecondsBetweenDates,
   schedulePushNotification,
+  scheduleRecurringPushNotification,
 } from "../../Controllers/notificationsController";
 import { AddNotification, AddUserData } from "../../firebase/UserDataHandler";
 import { NotificationType } from "../../interfaces/Notification";
@@ -106,46 +107,60 @@ export default (
   const CurrentQuestion = AllQuestionComponents[questionNum];
 
   useEffect(() => {
-    if (
-      questionNum ==
-      NUM_RISK_FACTOR_QUESTIONS + NUM_MITIGATING_FACTOR_QUESTIONS
-    ) {
-      try {
-        var date: Date = new Date();
-        var newDate: Date = new Date(date.setMonth(date.getMonth() + 3));
-        var notification: NotificationType = {
-          date: firebase.firestore.Timestamp.fromDate(newDate),
-          title: "Retake Assesent: ",
-          information:
-            'It has been three months since you last took your assesment. Please retake it now. "',
+    (async () => {
+      if (
+        questionNum ==
+        NUM_RISK_FACTOR_QUESTIONS + NUM_MITIGATING_FACTOR_QUESTIONS
+      ) {
+        try {
+          const date: Date = new Date();
+          const newDate: Date = new Date(date.setMonth(date.getMonth() + 3));
+          const notification: NotificationType = {
+            date: firebase.firestore.Timestamp.fromDate(newDate),
+            title: "Retake Assesent: ",
+            information:
+              'It has been three months since you last took your assesment. Please retake it now. "',
+            actionScreen: "Assesment",
+            actionScreenTitle: "Take Assesment",
+            imageURL: "../../images/medicine.png",
+          };
+          const today: Date = new Date();
 
-          actionScreen: "Assesment",
-          actionScreenTitle: "Take Assesment",
-          imageURL: "../../images/medicine.png",
-        };
-        const today: Date = new Date();
+          const secondsBetweenDates = getSecondsBetweenDates(today, newDate);
+          if (user.settings?.notificationsOn) {
+            try {
+              await schedulePushNotification(
+                "Evaluation Alert",
+                "It is time to retake your assesment",
+                "click to take evaluation",
+                secondsBetweenDates
+              );
 
-        const secondsBetweenDates = getSecondsBetweenDates(today, newDate);
-        if (user.settings?.notificationsOn) {
-          schedulePushNotification(
-            "Evaluation Alert",
-            "It is time to retake your assesment",
-            "click to take evaluation",
-            secondsBetweenDates
-          );
+              const tomorrow: Date = new Date(date.setMinutes(date.getMinutes() + 2));
+              await scheduleRecurringPushNotification(
+                "Daily Conversations Alert",
+                "Response to daily conversations",
+                "DailyConversations",
+                getSecondsBetweenDates(today, tomorrow)
+              );
+
+            } catch (e) {
+              alert((e as Error).message);
+            }
+          }
+
+          if (user) AddNotification(user, notification);
+
+          user.riskFactors = riskFactorQuestions;
+          user.mitigatingFactors = mitigatingFactorQuestions;
+          AddUserData(user);
+          alert("Thank You!");
+          props.navigation.goBack();
+        } catch (err) {
+          alert((err as Error).message);
         }
-
-        if (user) AddNotification(user, notification);
-
-        user.riskFactors = riskFactorQuestions;
-        user.mitigatingFactors = mitigatingFactorQuestions;
-        AddUserData(user);
-        alert("Thank You!");
-        props.navigation.goBack();
-      } catch (err) {
-        alert((err as Error).message);
       }
-    }
+    })();
   });
 
   return <View style={styles.container}>{CurrentQuestion}</View>;

@@ -131,6 +131,9 @@ export default function HomeScreen(
           // FIXME: ERROR
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (response) => {
+        if (response.notification.request.content.data.data === "DailyConversations") {
+          props.navigation.navigate("DailyConversations", {user});
+        }
         // console.log(response);
       }
     );
