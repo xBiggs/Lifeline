@@ -473,11 +473,6 @@ const Content = (props: { option: number, user: User }) => {
                         {
                             audio?.map(item=><View style={{flexDirection:'row',borderWidth:2,margin:1,borderColor:LifeLineDarkBlue}} key={item.url}>
                                 <Text style={{fontSize:25,flex:1}}>{item.title}</Text>
-                                <Button style={{margin:5}} mode='contained' color={LifeLineDarkBlue} onPress={()=>{
-                                    setAudioSource({uri:item.url||""})
-                                    playPauseAudio()}} ><MaterialCommunityIcons  name="play" color={LifeLineBlue} size={15} >
-                                <Text>{audioIsPlaying?'Pause':'Play'}</Text>
-                                </MaterialCommunityIcons></Button>
                                <TouchableOpacity style={{marginRight:10}} onPress={async()=>{
                                    await removeMediaFromVault(item);
                                }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 

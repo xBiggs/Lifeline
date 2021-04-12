@@ -229,6 +229,12 @@ export default function Vault(
               marginTop: 10,
             }}
             onPress={() => {
+              //
+            setIsMediaVisible(false)
+            setIsMusicVisible(false)
+            setIsQuotesVisible(false)
+
+
               props.navigation.navigate("Manage", {
                 user: props.route.params.user,
               });

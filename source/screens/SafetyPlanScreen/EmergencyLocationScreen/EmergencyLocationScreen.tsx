@@ -122,30 +122,35 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
             <ScrollView>
                 <View>
                     <TextInput
+                    defaultValue={_name}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => onChangeVicinityName(text)}// setName(text)}
                         // defaultValue={""}
                         placeholder={"Service Provider Name"}
                     />
                     <TextInput
+                        defaultValue={_vicinity}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setVicinity(text)}
                         // defaultValue={_vicinity}
                         placeholder={"Service Provider Address"}
                     />
                     <TextInput
+                        defaultValue={_phone}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setPhone(text)}
                         // defaultValue={_phone}
                         placeholder={"Service Provider Phone"}
                     />
                     <TextInput
+                    defaultValue= {_physicianName}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setPhysicianName(text)}
                         // defaultValue={_physicianName}
                         placeholder={"Your Physician's Name"}
                     />
                     <TextInput
+                        defaultValue={_serviceType}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setServiceType(text)}
                         // defaultValue={_serviceType}
@@ -167,6 +172,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                     alert("One or more fields are empty");
                                     return;
                                 } else if (_phone.length !== 10) {
+                                    console.log(_phone)
                                     alert("Phone number should be exactly 10 digits.");
                                     return;
                                 } else if (!Number(_phone)) {
@@ -202,6 +208,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                         });
                                         nList.push(provider);
                                         setServiceList(nList);
+
+                                        setServiceType("")
+                                        setName("")
+                                        setPhone("")
+                                        setPhysicianName("")
+                                        setVicinity("")
+                                        
                                     } else {
                                         alert("Provider already exist!");
                                     }
@@ -233,6 +246,26 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
 
             <ScrollView>
                 <View>
+                    {
+                        servicesList.length==0?<></> :
+                        <>
+                        {servicesList.map(ele=>{
+                            return   <EmergencyLocationCard key={servicesList.indexOf(ele)}
+                            locationProvider={ele}
+                            onPressTrash={() => {
+                                // console.log("BEFORE DELETING", user.emergencyProviders);
+                                removeProvider(ele);
+                                // console.log("AFTER DELETING", user.emergencyProviders);
+                            }}
+                        />
+                        })}
+                    
+
+                        </>
+                    }
+
+
+{/*
                     <FlatList
                         data={servicesList}
                         // extraData={servicesList}
@@ -263,6 +296,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
 
                         )}
                     />
+                            */}
                 </View>
             </ScrollView>
 

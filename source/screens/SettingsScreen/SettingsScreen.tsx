@@ -77,7 +77,8 @@ export default function Settings(
           "Daily Conversations Alert",
           "Respond to daily conversations",
           "DailyConversations",
-          60*60*24
+          60
+          //60*60*24
           // getSecondsBetweenDates(today, tomorrow)
         );
       } catch (e) {
@@ -93,7 +94,8 @@ export default function Settings(
           "Vault Alert",
           "Check out the Vault!",
           "Vault",
-          60*60*24*3
+         // 60*60*24*3
+         70
           // getSecondsBetweenDates(today, tomorrow)
         );
       } catch (e) {

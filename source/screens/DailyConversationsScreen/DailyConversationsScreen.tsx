@@ -60,10 +60,10 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
             }
 
             if (risk > 0 ) {
-                alert("Submission Sucessful");
+                alert("You seem to down, here is your vault full of encouragement");
                 props.navigation.navigate("Vault", {user});
             } else {
-                alert("Submission Sucessful");
+                alert("Thank you");
                 props.navigation.navigate("Home", {user});
             }
         }
