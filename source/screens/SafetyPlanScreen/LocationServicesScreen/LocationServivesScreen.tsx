@@ -172,11 +172,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                             const radius = '&radius=5000&rankBy=distance';
                             const key = '&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs';
                             const emergencyServiceUrl = domain + location + type + radius + key
-                            // console.log(emergencyServiceUrl);
-                            /* fetch(emergencyServiceUrl)
-                                 .then(response => response.json())
-                                 .then(result => setSearchData(result))
-                                 .catch(e => console.log(e));*/
                             const result = await fetch(emergencyServiceUrl);
                             const json = await result.json();
                             //   console.log(json);

@@ -61,42 +61,42 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         }
     };
 
-    useEffect(() => {
-        // var term = searchTerm.split(' ').join('+')
-        var term = _name.split(' ').join('+')
+    // useEffect(() => {
+    //     // var term = searchTerm.split(' ').join('+')
+    //     var term = _name.split(' ').join('+')
 
-        setName(term.toLowerCase());
-        // console.log(searchTerm);
-    }, [_name])
+    //     setName(term.toLowerCase());
+    //     // console.log(searchTerm);
+    // }, [_name])
 
-    const getUrl = (): string => {
+    // const getUrl = (): string => {
 
-        const domain = "https://maps.googleapis.com/maps/api/place/autocomplete/json?";
-        const location = `&location=${user.location}`;
-        const input = `&input=${_name}`
-        const radius = '&radius=2000';
-        const key = '&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs';//getApiKey;
-        const url = domain + key + input + location + radius;
-        // console.log(url);
+    //     const domain = "https://maps.googleapis.com/maps/api/place/autocomplete/json?";
+    //     const location = `&location=${user.location}`;
+    //     const input = `&input=${_name}`
+    //     const radius = '&radius=2000';
+    //     const key = '&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs';//getApiKey;
+    //     const url = domain + key + input + location + radius;
+    //     // console.log(url);
 
-        return url;
-    }
+    //     return url;
+    // }
     
 
-    const onChangeVicinityName = async (text: string) => {
-        try {
-            if (text.length != 0) {
-                setName(text);
-                const url = getUrl();
+    // const onChangeVicinityName = async (text: string) => {
+    //     try {
+    //         if (text.length != 0) {
+    //             setName(text);
+    //             const url = getUrl();
 
-                const result = await (await fetch(url)).json();
-                // console.log(result.predictions[0].description);
-                setPlacePrediction(result.predictions)
-            }
-        } catch (e) {
-            throw (e as Error).message;
-        }
-    }
+    //             const result = await (await fetch(url)).json();
+    //             // console.log(result.predictions[0].description);
+    //             setPlacePrediction(result.predictions)
+    //         }
+    //     } catch (e) {
+    //         throw (e as Error).message;
+    //     }
+    // }
 
     const formatPhoneNumber = (phone: string) => {
         var cleaned = ('' + phone).replace(/\D/g, '');
@@ -111,7 +111,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         (async () => {
             user.emergencyProviders = servicesList;
             await AddServiceProvider(user);
-            // console.log("INSIDE ASYNC FIREBASE");
             
         })();
 
@@ -122,9 +121,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
             <ScrollView>
                 <View>
                     <TextInput
-                    defaultValue={_name}
+                        defaultValue={_name}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
-                        onChangeText={(text) => onChangeVicinityName(text)}// setName(text)}
+                        onChangeText={(text) => setName(text)}// onChangeVicinityName(text)}
                         // defaultValue={""}
                         placeholder={"Service Provider Name"}
                     />
@@ -208,12 +207,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                         });
                                         nList.push(provider);
                                         setServiceList(nList);
-
-                                        setServiceType("")
-                                        setName("")
-                                        setPhone("")
-                                        setPhysicianName("")
-                                        setVicinity("")
                                         
                                     } else {
                                         alert("Provider already exist!");
@@ -227,6 +220,12 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                     setServiceList(nList);
                                     // console.log(servicesList);
                                 }
+                                
+                                setServiceType("");
+                                setName("");
+                                setPhone("");
+                                setPhysicianName("");
+                                setVicinity("");
 
                             } catch (err) {
                                 throw (err as Error).message;

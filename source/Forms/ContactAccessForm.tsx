@@ -77,11 +77,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   useEffect(() => {
     (async () => {
       user.emergencyContacts = firebaseContacts;
-      await AddContacts(user);
-      // console.log("INSIDE ASYNC FIREBASE");
-      setFirstName("");
-      setLastName("");
-      setPhoneNumber("");
+      // await AddContacts(user);
     })();
 
   }, [firebaseContacts]);
@@ -171,7 +167,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
         }}
       >
         <Text style={{ fontSize: 20 }}>Add {item.firstName} {item.lastName}</Text>
-        <Text>Age: {item.persInfo.age}    Orientation: {item.persInfo.sexualOrientation}</Text>
+        {/* <Text>Age: {item.persInfo.age}    Orientation: {item.persInfo.sexualOrientation}</Text> */}
       </TouchableOpacity>
     </View >
   );
@@ -317,7 +313,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
               onChangeText={(value) => setPhoneNumber(value)} />
 
             {/** This button is responsible to close the modal */}
-            <Button title="Close" onPress={toggleModalVisibility} />
+            <Button title="Close" onPress={() => {
+              setFirstName("");
+              setLastName("");
+              setPhoneNumber("");
+              toggleModalVisibility();
+            }
+            } />
             <Button title="Add" onPress={() => {
 
               if (!Number(phoneNum) || phoneNum.length != 10) {
@@ -361,14 +363,20 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                   tmpContactList.push(cont);
                   setFirebaseContacs(tmpContactList);
                   toggleModalVisibility();
-                  props.navigation.navigate("EmergencyContact", { user });
+                  setFirstName("");
+                  setLastName("");
+                  setPhoneNumber("");
+                  // props.navigation.navigate("EmergencyContact", { user });
                 }
               } else {
                 var tmpContactList: ContactDetails[] = [];
                 tmpContactList.push(cont);
                 setFirebaseContacs(tmpContactList);
                 toggleModalVisibility();
-                props.navigation.navigate("EmergencyContact", { user });
+                setFirstName("");
+                setLastName("");
+                setPhoneNumber("");
+                // props.navigation.navigate("EmergencyContact", { user });
               }
 
             }} />
