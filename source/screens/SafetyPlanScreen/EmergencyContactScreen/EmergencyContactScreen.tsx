@@ -7,22 +7,46 @@ import { SafetyPlanStackParamList } from '../../../types';
 import { ContactDetails } from "../../../interfaces/ContactDetails";
 import _ from 'lodash';
 import * as Contacts from 'expo-contacts';
-import { GetAllUser } from '../../../firebase/UserDataHandler';
+import { AddUserData, GetAllUser } from '../../../firebase/UserDataHandler';
 import { DemographicContacts } from '../../../interfaces/DemographicContacts';
 import * as WebBrowser from 'expo-web-browser';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
     const { user } = props.route.params
     // TODO: Variables never used
-    const [contactsData, setContactsData] = useState<ContactDetails[]>();
-    let [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
+    // const [contactsData, setContactsData] = useState<ContactDetails[]>();
+    const [contactsData, setContactsData] = useState(user.emergencyContacts || []);
+    var [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
 
     useEffect(() => {
-        if (user.emergencyContacts) {
-            setContactsData(cont => user.emergencyContacts);
-        }
-    }, [user.emergencyContacts]);
+        (async () => {
+            try {
+                if (contactsData) user.emergencyContacts = contactsData;
+                // await AddUserData(user);
+            } catch (err) {
+                throw (err as Error).message;
+            }
+        })();
+    }, [contactsData]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            // console.log("INSIDE USEFOCUSEFFECT");
+            // console.log(user.emergencyContacts);
+            (async () => {
+                try {
+                    if (user.emergencyContacts) setContactsData(user.emergencyContacts);
+                    console.log(contactsData);
+                    
+                } catch (err) {
+                    throw (err as Error).message;
+                }
+            })();
+            if (user.emergencyContacts) setContactsData(user.emergencyContacts)
+        }, [user.emergencyContacts])
+    );
 
     const dialNumber = (num: string) => {
         let phoneNumber = '';
@@ -30,7 +54,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
             phoneNumber = `tel:${num}`;
         }
         else {
-            phoneNumber =  `telprompt:${num}`;
+            phoneNumber = `telprompt:${num}`;
         }
 
         Linking.openURL(phoneNumber);
@@ -44,14 +68,14 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 borderRadius: 15, width: 300,
                 marginTop: 5, marginBottom: 15, marginLeft: 40
             }}
-            onPress={() => {
-                if(item.digits) {
-                    dialNumber(item.digits+'');
-                }
-                else {
-                    alert("This person has no number");
-                }
-            }}
+                onPress={() => {
+                    if (item.digits) {
+                        dialNumber(item.digits + '');
+                    }
+                    else {
+                        alert("This person has no number");
+                    }
+                }}
             >
                 <Text style={{ fontSize: 20 }}>Call {item.firstName} {item.lastName}</Text>
             </TouchableOpacity>
@@ -104,9 +128,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 borderRadius: 15, width: 200,
                 marginTop: 5, marginBottom: 10, marginLeft: 110
             }}
-            onPress={() => {
-                dialNumber("911");
-            }}
+                onPress={() => {
+                    dialNumber("911");
+                }}
             >
                 <Text style={{ fontSize: 20 }}>Call 911</Text>
             </TouchableOpacity>
@@ -118,11 +142,11 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 borderRadius: 15, width: 200,
                 marginTop: 5, marginBottom: 10, marginLeft: 110
             }}
-            onPress={() => {
-                dialNumber("(888) 843-4564");
-            }}
+                onPress={() => {
+                    dialNumber("(888) 843-4564");
+                }}
             >
-                <Text style={{ fontSize: 20 }}>LGBT National Hotlne</Text>
+                <Text style={{ fontSize: 20 }}>LGBT National Hotline</Text>
             </TouchableOpacity>
             <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
 
@@ -132,17 +156,17 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 borderRadius: 15, width: 200,
                 marginTop: 5, marginBottom: 10, marginLeft: 110
             }}
-            onPress={async () => {
-                await WebBrowser.openBrowserAsync('https://rainbowmobile.org/community-resources/hotlines/');
-            }}
+                onPress={async () => {
+                    await WebBrowser.openBrowserAsync('https://rainbowmobile.org/community-resources/hotlines/');
+                }}
             >
-                <Text style={{ fontSize: 20 }}>Other help hotline</Text>
+                <Text style={{ fontSize: 20 }}>Other hotline</Text>
             </TouchableOpacity>
             <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
 
             <FlatList
-                // data={contactsData}
-                data={user.emergencyContacts}
+                data={contactsData}
+                // data={user.emergencyContacts}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 ListEmptyComponent={() => (
@@ -156,7 +180,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                         }}
                     >
                         <Text style={{ color: 'blue' }}>No Contacts Found</Text>
-
                     </View>
 
                 )}

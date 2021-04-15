@@ -77,6 +77,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   useEffect(() => {
     (async () => {
       user.emergencyContacts = firebaseContacts;
+      console.log(user.emergencyContacts);
       // await AddContacts(user);
     })();
 
@@ -145,13 +146,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                   });
                   tmpContactList.push(contact);
                   setFirebaseContacs(tmpContactList);
-                  props.navigation.navigate("EmergencyContact", { user });
+                  // props.navigation.navigate("EmergencyContact", { user });
                 }
               } else {
                 var tmpContactList: ContactDetails[] = [];
                 tmpContactList.push(contact);
                 setFirebaseContacs(tmpContactList);
-                props.navigation.navigate("EmergencyContact", { user });
+                // props.navigation.navigate("EmergencyContact", { user });
               }
 
             }
@@ -214,13 +215,13 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                   });
                   tmpContactList.push(contact);
                   setFirebaseContacs(tmpContactList);
-                  props.navigation.navigate("EmergencyContact", { user });
+                  // props.navigation.navigate("EmergencyContact", { user });
                 }
               } else {
                 var tmpContactList: ContactDetails[] = [];
                 tmpContactList.push(contact);
                 setFirebaseContacs(tmpContactList);
-                props.navigation.navigate("EmergencyContact", { user });
+                // props.navigation.navigate("EmergencyContact", { user });
               }
 
             }
