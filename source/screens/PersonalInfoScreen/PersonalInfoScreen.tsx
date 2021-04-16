@@ -121,7 +121,7 @@ export default function PersonalInfoScreen(
 
       AddUserData(user);
       Alert.alert("Thank You!");
-      props.navigation.navigate("Home", { user });
+      props.navigation.goBack();
     },
   });
 
