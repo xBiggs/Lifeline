@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, Button, Modal, Dimensions } from 'react-native';
 import * as Contacts from 'expo-contacts';
-import * as Devices from 'expo-device';
 import styles from "../screens/ContactScreen/styles";
 import { StackScreenProps } from '@react-navigation/stack';
 import { SafetyPlanStackParamList } from '../types'
-import { AddContacts } from '../firebase/UserDataHandler';
+import { AddContacts, GetAllUser } from '../firebase/UserDataHandler';
 import { ContactDetails } from '../interfaces/ContactDetails';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { DemographicContacts } from '../interfaces/DemographicContacts';
-import { Guid } from 'guid-typescript';
+
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceContacts'>) => {
 
-  // const { user } = props.route.params.user;
-  const { user, contactSuggestions } = props.route.params;
+  const { user } = props.route.params;
+  // const { user, contactSuggestions } = props.route.params;
 
   const { width } = Dimensions.get("window");
 
@@ -46,6 +45,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   };
   const initialContacts: ContactDetails[] = populateInitialContact();
   const [firebaseContacts, setFirebaseContacs] = useState(initialContacts);
+  // const [firebaseContacts, setFirebaseContacs] = useState(user.emergencyContacts || []);
+  var [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
 
   useEffect(() => {
     (async () => {
@@ -78,7 +79,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     (async () => {
       user.emergencyContacts = firebaseContacts;
       console.log(user.emergencyContacts);
-      // await AddContacts(user);
+      await AddContacts(user);
     })();
 
   }, [firebaseContacts]);
@@ -98,6 +99,34 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       setContacts(filteredDeviceContacts);
     })();
   }, [searchTerm]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let lst: DemographicContacts[] = await GetAllUser(user);
+        if (lst) {
+          let tmpList: DemographicContacts[] = [];
+          lst.forEach(element => {
+            if (element.persInfo && element.persInfo?.sexualOrientation && element.persInfo?.phone && user.personalInfo?.sexualOrientation){
+              if(element.persInfo?.sexualOrientation === user.personalInfo?.sexualOrientation){
+                tmpList.push(element);
+              }
+            }
+          });
+          setContactSuggestions(tmpList);
+          console.log(tmpList);
+          
+        } else {
+          lst = [];
+          setContactSuggestions(lst);
+        }
+        // console.log(contactSuggestions);
+
+      } catch (e) {
+        throw (e as Error).message
+      }
+    })();
+  }, [])
 
   const formatPhoneNumber = (phone: string) => {
     var cleaned = ('' + phone).replace(/\D/g, '');
@@ -149,9 +178,10 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                   // props.navigation.navigate("EmergencyContact", { user });
                 }
               } else {
-                var tmpContactList: ContactDetails[] = [];
-                tmpContactList.push(contact);
-                setFirebaseContacs(tmpContactList);
+                alert("This contact doesnot have a phone number");
+                // var tmpContactList: ContactDetails[] = [];
+                // tmpContactList.push(contact);
+                // setFirebaseContacs(tmpContactList);
                 // props.navigation.navigate("EmergencyContact", { user });
               }
 

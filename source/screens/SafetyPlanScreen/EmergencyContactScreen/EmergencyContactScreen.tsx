@@ -20,16 +20,16 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
     const [contactsData, setContactsData] = useState(user.emergencyContacts || []);
     var [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
 
-    useEffect(() => {
-        (async () => {
-            try {
-                if (contactsData) user.emergencyContacts = contactsData;
-                // await AddUserData(user);
-            } catch (err) {
-                throw (err as Error).message;
-            }
-        })();
-    }, [contactsData]);
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
+    //             if (contactsData) user.emergencyContacts = contactsData;
+    //             // await AddUserData(user);
+    //         } catch (err) {
+    //             throw (err as Error).message;
+    //         }
+    //     })();
+    // }, [contactsData]);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -38,8 +38,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
             (async () => {
                 try {
                     if (user.emergencyContacts) setContactsData(user.emergencyContacts);
-                    console.log(contactsData);
-                    
+                    // console.log(contactsData);
+
                 } catch (err) {
                     throw (err as Error).message;
                 }
@@ -61,7 +61,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
     };
 
     const renderItem = ({ item }: { item: ContactDetails }) => (
-        <View style={{ marginTop: 10, marginBottom: 50, marginLeft: 20, marginRight: 20 }}>
+        <View style={{ marginTop: 10, marginLeft: 20, marginRight: 20 }}>
             <TouchableOpacity style={{
                 alignItems: 'center', justifyContent: 'center',
                 backgroundColor: '#51a4e8', height: 50,
@@ -84,30 +84,34 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
 
     return (
         <View>
-            {/* {user.emergencyContacts ? <Text>List all emergency contacts and access contacts button</Text> : <Text>No emergeny contacts</Text>} */}
             <TouchableOpacity
                 style={{
                     alignItems: 'center', justifyContent: 'center',
                     backgroundColor: '#f2f2f2', height: 50, width: 500,
                     borderRadius: 50, marginLeft: 130
                 }}
-                onPress={async () => {
-                    setContactSuggestions(await GetAllUser(user));
-                    if (contactSuggestions) {
-                        let lst: DemographicContacts[] = []
-                        contactSuggestions.forEach(element => {
-                            if (element.persInfo) {
-                                if (element.persInfo.sexualOrientation == user.personalInfo?.sexualOrientation) {//user.personalInfo?.sexualOrientation /* && (Number(element.persInfo.age) <= Number(user.personalInfo?.age) + 50) */) {
-                                    // console.log(element.persInfo.sexualOrientation);
-                                    lst.push(element);
-                                }
-                            }
-                        });
-                        contactSuggestions = lst;
-                        props.navigation.navigate("AccessDeviceContacts", { user, contactSuggestions });
+                onPress={
+                    // async () => {
+                    // setContactSuggestions(await GetAllUser(user));
+                    // if (contactSuggestions) {
+                    //     let lst: DemographicContacts[] = []
+                    //     contactSuggestions.forEach(element => {
+                    //         if (element.persInfo) {
+                    //             if (element.persInfo.sexualOrientation == user.personalInfo?.sexualOrientation) {//user.personalInfo?.sexualOrientation /* && (Number(element.persInfo.age) <= Number(user.personalInfo?.age) + 50) */) {
+                    //                 // console.log(element.persInfo.sexualOrientation);
+                    //                 lst.push(element);
+                    //             }
+                    //         }
+                    //     });
+                    //     contactSuggestions = lst;
+                    //     props.navigation.navigate("AccessDeviceContacts", { user}); //, contactSuggestions });
+                    // }
+                    // props.navigation.navigate("AccessDeviceContacts", { user}); //,  contactSuggestions});
+                    // }
+                    () => {
+                        props.navigation.navigate("AccessDeviceContacts", { user });
                     }
-                    // props.navigation.navigate("AccessDeviceContacts", { user,  contactSuggestions});
-                }}
+                }
             >
                 <Text
                     style={{

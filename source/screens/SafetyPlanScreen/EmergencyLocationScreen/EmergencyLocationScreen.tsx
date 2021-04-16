@@ -28,8 +28,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
     const [_phone, setPhone] = useState("");
     const [_physicianName, setPhysicianName] = useState("");
     const [_serviceType, setServiceType] = useState("");
-
-    const [placesPrediction, setPlacePrediction] = useState([]);
     
     const populateServiceList = () => {
         const list: EmergencyLocationProvider[] = [];
