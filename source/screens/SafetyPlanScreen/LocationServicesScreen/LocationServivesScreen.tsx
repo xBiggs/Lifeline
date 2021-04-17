@@ -6,10 +6,6 @@ import { SafetyPlanStackParamList } from "../../../types";
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { number } from "yup/lib/locale";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
-
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServices'>) => {
 
@@ -22,6 +18,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
     const [latAndLong, setLatAndLong] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    // formating the location based on google places api syntax
     useEffect(() => {
         //this gurantees that lat and long have the up to date value of location
         if (location) setLatAndLong(location.coords.latitude + ',' + location.coords.longitude);
@@ -32,40 +29,20 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
         else {
             user.location = "No location found";
         }
-
-
     }, [location])
 
-
+    // getting location from device
     useEffect(() => {
-
         (async () => {
-            console.log('getting location info')
-
-
-
-            // TODO: Try Catch ??
+            // console.log('getting location info')
             try {
                 let { status } = await Location.requestPermissionsAsync();
                 if (status !== 'granted') {
                     setErrorMsg("Permission to access location was denied");
                     return;
                 }
-
-                // TODO: Try Catch??
                 const loca = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-                // FIXME: Error
                 setLocation(loca);
-                //  console.log(location);
-
-
-                // setLatAndLong('@' + location.coords.latitude + ',' + location.coords.longitude);
-
-                //  console.log(typeof(latAndLong));
-
-                // setUrl('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs');
-
-
             } catch (e) {
                 alert(e)
             }
@@ -80,20 +57,15 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
         text = JSON.stringify(location);
     }
 
+    // formating search type based on places api syntax
+    const formatSearchTerm = () => {
+        var term = searchTerm.split(' ').join('%20');
+        return term;
+    }
 
-    useEffect(() => {
-        // var term = searchTerm.split(' ').join('+')
-        var term = searchTerm.split(' ').join('%20')
-
-        setSearchTerm(term.toLowerCase());
-        // console.log(searchTerm);
-    }, [searchTerm])
-
-
+    // rendering the places api results
     const renderItem = ({ item }: { item: any }) => {
         return (
-            // <Text style={{ textAlign: 'center', alignSelf: 'stretch', borderWidth: 1, margin: 2, borderColor: 'blue' }}>{item.name}</Text>
-
             <TouchableOpacity
                 style={{
 
@@ -107,18 +79,19 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                     borderRadius: 10
                 }}
                 onPress={() => {
+                    // gets direction using maps
                     if (item.vicinity) {
                         let fullAddress = item.vicinity;
-                        const url = Platform.select({
+                        const url = Platform.select({ // checks which device the app is running on
                             ios: `maps:0,0?q=${fullAddress}`,
                             android: `geo:0,0?q=${fullAddress}`,
                         });
 
-                        if (url) {
+                        if (url) { // opens url in maps
                             Linking.openURL(url);
                         }
 
-                    } else {
+                    } else { // if address is undefined, show an alert
                         alert("Could not find an address for this place!");
                     }
                 }}
@@ -144,16 +117,14 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
     return (
         <View style={{ flex: 1 }}>
             <View>
+                {/* getting the search input for places api */}
                 <TextInput
                     placeholder="What can I help you with today!"
                     placeholderTextColor="blue"
+                    defaultValue={searchTerm}
                     onChangeText={value => setSearchTerm(value)}
                     style={{ borderColor: "black", backgroundColor: "orange", width: 350, height: 50, marginLeft: 20, marginRight: 20, marginTop: 10 }}
                 />
-                {/* <Text style={{ padding: 10, fontSize: 42 }}>
-                    {searchTerm}
-
-                </Text> */}
             </View>
 
             <View>
@@ -161,23 +132,23 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                     style={{ alignContent: "center", justifyContent: "center", marginTop: 20, marginLeft: 20, marginRight: 20, height: 50, width: 90, backgroundColor: "cyan", borderRadius: 50 }}
                     onPress={
                         async () => {
-                            setIsLoading(true);
+                            setIsLoading(true); // Initially setting the activity indicator to false to display loading
+                            const term = formatSearchTerm(); // format the search input 
 
-
-
+                            // combine all constraints to a url
                             // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.6141808,-97.5639936&type=hospital&radius=5000&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs
                             const domain = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
                             const location = `location=${latAndLong}`;
-                            const type = `&type=${searchTerm}`
+                            const type = `&type=${term}`;  // searchTerm}`
                             const radius = '&radius=5000&rankBy=distance';
                             const key = '&key=AIzaSyDh4-cp0UHt7qioUoPCh8zwVyA8JdmTxvs';
                             const emergencyServiceUrl = domain + location + type + radius + key
-                            const result = await fetch(emergencyServiceUrl);
-                            const json = await result.json();
-                            //   console.log(json);
-                            setSearchData(json);
-                            setIsLoading(false);
-                            console.log(searchData.results[0]);
+                            const result = await fetch(emergencyServiceUrl); // fetch result from api
+                            const json = await result.json(); // convert result to a json object
+                            setSearchData(json); // set the search data to the json object
+                            setIsLoading(false); // stop rendering the activity indicator
+                            // console.log(searchData.results);
+                            setSearchTerm(""); // set the searchTerm to empty to clear the text input
                         }}
                 >
                     <Text
@@ -186,6 +157,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
 
                 </TouchableOpacity>
 
+                {/* Navigating to emergenct location screen when the user can manually enter their providers details */}
                 <TouchableOpacity
                     style={{ justifyContent: "center", alignContent: "center", width: 200, height: 50, backgroundColor: "#40abed", marginLeft: 100, borderRadius: 30, marginBottom: 10 }}
                     onPress={() => props.navigation.navigate('EmergencyLocations', { user })}>
@@ -195,13 +167,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                 </TouchableOpacity>
             </View>
 
-            {/* <View>
-                
-            </View> */}
-
             <View style={{ flex: 2 }}>
-                {/* , backgroundColor: '#2f363c' */}
-                {/* {this.state.isLoading ? ( */}
+                {/* Activiuty indicator (loading circle) */}
                 {isLoading ? (
                     <View
                         style={{
@@ -212,6 +179,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                         <ActivityIndicator size="large" color="#bad555" />
                     </View>
                 ) : <>
+                    {/* Display the api results */}
                     <FlatList style={{ alignSelf: 'stretch', borderWidth: 1, alignContent: 'center', margin: 3 }} data={searchData.results} keyExtractor={(item, index) => index.toString()}
                         renderItem={renderItem}></FlatList>
                 </>}

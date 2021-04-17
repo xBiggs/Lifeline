@@ -76,7 +76,6 @@ export async function AddNotification(user: User, data: NotificationType) { //  
 }
 
 export async function AddContacts(user: User) {
-    /* UPDATING THE ENTIRE USER OBJECT */
 
     try {
         await firebase.firestore().collection('users').doc(user.id).update("emergencyContacts", user.emergencyContacts);
@@ -87,41 +86,13 @@ export async function AddContacts(user: User) {
 
 }
 
-export async function AddServiceProvider(user: User) {//, data: EmergencyLocationProvider) {
-    /* UPDATING THE ENTIRE USER OBJECT */
-
-    try {
-        // console.log("inside firebase call");
-
-        await firebase.firestore().collection('users').doc(user.id).update("serviceProvider", user.emergencyProviders);
-    } catch (error) {
-        throw (error as Error).message;
-    }
-
-
-}
-
-
 export async function GetAllUser(user: User) {
 
     try {
-
-        // const snapshot = await firebase.firestore().collection('users').get();
-        // const data = snapshot.docs.map(doc => doc.data());
-        // data.forEach(element => {
-        //     console.log(element.firstName);
-        // });
-
         const snapshot = await firebase.firestore().collection('users').get();
         let demogInfo: DemographicContacts[] = [];
         snapshot.forEach(doc => {
-            // console.log(doc.id, '=> [ ', doc.data().firstName, " --> ", doc.data().personalInfo);
-            // console.log("\n\n");
-            if (doc && doc.id !== user.id) {
-                // if (user.personalInfo?.sexualOrientation == doc.data().personalInfo.sexualOrientation){
-                //     console.log("SAME");
-                    
-                // }                
+            if (doc && doc.id !== user.id) {                
                 let tmpList: DemographicContacts = {
                     firstName: doc.data().firstName,
                     lastName: doc.data().lastName,
@@ -132,8 +103,6 @@ export async function GetAllUser(user: User) {
             }
 
         });
-        // console.log(demogInfo);
-        // console.log(snapshot.docs.map(doc => doc.data()));
         return demogInfo;
 
     } catch (error) {

@@ -45,8 +45,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
   };
   const initialContacts: ContactDetails[] = populateInitialContact();
   const [firebaseContacts, setFirebaseContacs] = useState(initialContacts);
-  // const [firebaseContacts, setFirebaseContacs] = useState(user.emergencyContacts || []);
-  var [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
+  const [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
 
   useEffect(() => {
     (async () => {
@@ -70,7 +69,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       } catch (e) {
         throw (e as Error).message;
       }
-      // console.log(contactSuggestions);
 
     })();
   }, []);
@@ -149,7 +147,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
 
           try {
 
-            if (item.persInfo.phone) {
+            if (item.persInfo && item.persInfo.phone) {
               var contact: ContactDetails = {
                 firstName: item.firstName,
                 lastName: item.lastName,
@@ -178,17 +176,15 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                   // props.navigation.navigate("EmergencyContact", { user });
                 }
               } else {
-                alert("This contact doesnot have a phone number");
-                // var tmpContactList: ContactDetails[] = [];
-                // tmpContactList.push(contact);
-                // setFirebaseContacs(tmpContactList);
+                var tmpContactList: ContactDetails[] = [];
+                tmpContactList.push(contact);
+                setFirebaseContacs(tmpContactList);
                 // props.navigation.navigate("EmergencyContact", { user });
               }
 
             }
             else {
-
-              alert("This user has no phone number!");
+              alert("Failed to add. This user might not have a contact info listed");
               return;
             }
           } catch (er) {
@@ -218,8 +214,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
       }}
         onPress={async () => {
           try {
-
-            if (item.phoneNumbers[0].number) {
+            if (item.phoneNumbers) {
               var contact: ContactDetails = {
                 firstName: item.firstName,
                 lastName: item.lastName,

@@ -33,8 +33,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
 
     useFocusEffect(
         React.useCallback(() => {
-            // console.log("INSIDE USEFOCUSEFFECT");
-            // console.log(user.emergencyContacts);
             (async () => {
                 try {
                     if (user.emergencyContacts) setContactsData(user.emergencyContacts);
@@ -90,28 +88,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                     backgroundColor: '#f2f2f2', height: 50, width: 500,
                     borderRadius: 50, marginLeft: 130
                 }}
-                onPress={
-                    // async () => {
-                    // setContactSuggestions(await GetAllUser(user));
-                    // if (contactSuggestions) {
-                    //     let lst: DemographicContacts[] = []
-                    //     contactSuggestions.forEach(element => {
-                    //         if (element.persInfo) {
-                    //             if (element.persInfo.sexualOrientation == user.personalInfo?.sexualOrientation) {//user.personalInfo?.sexualOrientation /* && (Number(element.persInfo.age) <= Number(user.personalInfo?.age) + 50) */) {
-                    //                 // console.log(element.persInfo.sexualOrientation);
-                    //                 lst.push(element);
-                    //             }
-                    //         }
-                    //     });
-                    //     contactSuggestions = lst;
-                    //     props.navigation.navigate("AccessDeviceContacts", { user}); //, contactSuggestions });
-                    // }
-                    // props.navigation.navigate("AccessDeviceContacts", { user}); //,  contactSuggestions});
-                    // }
-                    () => {
-                        props.navigation.navigate("AccessDeviceContacts", { user });
-                    }
-                }
+                onPress={() => {
+                    props.navigation.navigate("AccessDeviceContacts", { user });
+                }}
             >
                 <Text
                     style={{
