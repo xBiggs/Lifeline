@@ -10,10 +10,10 @@ import { AddUserData } from '../../../firebase/UserDataHandler';
 import EmergencyLocationCard from "./EmergencyLocationCard";
 
 
-interface LocationProviderElement {
-    id: string;
-    locProvider: EmergencyLocationProvider;
-}
+// interface LocationProviderElement {
+//     id: string;
+//     locProvider: EmergencyLocationProvider;
+// }
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLocations'>) => {
 
@@ -26,21 +26,9 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
     const [_physicianName, setPhysicianName] = useState("");
     const [_serviceType, setServiceType] = useState("");
 
-    // const populateServiceList = () => {
-    //     const list: EmergencyLocationProvider[] = [];
-    //     if (user.emergencyProviders) {
-    //         user.emergencyProviders.forEach((ele) => {
-    //             list.push(ele);
-    //         });
-    //     }
-    //     // console.log(list);
-    //     return list;
-    // };
-    // const initialServiceList: EmergencyLocationProvider[] = populateServiceList()
     const [servicesList, setServiceList] = useState(user.emergencyProviders || []);
 
-
-
+    // removes emergency provider from state variable
     const removeProvider = async (item: EmergencyLocationProvider): Promise<void> => {
 
         try {
@@ -56,6 +44,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         }
     };
 
+    // formats phone number to keep consistency [ format: (xxx) xxx-xxxx ]
     const formatPhoneNumber = (phone: string) => {
         var cleaned = ('' + phone).replace(/\D/g, '');
         var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
@@ -65,52 +54,48 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         return "";
     }
 
+    // keeps the firebase synced when a provider is added or removed
     useEffect(() => {
         (async () => {
             user.emergencyProviders = servicesList;
             await AddUserData(user);
 
         })();
-
     }, [servicesList]);
 
     return (
         <ScrollView>
             <ScrollView>
+                {/* provider input fields */}
                 <View>
                     <TextInput
                         defaultValue={_name}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
-                        onChangeText={(text) => setName(text)}// onChangeVicinityName(text)}
-                        // defaultValue={""}
+                        onChangeText={(text) => setName(text)}
                         placeholder={"Service Provider Name"}
                     />
                     <TextInput
                         defaultValue={_vicinity}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setVicinity(text)}
-                        // defaultValue={_vicinity}
                         placeholder={"Service Provider Address"}
                     />
                     <TextInput
                         defaultValue={_phone}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setPhone(text)}
-                        // defaultValue={_phone}
                         placeholder={"Service Provider Phone"}
                     />
                     <TextInput
                         defaultValue={_physicianName}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setPhysicianName(text)}
-                        // defaultValue={_physicianName}
                         placeholder={"Your Physician's Name"}
                     />
                     <TextInput
                         defaultValue={_serviceType}
                         style={{ alignContent: "center", justifyContent: "center", margin: 10, padding: 10, backgroundColor: "cyan", borderRadius: 10 }}
                         onChangeText={(text) => setServiceType(text)}
-                        // defaultValue={_serviceType}
                         placeholder={"Type of service"}
                     />
 
@@ -120,28 +105,29 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                     <TouchableOpacity
                         style={{ marginLeft: 150, height: 50, width: 100, marginTop: 10, backgroundColor: "#40abed", borderRadius: 50 }}
                         onPress={async () => {
-
                             try {
+                                let serviceExist = false; // variable to keep track of wheather a provider already exist or not 
 
-                                let serviceExist = false;
-
+                                // checks if the fields are empty
                                 if (_name.length == 0 || _phone.length == 0 || _physicianName.length == 0 || _vicinity.length == 0 || _serviceType.length == 0) {
                                     alert("One or more fields are empty");
                                     return;
-                                } else if (_phone.length !== 10) {
+                                }
+                                if (_phone.length !== 10) { // checks if the phone number has 10 digits to satisfy formating requirements mentioned above
                                     console.log(_phone)
                                     alert("Phone number should be exactly 10 digits.");
                                     return;
-                                } else if (!Number(_phone)) {
+                                }
+                                if (!Number(_phone)) { // checks if the phone number only contains non-digits
                                     alert("Phone numbers should only contain digits.");
                                     return;
                                 }
+                                setPhone(formatPhoneNumber(_phone)); // formats the phone number
 
-
-                                setPhone(formatPhoneNumber(_phone));
-                                // console.log(formatPhoneNumber(_phone));
+                                // formats the service provider to make the first character of the string upper cased for visual pleasing purposes
                                 const service = _serviceType.charAt(0).toUpperCase() + _serviceType.slice(1);
-
+                                
+                                // creating an interface object with the user input data
                                 let provider: EmergencyLocationProvider = {
                                     name: _name,
                                     vicinity: _vicinity,
@@ -149,37 +135,30 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                     physicianName: _physicianName,
                                     serviceType: service,
                                 }
-
-
-                                if (servicesList) {
-                                    // console.log("servicesList NOT empty");
+                                if (servicesList) { // check if the serviceList state variable is empty or undefined
                                     var nList: EmergencyLocationProvider[] = [];
                                     servicesList.forEach(element => {
                                         if (element.serviceType?.toLowerCase() === provider.serviceType?.toLowerCase()) {
                                             serviceExist = true;
                                         }
                                     });
-
                                     if (!serviceExist) {
                                         servicesList.forEach(ele => {
                                             nList.push(ele);
                                         });
                                         nList.push(provider);
                                         setServiceList(nList);
-
-                                    } else {
+                                    } else { // if the service already exist alet the user
                                         alert("Provider already exist!");
                                     }
-
                                 }
-                                else {
-                                    // console.log("servicesList IS empty");
+                                else { // if serviceList state variable is empty, add the provider the user entered to a temporary array and assign the temporary array to the state variable
                                     var nList: EmergencyLocationProvider[] = [];
                                     nList.push(provider);
                                     setServiceList(nList);
-                                    // console.log(servicesList);
                                 }
 
+                                // clear the text input fields
                                 setServiceType("");
                                 setName("");
                                 setPhone("");

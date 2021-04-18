@@ -1,43 +1,26 @@
 import { useNavigation } from '@react-navigation/core'
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react'
-import { View, Text, Linking, Platform } from 'react-native'
+import { View, Text, Linking, Platform, ScrollView } from 'react-native'
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafetyPlanStackParamList } from '../../../types';
 import { ContactDetails } from "../../../interfaces/ContactDetails";
 import _ from 'lodash';
-import * as Contacts from 'expo-contacts';
-import { AddUserData, GetAllUser } from '../../../firebase/UserDataHandler';
-import { DemographicContacts } from '../../../interfaces/DemographicContacts';
 import * as WebBrowser from 'expo-web-browser';
 import { useFocusEffect } from '@react-navigation/native';
 
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
     const { user } = props.route.params
-    // TODO: Variables never used
-    // const [contactsData, setContactsData] = useState<ContactDetails[]>();
+
     const [contactsData, setContactsData] = useState(user.emergencyContacts || []);
-    var [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
 
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             if (contactsData) user.emergencyContacts = contactsData;
-    //             // await AddUserData(user);
-    //         } catch (err) {
-    //             throw (err as Error).message;
-    //         }
-    //     })();
-    // }, [contactsData]);
-
+    // renders emergency contacts when updated
     useFocusEffect(
         React.useCallback(() => {
             (async () => {
                 try {
                     if (user.emergencyContacts) setContactsData(user.emergencyContacts);
-                    // console.log(contactsData);
-
                 } catch (err) {
                     throw (err as Error).message;
                 }
@@ -46,18 +29,19 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
         }, [user.emergencyContacts])
     );
 
+    // Dials the number (passed in as argument) on device's dial pad
     const dialNumber = (num: string) => {
         let phoneNumber = '';
-        if (Platform.OS === 'android') {
+        if (Platform.OS === 'android') { // checks which OS the app is running on an converts it to the appropriate url
             phoneNumber = `tel:${num}`;
         }
         else {
             phoneNumber = `telprompt:${num}`;
         }
-
-        Linking.openURL(phoneNumber);
+        Linking.openURL(phoneNumber); // opens the dial pad with passed in url
     };
 
+    // renders emergency contact
     const renderItem = ({ item }: { item: ContactDetails }) => (
         <View style={{ marginTop: 10, marginLeft: 20, marginRight: 20 }}>
             <TouchableOpacity style={{
@@ -66,11 +50,11 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
                 borderRadius: 15, width: 300,
                 marginTop: 5, marginBottom: 15, marginLeft: 40
             }}
-                onPress={() => {
-                    if (item.digits) {
+                onPress={() => { // on user press event it calls dialNumber function
+                    if (item.digits) { // checks if this contact has a number or is undefined
                         dialNumber(item.digits + '');
                     }
-                    else {
+                    else { // unlikely event of the user does not have a number or is undefined, it displays an alert
                         alert("This person has no number");
                     }
                 }}
@@ -82,6 +66,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
 
     return (
         <View>
+            {/* Call sthe form which access device's contacts */}
             <TouchableOpacity
                 style={{
                     alignItems: 'center', justifyContent: 'center',
@@ -149,12 +134,10 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
 
             <FlatList
                 data={contactsData}
-                // data={user.emergencyContacts}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 ListEmptyComponent={() => (
                     <View
-                        // style={styles.flatListView}
                         style={{
                             flex: 1,
                             alignItems: 'center',
@@ -167,7 +150,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
 
                 )}
             />
-
         </View>
 
     )

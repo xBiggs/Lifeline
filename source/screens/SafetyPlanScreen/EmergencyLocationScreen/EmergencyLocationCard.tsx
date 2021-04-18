@@ -18,7 +18,6 @@ const EmergencyLocationCard: React.FC<Props> = (props) => {
         <View style={styles.item}>
             <View style={{ flexDirection: "row" }}>
                 <View style={{ flex: 4 }}>
-                {/* {props.locationProvider} */}
                     <Text style={styles.title}>{props.locationProvider.serviceType}</Text>
                 </View>
                 <View style={{ flex: 1, marginTop: 10 }}>
