@@ -10,17 +10,16 @@ import {
 import { FirebaseController } from "../../firebase/FirebaseController";
 import { User } from "../../interfaces/User";
 import styles from "./styles";
-import { Card } from "react-native-elements";
+import { Card, Icon } from "react-native-elements";
 import { NotificationType } from "../../interfaces/Notification";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { HomeDrawerParamList } from "../../types";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../../Controllers/notificationsController";
-// This import takes up a lot of space, try to be more specific on imports if possible
+
 import moment from "moment";
 
 Notifications.setNotificationHandler({
-  // TODO: What is the point of async here?
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
@@ -28,7 +27,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// borderRadius={15}
 export default function HomeScreen(
   props: DrawerScreenProps<HomeDrawerParamList, "Home">
 ) {
@@ -109,22 +107,6 @@ export default function HomeScreen(
 
   const notificationListener = useRef();
   const responseListener = useRef();
-  //State Variables //////////
-  // const [userNotifications, setUserNotifications] = useState<
-  //   NotificationType[]
-  // >();
-
-  // useEffect(() => {
-  //   const getinfo = async () => {
-  //     const data: any = await getCurrentUserInfo();
-  //     if (data.notifications) setUserNotifications(data.notifications);
-  //     else setUserNotifications([]);
-
-  //     return data;
-  //   };
-  //   getinfo();
-  // }, []);
-  //////////////////////////
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
@@ -156,9 +138,7 @@ export default function HomeScreen(
         ) {
           props.navigation.navigate("Medication", { user });
         }
-        if (
-          response.notification.request.content.data.data === "Vault"
-        ) {
+        if (response.notification.request.content.data.data === "Vault") {
           props.navigation.navigate("Vault", { user });
         }
         // console.log(response);
@@ -176,9 +156,8 @@ export default function HomeScreen(
   }, []);
   const user: User = props.route.params.user;
 
-  // TODO: Stop using var
-  var testDate = new Date();
-  var notificationList: NotificationType[] = [];
+  let testDate = new Date();
+  let notificationList: NotificationType[] = [];
 
   // TODO: What if notification is null?
   const userNotifications: NotificationType[] = user.notifications;

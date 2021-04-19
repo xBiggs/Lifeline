@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, View, Text, TextInput } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import useFormal from "@kevinwolf/formal-native";
@@ -23,6 +23,7 @@ export default function PersonalInfoScreen(
   const user = props.route.params.user;
   const buttonsGender = ["Male", "Female", "Other"];
 
+  //Create  local medical Info for update.
   var tempPersonalInfo: PersInfo = {
     age: "",
     race: "",
@@ -43,6 +44,7 @@ export default function PersonalInfoScreen(
   if (user.medInfo) tempMedicalInfo = user.medInfo;
   if (user.personalInfo) tempPersonalInfo = user.personalInfo;
 
+  //Radio Button Initialization
   let initialValue = 0;
   switch (tempPersonalInfo.gender.toLowerCase()) {
     case "male":
@@ -55,6 +57,7 @@ export default function PersonalInfoScreen(
       initialValue = 2;
   }
 
+  //Formal Verification
   const [gender, setRadio] = useState(initialValue);
   const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
   const schema = yup.object().shape({
@@ -69,18 +72,20 @@ export default function PersonalInfoScreen(
       .required(),
   });
 
+  //Formal Initializers
   const initialValues = {
     age: tempPersonalInfo.age,
     religion: tempPersonalInfo.religion,
     diagnose: tempMedicalInfo.diagnose.join(", "),
-
     familyMedicalHistory: tempMedicalInfo.familyMedicalHistory.join(", "),
     phone: tempPersonalInfo.phone,
   };
 
-  const handleRadioInput = (e: React.SetStateAction<undefined>) => {
+  const handleRadioInput = (e: any) => {
     setRadio(e);
   };
+
+  //List Setters
 
   const changeRace = (e: React.SetStateAction<string>) => {
     setRace(e);
@@ -95,10 +100,10 @@ export default function PersonalInfoScreen(
     setSexualOrientation(e);
     setIsVisibleSexualOrientation(false);
   };
-
+  //Formal submission
   const formal = useFormal(initialValues, {
     schema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       tempPersonalInfo.age = values.age;
       tempPersonalInfo.gender = buttonsGender[gender];
       tempPersonalInfo.militaryStatus = militaryStatus;
@@ -119,12 +124,14 @@ export default function PersonalInfoScreen(
       user.medInfo = tempMedicalInfo;
       user.personalInfo = tempPersonalInfo;
 
-      AddUserData(user);
+      await AddUserData(user);
       Alert.alert("Thank You!");
-      props.navigation.goBack();
+      // props.navigation.goBack();
+      //Implement use effect navigation
     },
   });
 
+  //State Variables
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleSexualOrientation, setIsVisibleSexualOrientation] = useState(
     false
@@ -138,6 +145,7 @@ export default function PersonalInfoScreen(
     tempPersonalInfo.militaryStatus
   );
 
+  //Races Option
   const list = [
     { title: "White", onPress: () => changeRace("White") },
     { title: "Black", onPress: () => changeRace("Black") },
@@ -153,6 +161,8 @@ export default function PersonalInfoScreen(
       onPress: () => setIsVisible(false),
     },
   ];
+
+  //Sexual Orientation Options
   const listSexualOrientation = [
     {
       title: "Heterosexual",
@@ -173,6 +183,8 @@ export default function PersonalInfoScreen(
       onPress: () => setIsVisibleSexualOrientation(false),
     },
   ];
+
+  //Military Status List
   const listMilitaryStatus = [
     {
       title: "Not Indicated",
@@ -215,6 +227,11 @@ export default function PersonalInfoScreen(
       onPress: () => setIsVisibleSexualOrientation(false),
     },
   ];
+
+  //Use Effect for Navigation
+  useEffect(() => {
+    if (formal.isSubmitted) props.navigation.goBack();
+  }, [formal.isSubmitted]);
 
   return (
     <KeyboardAwareScrollView>

@@ -66,8 +66,6 @@ export async function AddNotification(user: User, data: NotificationType) { //  
         }
         user.notifications.push(data);
 
-
-
         await firebase.firestore().collection('users').doc(user.id).update("notifications", user.notifications);
     } catch (err) {
         throw (err as Error).message;

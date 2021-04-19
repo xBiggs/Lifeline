@@ -21,14 +21,9 @@ import VaultStackNavigator from "./VaultStackNavigator";
  */
 const Drawer = createDrawerNavigator<HomeDrawerParamList>();
 
-
 export default (props: StackScreenProps<UserStackParamList, "Home">) => {
   // Keyboard.dismiss();
   const user = props.route.params.user;
-
-
-
-
 
   return (
     <Drawer.Navigator
@@ -36,8 +31,8 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         <HomeDrawer drawerProps={props} user={user}></HomeDrawer>
       )}
       screenOptions={{
-        headerShown:true,
-        unmountOnBlur:true
+        headerShown: true,
+        unmountOnBlur: true,
       }}
     >
       <Drawer.Screen
@@ -72,14 +67,9 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         initialParams={{ user }}
         component={DailyConversationsScreen}
       ></Drawer.Screen>
-      
+
       <Drawer.Screen name="Settings" component={SettingsScreen}></Drawer.Screen>
-      <Drawer.Screen
-        name="Medical_Information"
-        options={{ title: "Medical Information" }}
-        initialParams={{ user }}
-        component={MedicalInfoScreen}
-      ></Drawer.Screen>
+
       <Drawer.Screen
         name="Medication"
         initialParams={{ user }}

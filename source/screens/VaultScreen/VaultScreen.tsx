@@ -230,10 +230,10 @@ export default function Vault(
             }}
             onPress={() => {
               //
-            setIsMediaVisible(false)
-            setIsMusicVisible(false)
-            setIsQuotesVisible(false)
-
+              fadeIn();
+              setIsMediaVisible(true);
+              setIsMusicVisible(true);
+              setIsQuotesVisible(true);
 
               props.navigation.navigate("Manage", {
                 user: props.route.params.user,

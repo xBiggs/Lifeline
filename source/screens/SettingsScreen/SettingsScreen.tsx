@@ -13,6 +13,82 @@ import { AddUserData } from "../../firebase/UserDataHandler";
 import { HomeDrawerParamList } from "../../types";
 import styles from "../MedicalInfoScreen/styles";
 
+export async function resetNotifications(user: any) {
+  cancelNotifications();
+  updateNotifications(user);
+  AddUserData(user);
+}
+
+async function updateNotifications(user: any) {
+  user.medInfo?.medication.forEach((med: any) => {
+    scheduleRecurringPushNotification(
+      "Medication Alert",
+      "Need to take medication: " + med.name,
+      "MedicationScreen",
+      med.timeInBetween * 60
+    );
+    const today: Date = new Date();
+
+    const refill: Date = new Date(med.refillDate?.toString());
+    const secondsBetweenDates = getSecondsBetweenDates(today, refill);
+
+    schedulePushNotification(
+      "Medication Alert",
+      "Need to refill: " + med.name,
+      "MedicationScreen",
+      secondsBetweenDates
+    );
+  });
+  user.medInfo?.nextApointment?.forEach((appointment) => {
+    const today: Date = new Date();
+    const secondsBetweenDates = getSecondsBetweenDates(
+      today,
+      appointment.date.toDate()
+    );
+
+    schedulePushNotification(
+      "Apointment Alert",
+      "You have an upcoming appointment",
+      "click to view reason",
+      secondsBetweenDates - 86400
+    );
+  });
+
+  try {
+    // const today: Date = new Date();
+    // const tomorrow: Date = new Date(
+    //   today.setHours(today.getHours() + 24)
+    // );
+    await scheduleRecurringPushNotification(
+      "Daily Conversations Alert",
+      "Respond to daily conversations",
+      "DailyConversations",
+      60
+      //60*60*24
+      // getSecondsBetweenDates(today, tomorrow)
+    );
+  } catch (e) {
+    alert((e as Error).message);
+  }
+
+  try {
+    // const today: Date = new Date();
+    // const tomorrow: Date = new Date(
+    //   today.setHours(today.getHours() + 24*3)
+    // );
+    await scheduleRecurringPushNotification(
+      "Vault Alert",
+      "Check out the Vault!",
+      "Vault",
+      // 60*60*24*3
+      70
+      // getSecondsBetweenDates(today, tomorrow)
+    );
+  } catch (e) {
+    alert((e as Error).message);
+  }
+}
+
 export default function Settings(
   props: DrawerScreenProps<HomeDrawerParamList, "Home">
 ) {
@@ -34,73 +110,7 @@ export default function Settings(
   async function save() {
     if (!user.settings?.notificationsOn) cancelNotifications();
     else {
-      user.medInfo?.medication.forEach((med) => {
-        scheduleRecurringPushNotification(
-          "Medication Alert",
-          "Need to take medication: " + med.name,
-          "MedicationScreen",
-          med.timeInBetween * 60
-        );
-        const today: Date = new Date();
-
-        const refill: Date = new Date(med.refillDate?.toString());
-        const secondsBetweenDates = getSecondsBetweenDates(today, refill);
-
-        schedulePushNotification(
-          "Medication Alert",
-          "Need to refill: " + med.name,
-          "MedicationScreen",
-          secondsBetweenDates
-        );
-      });
-      user.medInfo?.nextApointment?.forEach((appointment) => {
-        const today: Date = new Date();
-        const secondsBetweenDates = getSecondsBetweenDates(
-          today,
-          appointment.date.toDate()
-        );
-
-        schedulePushNotification(
-          "Apointment Alert",
-          "You have an upcoming appointment",
-          "click to view reason",
-          secondsBetweenDates - 86400
-        );
-      });
-
-      try {
-        // const today: Date = new Date();
-        // const tomorrow: Date = new Date(
-        //   today.setHours(today.getHours() + 24)
-        // );
-        await scheduleRecurringPushNotification(
-          "Daily Conversations Alert",
-          "Respond to daily conversations",
-          "DailyConversations",
-          60
-          //60*60*24
-          // getSecondsBetweenDates(today, tomorrow)
-        );
-      } catch (e) {
-        alert((e as Error).message);
-      }
-
-      try {
-        // const today: Date = new Date();
-        // const tomorrow: Date = new Date(
-        //   today.setHours(today.getHours() + 24*3)
-        // );
-        await scheduleRecurringPushNotification(
-          "Vault Alert",
-          "Check out the Vault!",
-          "Vault",
-         // 60*60*24*3
-         70
-          // getSecondsBetweenDates(today, tomorrow)
-        );
-      } catch (e) {
-        alert((e as Error).message);
-      }
+      updateNotifications(user);
     }
     await AddUserData(user);
     saved = true;

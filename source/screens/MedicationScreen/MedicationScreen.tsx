@@ -25,6 +25,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   getSecondsBetweenDates,
+  registerForPushNotificationsAsync,
   schedulePushNotification,
   scheduleRecurringPushNotification,
 } from "../../Controllers/notificationsController";
@@ -33,22 +34,25 @@ import { ScrollView } from "react-native-gesture-handler";
 // TODO: These imports take up too much space. Try to be more specific with imports if possible
 import moment from "moment";
 import firebase from "firebase";
+import { resetNotifications } from "../SettingsScreen/SettingsScreen";
 
 export default function MedicationForm(
   props: DrawerScreenProps<HomeDrawerParamList, "Medication">
 ) {
   //STATE VARIABLES////////////////////////////
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
+
   const [show, setShow] = useState(false);
 
   let user = props.route.params.user;
 
   const [userNotifications, setUserNotifications] = useState<
     NotificationType[]
-  >(user.notifications);
+  >(user.notifications ? user.notifications : []);
 
-  const [info, setInfo] = useState<Medication[]>(user.medInfo.medication);
+  const [info, setInfo] = useState<Medication[]>(
+    user.medInfo ? user.medInfo.medication : []
+  );
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -94,8 +98,12 @@ export default function MedicationForm(
         return newArr;
       });
     }
-
+    if (user.notifications)
+      user.notifications = user.notifications?.filter((item) => {
+        return item.date.toDate().toString() != medication.refillDate;
+      });
     await FirebaseController.SetUserData(user);
+    await resetNotifications(user);
   };
   //FORM SUBMISSION
   const formal = useFormal(initialValues, {
@@ -106,10 +114,10 @@ export default function MedicationForm(
       var medication: Medication = {
         name: values.name,
         dose: values.dose,
-        numTimesDay: values.numTimesDay,
+        numTimesDay: Number(values.numTimesDay),
         usageInstructions: values.usageInstructions,
         refillDate: date.toString(),
-        timeInBetween: values.timeInBetween,
+        timeInBetween: Number(values.timeInBetween),
       };
       // TODO: Don't use keyword var, user keywords let or const instead
       var notification: NotificationType = {
@@ -138,27 +146,26 @@ export default function MedicationForm(
           "Medication Alert",
           "Need to take medication: " + values.name,
           "MedicationScreen",
-          values.timeInBetween * 60
+          Number(values.timeInBetween) * 60
         );
       }
 
-      if (user.medInfo) user.medInfo.medication.push(medication);
-      if (user.medInfo) AddMedicalData(user, user.medInfo);
-
       if (userNotifications) AddNotification(user, notification);
       setModalVisible(!modalVisible);
+
+      if (user.medInfo) user.medInfo.medication.push(medication);
+      if (user.medInfo) AddMedicalData(user, user.medInfo);
     },
   });
 
   //DATE OBJECT///////////
-  const onChange = (event: any, selectedDate: Date) => {
+  const onChange = (event: Event, selectedDate?: Date) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === "ios");
     setDate(currentDate);
   };
 
   const showMode = (currentMode: React.SetStateAction<string>) => {
-    setMode(currentMode);
     setShow(true);
   };
 
@@ -340,11 +347,9 @@ export default function MedicationForm(
                           }}
                           testID="dateTimePicker"
                           value={date}
-                          // FIXME: Error
-                          mode={mode}
+                          mode={"date"}
                           is24Hour={true}
                           display="calendar"
-                          //FIXME: Error
                           onChange={onChange}
                         />
                       )}
