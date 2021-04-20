@@ -16,24 +16,33 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
 
   const { width } = Dimensions.get("window");
 
+  // state variable used to save contacts from device
   const [contacts, setContacts] = useState<Contacts.Contact[]>();
+  // copy of contats for reseting after search box is cleared
   const [inMemoryContacts, setInMemoryContacts] = useState<Contacts.Contact[]>();
+  // activity indicator
   const [isLoading, setIsLoading] = useState(false);
-
+  // search box state variable
   const [searchTerm, setSearchTerm] = useState("");
 
+  // variable that toggles modal visibility
   const [isModalVisible, setModalVisible] = useState(false);
+  // modal fields
   const [fName, setFirstName] = useState("");
   const [lName, setLastName] = useState("");
   const [phoneNum, setPhoneNumber] = useState("");
 
+  // function that sets the visibility of the modal
   const toggleModalVisibility = () => {
     setModalVisible(!isModalVisible);
   };
 
+  // holds emergency contacts from firebase. this state prop is used to check is a contact already exist or not and to add new contact to user object
   const [firebaseContacts, setFirebaseContacs] = useState(user.emergencyContacts || []);
+  // state prop for holding demographic contacts
   const [contactSuggestions, setContactSuggestions] = useState<DemographicContacts[]>();
 
+  // getting contacts from device
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -58,6 +67,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     })();
   }, []);
 
+  // if firebaseContacts state changes, it updates user object and firebase
   useEffect(() => {
     (async () => {
       user.emergencyContacts = firebaseContacts;
@@ -66,6 +76,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
 
   }, [firebaseContacts]);
 
+  // filters contacts based on search term.
   useEffect(() => {
     (async () => {
       var filteredDeviceContacts = inMemoryContacts?.filter(
@@ -80,6 +91,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     })();
   }, [searchTerm]);
 
+  // gets all users from firebased and filters using the same sexual orientation
   useEffect(() => {
     (async () => {
       try {
@@ -104,6 +116,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     })();
   }, [])
 
+  // format phone number in the format (xxx) xxx-xxxx
   const formatPhoneNumber = (phone: string) => {
     var cleaned = ('' + phone).replace(/\D/g, '');
     var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
@@ -113,20 +126,23 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     return "";
   }
 
+  // adds contact to firebaseContacts state varialble
   const addContactToUser = (contact: ContactDetails) => {
     try {
+      if(contact.digits) contact.digits = formatPhoneNumber(contact.digits.toString());
+      // check if state variable is not empty.
       if (firebaseContacts) {
         let userExist = false;
-        firebaseContacts.forEach(ele => {
+        firebaseContacts.forEach(ele => { // check if the user already exist
           if (contact.digits == ele.digits) {
             userExist = true;
           }
         });
 
-        if (userExist) {
+        if (userExist) {  // alert if contact already exist
           alert("Contact already exist");
           return;
-        } else {
+        } else { // if not update the state variable
           var tmpContactList: ContactDetails[] = [];
           firebaseContacts.forEach(ele => {
             tmpContactList.push(ele);
@@ -134,7 +150,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
           tmpContactList.push(contact);
           setFirebaseContacs(tmpContactList);
         }
-      } else {
+      } else {  // check if state variable is empty.
         var tmpContactList: ContactDetails[] = [];
         tmpContactList.push(contact);
         setFirebaseContacs(tmpContactList);
@@ -144,6 +160,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     }
   }
 
+  // render the filtered demographic contacts
   const renderDemographicSuggestions = ({ item }: { item: DemographicContacts }) => (
     <View style={{ marginTop: 10, marginBottom: 10, marginLeft: 20, marginRight: 20 }}>
       <TouchableOpacity style={{
@@ -160,7 +177,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
               var contact: ContactDetails = {
                 firstName: item.firstName,
                 lastName: item.lastName,
-                digits: formatPhoneNumber(item.persInfo.phone),
+                digits: item.persInfo.phone,//formatPhoneNumber(item.persInfo.phone),
                 id: item.id
               }
               addContactToUser(contact);
@@ -181,6 +198,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     </View >
   );
 
+  // render device contacts
   const renderItem = ({ item }: { item: Contacts.Contact }) => (
     <View style={styles.renderItemView}>
       <Text style={styles.renderItemText}>
@@ -200,7 +218,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
               var contact: ContactDetails = {
                 firstName: item.firstName,
                 lastName: item.lastName,
-                digits: formatPhoneNumber(item.phoneNumbers[0].number + ""),// item.phoneNumbers[0].number + "",
+                digits: item.phoneNumbers[0].number + "", // formatPhoneNumber(item.phoneNumbers[0].number + ""),
                 id: item.id
               }
               addContactToUser(contact);
@@ -227,9 +245,8 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
     <View style={{ flex: 1, paddingBottom: 20 }}>
       <SafeAreaView style={{ marginTop: 10 }} />
 
+      {/* Modal for adding contacts manually */}
       <Button title="Add contact manually" onPress={toggleModalVisibility} />
-
-      {/** This is our modal component containing textinput and a button */}
       <Modal animationType="slide"
         transparent visible={isModalVisible}
         presentationStyle="overFullScreen"
@@ -301,16 +318,24 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
               toggleModalVisibility();
             }
             } />
+
+            {/** This button is responsible to adding the data to state variable */}
             <Button title="Add" onPress={() => {
 
+              // check if firstname and last name is empty
+              if(fName.length == 0 || phoneNum.length == 0){
+                alert("Fields must not be empty");
+                return;
+              }
+              // check if phone number has the correct type of values and length
               if (!Number(phoneNum) || phoneNum.length != 10) {
                 alert("Please check phone number:\n\t* Must be all number.\n\t* Must have 10 digits.");
                 return;
               }
 
-              const num = formatPhoneNumber(phoneNum);
-              setPhoneNumber(num);
-              // console.log(num);
+              // const num = formatPhoneNumber(phoneNum);
+              setPhoneNumber(formatPhoneNumber(phoneNum));
+              // create an id for the contact
               const tId = () => {
                 var S4 = function () {
                   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -322,43 +347,16 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
                 firstName: fName,
                 lastName: lName,
                 id: tId(),
-                digits: num
+                digits: phoneNum // num
               }
+              // add contact to state variable
+              addContactToUser(cont);
 
-              if (firebaseContacts) {
-                let userExist = false;
-                firebaseContacts.forEach(ele => {
-                  if (cont.digits == ele.digits) {
-                    userExist = true;
-                  }
-                });
-
-                if (userExist) {
-                  alert("Contact already exist");
-                  return;
-                } else {
-                  var tmpContactList: ContactDetails[] = [];
-                  firebaseContacts.forEach(ele => {
-                    tmpContactList.push(ele);
-                  });
-                  tmpContactList.push(cont);
-                  setFirebaseContacs(tmpContactList);
-                  toggleModalVisibility();
-                  setFirstName("");
-                  setLastName("");
-                  setPhoneNumber("");
-                  // props.navigation.navigate("EmergencyContact", { user });
-                }
-              } else {
-                var tmpContactList: ContactDetails[] = [];
-                tmpContactList.push(cont);
-                setFirebaseContacs(tmpContactList);
-                toggleModalVisibility();
-                setFirstName("");
-                setLastName("");
-                setPhoneNumber("");
-                // props.navigation.navigate("EmergencyContact", { user });
-              }
+              toggleModalVisibility(); // change the visibility to false
+              // clear the fields
+              setFirstName("");
+              setLastName("");
+              setPhoneNumber("");
 
             }} />
           </View>
@@ -380,7 +378,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'AccessDeviceC
           </View>
         ) : null}
         <FlatList
-          // data={this.state.contacts}
           data={contacts}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
