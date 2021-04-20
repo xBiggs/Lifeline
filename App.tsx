@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { firebase } from './source/firebase/config';
 import { User } from './source/interfaces/User';
 import { decode, encode } from 'base-64';
-import { ActivityIndicator, LogBox, View } from 'react-native';
+import { ActivityIndicator, LogBox, StatusBar, View } from 'react-native';
 import UserStackNavigator from './source/navigation/UserStackNavigator';
 import AuthStackNavigator from './source/navigation/AuthStackNavigator';
 import { FirebaseController } from './source/firebase/FirebaseController';
@@ -55,8 +55,13 @@ export default function App() {
     )
   }
   return (
-    <NavigationContainer>
+    <View style={{flex:1}}>
+      <StatusBar></StatusBar>
+      <NavigationContainer>
       { user? <UserStackNavigator user={user}></UserStackNavigator> : <AuthStackNavigator></AuthStackNavigator> }
     </NavigationContainer>
+
+    </View>
+    
   );
 }

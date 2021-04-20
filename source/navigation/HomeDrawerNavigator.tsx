@@ -1,19 +1,16 @@
 //AuthStackNavigator.tsx
 
-import MedicalInfoScreen from "../screens/MedicalInfoScreen/MedicalInfoScreen";
 import MedicationForm from "../screens/MedicationScreen/MedicationScreen";
-import React, { Props, useEffect, useState } from "react";
-import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
-import { HomeDrawerParamList, UserStackParamList } from "../types";
+import React, {  } from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { HomeDrawerParamList, LifeLineBlue, LifeLineDarkBlue, UserStackParamList } from "../types";
 import { AssessmentScreen, HomeScreen, PersonalInfoScreen } from "../screens";
 import { StackScreenProps } from "@react-navigation/stack";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
-import VaultScreen from "../screens/VaultScreen/VaultScreen";
 import DailyConversationsScreen from "../screens/DailyConversationsScreen/DailyConversationsScreen";
 import SafetyPlanStackNavigator from "./SafetyPlanStackNavigator";
 import AppointmentsScreen from "../screens/AppointmentsScreen/AppointmentsScreen";
 import HomeDrawer from "./HomeDrawer";
-import ManageVaultItems from "../screens/VaultScreen/components/ManageVaultItems";
 import VaultStackNavigator from "./VaultStackNavigator";
 
 /**
@@ -33,6 +30,12 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
       screenOptions={{
         headerShown: true,
         unmountOnBlur: true,
+        headerTintColor:'white',
+        headerTitleAlign:'center',
+        headerStyle:{
+          backgroundColor:'black',
+          
+        }
       }}
     >
       <Drawer.Screen

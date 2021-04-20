@@ -10,8 +10,6 @@ import {
   View,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Screens } from "..";
-import { getSecondsBetweenDates, schedulePushNotification, scheduleRecurringPushNotification } from "../../Controllers/notificationsController";
 import { FirebaseController } from "../../firebase/FirebaseController";
 import { User } from "../../interfaces/User";
 import { AuthStackParamList } from "../../types";
@@ -20,6 +18,8 @@ import styles from "./styles";
 export default function SignupScreen(
   props: StackScreenProps<AuthStackParamList, "Signup">
 ) {
+
+  // FIELDS TO HOLD STATE
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,6 +28,8 @@ export default function SignupScreen(
   const [error,setError]=useState("");
   const [loading, setLoading] = useState(false);
 
+  // FUNCTIONS TO ACT ON SCREEN
+
   const onFooterLinkPress = () => {
     props.navigation.navigate("Login");
   };
@@ -35,10 +37,16 @@ export default function SignupScreen(
   const onRegisterPress = async () => {
     setLoading(true);
 
+  const validate = ()=>{
+    validateName(firstName)
+    validateName(lastName)
+    validatePassword(password)
+    validatePasswordsMatch(password,confirmPassword);
+  }
+
     try {
-      validateFirstName(firstName)
-      validateLastName(lastName)
-      validatePasswords(password,confirmPassword);
+
+      validate();
       const user: User = await FirebaseController.SignUp(
         firstName,
         lastName,
@@ -48,11 +56,14 @@ export default function SignupScreen(
       await FirebaseController.SetUserData(user);
       await FirebaseController.Login(email, password);
     } catch (error) {
-      console.log(error);
-      setError((error as Error).message);
+      const message = (error as Error).message;
+      if(message) setError(message);
+      else setError("Cannot signup at this time, please try again");
       setLoading(false);
     }
   };
+
+  // RENDER COMPONENT
 
   return (
     <View style={styles.container}>
@@ -135,15 +146,21 @@ export default function SignupScreen(
     </View>
   );
 }
-function validateFirstName(firstName: string) {
-  if(firstName.trim().length==0) throw {message:"First Name cannot be empty"};
-}
-function validateLastName(lastName:string)
-{
-  if(lastName.trim().length==0) throw {message:"First Name cannot be empty"};
+
+// 
+
+const validateName = (name:string)=>{
+  if(name.trim().length==0) throw new Error("Name cannot be empty");
 }
 
-function validatePasswords(password: string, confirmPassword: string) {
-  if(password !== confirmPassword) throw {message:'Passwords do not match, please try again'}
+const validatePassword = (password:string) =>
+{
+  if(password.trim().length == 0) throw new Error("Password cannot be empty");
+  else if(password.trim().length <6) throw new Error("Password must be 6 or more characters");
+}
+
+
+function validatePasswordsMatch(password: string, confirmPassword: string) {
+  if(password !== confirmPassword) throw new Error ("Password and Confirm Password must match");
 }
 
