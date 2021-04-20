@@ -94,7 +94,7 @@ export default function WarningSignsScreen(
   };
 
   return (
-      <View style={{ padding: 30, backgroundColor: "#219ebc" }}>
+      <View style={{ padding: 30, backgroundColor: "#219ebc",flexGrow:1 }}>
         <TextInput
           onChangeText={onChangeText}
           value={text}

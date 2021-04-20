@@ -54,7 +54,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
         component={PersonalInfoScreen}
       ></Drawer.Screen>
       <Drawer.Screen
-        options={{ title: "Safety Plan" }}
+        options={{ title: "Safety Plan",}}
         name="SafetyPlan"
         initialParams={{ user }}
         component={SafetyPlanStackNavigator}

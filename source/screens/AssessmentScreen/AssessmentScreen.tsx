@@ -1,13 +1,12 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import firebase from "firebase";
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { Text } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   getSecondsBetweenDates,
   schedulePushNotification,
-  scheduleRecurringPushNotification,
 } from "../../Controllers/notificationsController";
 import { AddNotification, AddUserData } from "../../firebase/UserDataHandler";
 import { NotificationType } from "../../interfaces/Notification";
@@ -16,7 +15,7 @@ import {
   QuestionResponse,
   riskFactorQuestions,
 } from "../../interfaces/QuestionResponse";
-import { HomeDrawerParamList } from "../../types";
+import { HomeDrawerParamList, LifeLineBlue, LifeLineDarkBlue } from "../../types";
 import styles from "./styles";
 
 const NUM_RISK_FACTOR_QUESTIONS = riskFactorQuestions.length;
@@ -29,11 +28,11 @@ const RiskFactorQuestionComponent = (
   setQuestionNum: React.Dispatch<React.SetStateAction<number>>
 ) => {
   return (
-    <View style={styles.container} key={questionResponse.question}>
+    <View style={style.container} key={questionResponse.question}>
       <Text style={styles.buttonTitle}>{questionResponse.question}</Text>
       {questionResponse.choices.map((choice) => (
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button,{alignSelf:'center',backgroundColor:LifeLineBlue,}]}
           key={questionResponse.response + choice}
           onPress={() => {
             questionResponse.response = choice;
@@ -46,7 +45,7 @@ const RiskFactorQuestionComponent = (
             console.log(questionNum);
           }}
         >
-          <Text style={styles.buttonLabel}>{choice}</Text>
+          <Text style={[styles.buttonLabel,{color:'white'}]}>{choice}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -59,27 +58,26 @@ const MitigatingFactorQuestionComponent = (
   setQuestionNum: React.Dispatch<React.SetStateAction<number>>
 ) => {
   return (
-    <View style={styles.container} key={questionResponse.question}>
-      <Text style={styles.buttonTitle}>{questionResponse.question}</Text>
-      {questionResponse.choices.map((choice) => (
-        <TouchableOpacity
-          style={styles.button}
-          key={questionResponse.response + choice}
-          onPress={() => {
-            questionResponse.response = choice;
-            setQuestionNum(
-              questionNum + 1 ==
-                NUM_MITIGATING_FACTOR_QUESTIONS + NUM_RISK_FACTOR_QUESTIONS
-                ? questionNum + 1
-                : questionNum + 1
-            );
-            //  console.log(questionNum);
-          }}
-        >
-          <Text style={styles.buttonLabel}>{choice}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <View style={[style.container,{backgroundColor:LifeLineBlue}]} key={questionResponse.question}>
+    <Text style={styles.buttonTitle}>{questionResponse.question}</Text>
+    {questionResponse.choices.map((choice) => (
+      <TouchableOpacity
+        style={[styles.button,{alignSelf:'center',backgroundColor:LifeLineDarkBlue,}]}
+        key={questionResponse.response + choice}
+        onPress={() => {
+          questionResponse.response = choice;
+          setQuestionNum(
+            questionNum + 1 ==
+              NUM_RISK_FACTOR_QUESTIONS + NUM_MITIGATING_FACTOR_QUESTIONS
+              ? questionNum + 1
+              : questionNum + 1
+          );
+        }}
+      >
+        <Text style={[styles.buttonLabel,{color:'white'}]}>{choice}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
   );
 };
 
@@ -102,7 +100,7 @@ export default (
   const AllQuestionComponents = RiskFactorQuestionComponents.concat(
     MitigatingFactorQuestionComponents
   );
-  console.log(AllQuestionComponents.length);
+  
 
   const CurrentQuestion = AllQuestionComponents[questionNum];
 
@@ -144,9 +142,20 @@ export default (
 
           user.riskFactors = riskFactorQuestions;
           user.mitigatingFactors = mitigatingFactorQuestions;
-          AddUserData(user);
-          alert("Thank You!");
-          props.navigation.goBack();
+          (async()=>{await AddUserData(user);})();
+          Alert.alert("Thank You",
+          "Thank you for taking the Assessment!",
+          [
+            {
+              text:'Go Home',
+              onPress:()=>{ props.navigation.navigate('Home',{user});},
+              style:'default'
+            }
+          ]
+            
+            
+          )
+        
         } catch (err) {
           alert((err as Error).message);
         }
@@ -154,5 +163,14 @@ export default (
     })();
   });
 
-  return <View style={styles.container}>{CurrentQuestion}</View>;
+  return <View style={style.container}>{CurrentQuestion}</View>;
 };
+
+
+const style = StyleSheet.create({
+  container:{
+    justifyContent:'center',
+    flex:1,
+    backgroundColor:LifeLineDarkBlue
+  }
+})

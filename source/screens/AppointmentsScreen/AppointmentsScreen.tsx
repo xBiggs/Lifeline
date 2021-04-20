@@ -169,8 +169,8 @@ export default function AppointmentScreen(
   });
 
   return (
-    <KeyboardAwareScrollView>
-      <View style={{ backgroundColor: "#219ebc" }}>
+    <KeyboardAwareScrollView contentContainerStyle={{flexGrow:1}}>
+      <View style={{ backgroundColor: "#219ebc",flexGrow:1}}>
         {info
           ? info.map((l, i) => (
               <ListItem key={i * Math.random()} bottomDivider>
