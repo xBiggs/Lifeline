@@ -59,7 +59,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
         (async () => {
             user.emergencyProviders = servicesList;
             await AddUserData(user);
-
         })();
     }, [servicesList]);
 
@@ -114,7 +113,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                     return;
                                 }
                                 if (_phone.length !== 10) { // checks if the phone number has 10 digits to satisfy formating requirements mentioned above
-                                    console.log(_phone)
                                     alert("Phone number should be exactly 10 digits.");
                                     return;
                                 }
@@ -126,7 +124,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
 
                                 // formats the service provider to make the first character of the string upper cased for visual pleasing purposes
                                 const service = _serviceType.charAt(0).toUpperCase() + _serviceType.slice(1);
-                                
+
                                 // creating an interface object with the user input data
                                 let provider: EmergencyLocationProvider = {
                                     name: _name,
@@ -157,14 +155,12 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                     nList.push(provider);
                                     setServiceList(nList);
                                 }
-
                                 // clear the text input fields
                                 setServiceType("");
                                 setName("");
                                 setPhone("");
                                 setPhysicianName("");
                                 setVicinity("");
-
                             } catch (err) {
                                 throw (err as Error).message;
                             }
@@ -189,9 +185,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyLoca
                                 return <EmergencyLocationCard key={servicesList.indexOf(ele)}
                                     locationProvider={ele}
                                     onPressTrash={() => {
-                                        // console.log("BEFORE DELETING", user.emergencyProviders);
                                         removeProvider(ele);
-                                        // console.log("AFTER DELETING", user.emergencyProviders);
                                     }}
                                 />
                             })}

@@ -20,7 +20,7 @@ const EmergencyLocationCard: React.FC<Props> = (props) => {
                 <View style={{ flex: 4 }}>
                     <Text style={styles.title}>{props.locationProvider.serviceType}</Text>
                 </View>
-                <View style={{ flex: 1, marginTop: 10 }}>
+                <View style={{ flex: 1 }}>
                     <TouchableOpacity onPress={props.onPressTrash}>
                         <FontAwesomeIcon size={25} icon={faTrash}></FontAwesomeIcon>
                     </TouchableOpacity>
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     item: {
         backgroundColor: "#FB8500",
         padding: 15,
-        marginVertical: 5,
-        marginHorizontal: 5,
+        marginVertical: 10,
+        marginHorizontal: 10,
         borderRadius: 20,
         flex: 1,
     },

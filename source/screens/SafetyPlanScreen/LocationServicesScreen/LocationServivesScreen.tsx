@@ -14,6 +14,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
     const [location, setLocation] = useState<{ coords: { latitude: number, longitude: number } }>();
     const [errorMsg, setErrorMsg] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
+    const [search, setSearch] = useState("");
     const [searchData, setSearchData] = useState<{ results: any[] }>({ results: [] });
     const [latAndLong, setLatAndLong] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -147,7 +148,6 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'LocationServi
                             const json = await result.json(); // convert result to a json object
                             setSearchData(json); // set the search data to the json object
                             setIsLoading(false); // stop rendering the activity indicator
-                            // console.log(searchData.results);
                             setSearchTerm(""); // set the searchTerm to empty to clear the text input
                         }}
                 >

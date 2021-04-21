@@ -8,11 +8,13 @@ import { ContactDetails } from "../../../interfaces/ContactDetails";
 import _ from 'lodash';
 import * as WebBrowser from 'expo-web-browser';
 import { useFocusEffect } from '@react-navigation/native';
+import EmergencyContactCard from "./EmergencyContactCard";
+import { AddUserData } from '../../../firebase/UserDataHandler';
 
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
     const { user } = props.route.params
-    // state variable that holds emergency contacts
+
     const [contactsData, setContactsData] = useState(user.emergencyContacts || []);
 
     // renders emergency contacts when updated
@@ -29,6 +31,29 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
         }, [user.emergencyContacts])
     );
 
+    const deleteContact = async (item: ContactDetails): Promise<void> => {
+
+        try {
+            if (contactsData) {
+                const filteredList: ContactDetails[] = contactsData.filter(
+                    (ele) => ele.digits !== item.digits
+                );
+                user.emergencyContacts = filteredList;
+                setContactsData(filteredList);
+            }
+        } catch (err) {
+            let er = (err as Error).message;
+            alert(err);
+        }
+    };
+
+    useEffect(() => {
+        (async () => {
+            user.emergencyContacts = contactsData;
+            await AddUserData(user);
+        })();
+    }, [contactsData])
+
     // Dials the number (passed in as argument) on device's dial pad
     const dialNumber = (num: string) => {
         let phoneNumber = '';
@@ -41,117 +66,96 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyCont
         Linking.openURL(phoneNumber); // opens the dial pad with passed in url
     };
 
-    // renders emergency contact
-    const renderItem = ({ item }: { item: ContactDetails }) => (
-        <View style={{ marginTop: 10, marginLeft: 20, marginRight: 20 }}>
-            <TouchableOpacity style={{
-                alignItems: 'center', justifyContent: 'center',
-                backgroundColor: '#51a4e8', height: 50,
-                borderRadius: 15, width: 300,
-                marginTop: 5, marginBottom: 15, marginLeft: 40
-            }}
-                onPress={() => { // on user press event it calls dialNumber function
-                    if (item.digits) { // checks if this contact has a number or is undefined
-                        dialNumber(item.digits + '');
-                    }
-                    else { // unlikely event of the user does not have a number or is undefined, it displays an alert
-                        alert("This person has no number");
-                    }
-                }}
-            >
-                <Text style={{ fontSize: 20 }}>Call {item.firstName} {item.lastName}</Text>
-            </TouchableOpacity>
-        </View >
-    );
-
     return (
-        <View>
-            {/* Call sthe form which access device's contacts */}
-            <TouchableOpacity
-                style={{
-                    alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: '#f2f2f2', height: 50, width: 500,
-                    borderRadius: 50, marginLeft: 130
-                }}
-                onPress={() => {
-                    props.navigation.navigate("AccessDeviceContacts", { user });
-                }}
-            >
-                <Text
+        <ScrollView>
+            <View>
+                {/* Call sthe form which access device's contacts */}
+                <TouchableOpacity
                     style={{
-                        justifyContent: 'center', alignItems: 'center',
-                        marginBottom: 2, marginLeft: 1,
-                        color: 'blue', fontSize: 35
+                        alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: '#f2f2f2', height: 50, width: 500,
+                        borderRadius: 50, marginLeft: 130
+                    }}
+                    onPress={() => {
+                        props.navigation.navigate("AccessDeviceContacts", { user });
                     }}
                 >
-                    +
-                </Text>
-
-            </TouchableOpacity>
-
-
-            <TouchableOpacity style={{
-                alignItems: 'center', justifyContent: 'center',
-                backgroundColor: '#e64c4c', height: 30,
-                borderRadius: 15, width: 200,
-                marginTop: 5, marginBottom: 10, marginLeft: 110
-            }}
-                onPress={() => {
-                    dialNumber("911");
-                }}
-            >
-                <Text style={{ fontSize: 20 }}>Call 911</Text>
-            </TouchableOpacity>
-            <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
-
-            <TouchableOpacity style={{
-                alignItems: 'center', justifyContent: 'center',
-                backgroundColor: '#e64c4c', height: 30,
-                borderRadius: 15, width: 200,
-                marginTop: 5, marginBottom: 10, marginLeft: 110
-            }}
-                onPress={() => {
-                    dialNumber("(888) 843-4564");
-                }}
-            >
-                <Text style={{ fontSize: 20 }}>LGBT National Hotline</Text>
-            </TouchableOpacity>
-            <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
-
-            <TouchableOpacity style={{
-                alignItems: 'center', justifyContent: 'center',
-                backgroundColor: '#e64c4c', height: 30,
-                borderRadius: 15, width: 200,
-                marginTop: 5, marginBottom: 10, marginLeft: 110
-            }}
-                onPress={async () => {
-                    await WebBrowser.openBrowserAsync('https://rainbowmobile.org/community-resources/hotlines/');
-                }}
-            >
-                <Text style={{ fontSize: 20 }}>Other hotline</Text>
-            </TouchableOpacity>
-            <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
-
-            <FlatList
-                data={contactsData}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-                ListEmptyComponent={() => (
-                    <View
+                    <Text
                         style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginTop: 50
+                            justifyContent: 'center', alignItems: 'center',
+                            marginBottom: 2, marginLeft: 1,
+                            color: 'blue', fontSize: 35
                         }}
                     >
-                        <Text style={{ color: 'blue' }}>No Contacts Found</Text>
-                    </View>
+                        +
+                    </Text>
 
-                )}
-            />
-        </View>
+                </TouchableOpacity>
 
+
+                <TouchableOpacity style={{
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: '#e64c4c', height: 30,
+                    borderRadius: 15, width: 200,
+                    marginTop: 5, marginBottom: 10, marginLeft: 110
+                }}
+                    onPress={() => {
+                        dialNumber("911");
+                    }}
+                >
+                    <Text style={{ fontSize: 20 }}>Call 911</Text>
+                </TouchableOpacity>
+                <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
+
+                <TouchableOpacity style={{
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: '#e64c4c', height: 30,
+                    borderRadius: 15, width: 200,
+                    marginTop: 5, marginBottom: 10, marginLeft: 110
+                }}
+                    onPress={() => {
+                        dialNumber("(888) 843-4564");
+                    }}
+                >
+                    <Text style={{ fontSize: 20 }}>LGBT National Hotline</Text>
+                </TouchableOpacity>
+                <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10 }} />
+
+                <TouchableOpacity style={{
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: '#e64c4c', height: 30,
+                    borderRadius: 15, width: 200,
+                    marginTop: 5, marginBottom: 10, marginLeft: 110
+                }}
+                    onPress={async () => {
+                        await WebBrowser.openBrowserAsync('https://rainbowmobile.org/community-resources/hotlines/');
+                    }}
+                >
+                    <Text style={{ fontSize: 20 }}>Other hotline</Text>
+                </TouchableOpacity>
+
+                <View style={{ borderWidth: 0.7, borderColor: 'black', margin: 10, flex: 1 }} />
+
+                {
+                    contactsData.length == 0 ? <></> :
+                        <>
+                            {contactsData.map(ele => {
+                                return <EmergencyContactCard key={contactsData.indexOf(ele)}
+                                    emergencyContact={ele}
+                                    onPressDelete={()=>{
+                                        if(ele.digits) { deleteContact(ele)}
+                                    }}
+                                    onPressCall={() => {
+                                        if (ele.digits) { dialNumber(ele.digits.toString()); }
+                                    }}
+                                />
+                            })}
+
+
+                        </>
+                }
+            </View>
+        </ScrollView>
     )
 
 }
