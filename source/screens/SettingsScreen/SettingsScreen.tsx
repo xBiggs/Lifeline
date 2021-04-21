@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/core";
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Switch, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-elements";
 import {
@@ -10,17 +10,18 @@ import {
   scheduleRecurringPushNotification,
 } from "../../Controllers/notificationsController";
 import { AddUserData } from "../../firebase/UserDataHandler";
+import { Medication, MedicationInfo } from "../../interfaces/MedicalInfo";
+import { User } from "../../interfaces/User";
 import { HomeDrawerParamList } from "../../types";
-import styles from "../MedicalInfoScreen/styles";
 
-export async function resetNotifications(user: any) {
+export async function resetNotifications(user: User) {
   cancelNotifications();
   updateNotifications(user);
   AddUserData(user);
 }
 
-async function updateNotifications(user: any) {
-  user.medInfo?.medication.forEach((med: any) => {
+async function updateNotifications(user: User) {
+  user.medInfo?.medication.forEach(async(med: Medication) => {
     scheduleRecurringPushNotification(
       "Medication Alert",
       "Need to take medication: " + med.name,
@@ -29,24 +30,25 @@ async function updateNotifications(user: any) {
     );
     const today: Date = new Date();
 
-    const refill: Date = new Date(med.refillDate?.toString());
+
+    const refill: Date = new Date(med.refillDate);
     const secondsBetweenDates = getSecondsBetweenDates(today, refill);
 
-    schedulePushNotification(
+    await schedulePushNotification(
       "Medication Alert",
       "Need to refill: " + med.name,
       "MedicationScreen",
       secondsBetweenDates
     );
   });
-  user.medInfo?.nextApointment?.forEach((appointment) => {
+  user.medInfo?.nextApointment?.forEach(async(appointment) => {
     const today: Date = new Date();
     const secondsBetweenDates = getSecondsBetweenDates(
       today,
       appointment.date.toDate()
     );
 
-    schedulePushNotification(
+    await schedulePushNotification(
       "Apointment Alert",
       "You have an upcoming appointment",
       "click to view reason",
@@ -55,34 +57,31 @@ async function updateNotifications(user: any) {
   });
 
   try {
-    // const today: Date = new Date();
-    // const tomorrow: Date = new Date(
-    //   today.setHours(today.getHours() + 24)
-    // );
+    const today: Date = new Date();
+    const tomorrow: Date = new Date();
+    tomorrow.setDate(today.getDate() + 1)
     await scheduleRecurringPushNotification(
       "Daily Conversations Alert",
       "Respond to daily conversations",
       "DailyConversations",
-      60
-      //60*60*24
-      // getSecondsBetweenDates(today, tomorrow)
+
+
+      getSecondsBetweenDates(today, tomorrow)
     );
   } catch (e) {
     alert((e as Error).message);
   }
 
   try {
-    // const today: Date = new Date();
-    // const tomorrow: Date = new Date(
-    //   today.setHours(today.getHours() + 24*3)
-    // );
+    const today: Date = new Date();
+    const tomorrow: Date = new Date();
+    tomorrow.setDate(today.getDate() + 3);
+
     await scheduleRecurringPushNotification(
       "Vault Alert",
       "Check out the Vault!",
       "Vault",
-      // 60*60*24*3
-      70
-      // getSecondsBetweenDates(today, tomorrow)
+      getSecondsBetweenDates(today, tomorrow)
     );
   } catch (e) {
     alert((e as Error).message);

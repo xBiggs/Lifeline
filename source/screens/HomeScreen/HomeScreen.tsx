@@ -102,58 +102,7 @@ export default function HomeScreen(
     );
 
   // TODO: Variables are never used
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
-
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      // FIXME: ERROR
-      setExpoPushToken(token)
-    );
-
-    // This listener is fired whenever a notification is received while the app is foregrounded
-    // FIXME: ERROR
-    notificationListener.current = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        // FIXME: ERROR
-        setNotification(notification);
-      }
-    );
-
-    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    // FIXME: ERROR
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        if (
-          response.notification.request.content.data.data ===
-          "DailyConversations"
-        ) {
-          props.navigation.navigate("DailyConversations", { user });
-        }
-        if (
-          response.notification.request.content.data.data === "MedicationScreen"
-        ) {
-          props.navigation.navigate("Medication", { user });
-        }
-        if (response.notification.request.content.data.data === "Vault") {
-          props.navigation.navigate("Vault", { user });
-        }
-        // console.log(response);
-      }
-    );
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        // FIXME: ERROR
-        notificationListener.current
-      );
-      // FIXME: ERROR
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+  
   const user: User = props.route.params.user;
 
   let testDate = new Date();
@@ -232,8 +181,7 @@ export default function HomeScreen(
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={async () => {
-                    // FIXME: Error
+                  onPress={ () => {
                     props.navigation.navigate(l.actionScreen, {
                       user,
                     });

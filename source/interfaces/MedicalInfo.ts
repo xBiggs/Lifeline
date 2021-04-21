@@ -10,7 +10,7 @@ export interface Medication{
     dose: string; // ex: can be milligrams or milliliter
     numTimesDay: number;
     usageInstructions: string;
-    refillDate?: string; // Date;
+    refillDate: string; // Date;
     timeInBetween:number;
 }
 export interface Apointment{

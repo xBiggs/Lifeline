@@ -2,5 +2,5 @@
 
 
 export interface SettingsType{
-    notificationsOn:Boolean,
+    notificationsOn:boolean,
 }

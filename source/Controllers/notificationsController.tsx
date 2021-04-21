@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
+import { TouchableWithoutFeedbackComponent } from "react-native";
 import { Platform } from "react-native";
 
 // TODO: Make this a class with static methods for Facade design pattern
@@ -69,25 +70,32 @@ export function getSecondsBetweenDates(t1: Date, t2: Date) {
   var Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
   return Seconds_Between_Dates;
 }
-export async function registerForPushNotificationsAsync() {
-  let token;
+export async function registerForPushNotificationsAsync():Promise<string> {
+  let token: string|undefined;
+
   if (Constants.isDevice) {
     const {
       status: existingStatus,
     } = await Notifications.getPermissionsAsync();
+
+
     let finalStatus = existingStatus;
     if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
+
+
     if (finalStatus !== "granted") {
       alert("Failed to get push token for push notification!");
-      return;
+      token = undefined;
+      
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
-  }
 
+  token = (await Notifications.getExpoPushTokenAsync()).data;
+  
+ 
+  }
   if (Platform.OS === "android") {
     Notifications.setNotificationChannelAsync("default", {
       name: "default",
@@ -96,6 +104,13 @@ export async function registerForPushNotificationsAsync() {
       lightColor: "#FF231F7C",
     });
   }
+  
+  if(token) return token;
+  else throw new Error("Failed to get push token for push notification!")
 
-  return token;
+
+  
+  
+
+  
 }
