@@ -12,7 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 export default (props: StackScreenProps<SafetyPlanStackParamList, 'EmergencyContact'>) => {
     const { user } = props.route.params
-
+    // state variable that holds emergency contacts
     const [contactsData, setContactsData] = useState(user.emergencyContacts || []);
 
     // renders emergency contacts when updated
