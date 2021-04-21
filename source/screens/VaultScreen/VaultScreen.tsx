@@ -154,7 +154,6 @@ export default function Vault(
   if (user.vaultItems?.quotes) quoteEntriesList = user.vaultItems.quotes;
 
   const renderItem = ({ item, index }: any, parallaxProps: any) => {
-    // console.log(parallaxProps);
     return (
       <View style={styles.item}>
         {item.type == "image" ? (

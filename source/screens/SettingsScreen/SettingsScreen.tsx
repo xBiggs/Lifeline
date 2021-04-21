@@ -11,7 +11,6 @@ import {
 } from "../../Controllers/notificationsController";
 import { AddUserData } from "../../firebase/UserDataHandler";
 import { HomeDrawerParamList } from "../../types";
-import styles from "../MedicalInfoScreen/styles";
 
 export async function resetNotifications(user: any) {
   cancelNotifications();
@@ -39,7 +38,7 @@ async function updateNotifications(user: any) {
       secondsBetweenDates
     );
   });
-  user.medInfo?.nextApointment?.forEach((appointment) => {
+  user.medInfo?.nextApointment?.forEach((appointment: any) => {
     const today: Date = new Date();
     const secondsBetweenDates = getSecondsBetweenDates(
       today,

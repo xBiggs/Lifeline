@@ -61,15 +61,21 @@ export default function PersonalInfoScreen(
   const [gender, setRadio] = useState(initialValue);
   const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
   const schema = yup.object().shape({
-    age: yup.number().required(),
-    religion: yup.string().required(),
-    diagnose: yup.string().required(),
+    age: yup
+      .number()
+      .required("Age is Required")
+      .typeError("Age must be a number")
+      .positive("Value must be greated than 0"),
+    religion: yup.string().required("Religion is required"),
+    diagnose: yup.string().required("Diagnosis is required"),
 
-    familyMedicalHistory: yup.string().required(),
+    familyMedicalHistory: yup
+      .string()
+      .required("Family Medical History is required"),
     phone: yup
       .string()
       .matches(phoneRegExp, "Phone number is not valid")
-      .required(),
+      .required("Phone number is required"),
   });
 
   //Formal Initializers
@@ -505,7 +511,7 @@ export default function PersonalInfoScreen(
             marginBottom: 30,
           }}
         />
-        <TouchableOpacity {...formal.getSubmitButtonProps()}>
+        <TouchableOpacity {...formal.getSubmitButtonProps()} disabled={false}>
           <View
             style={{
               marginBottom: 30,
