@@ -350,7 +350,11 @@ export default function MedicationForm(
                           mode={"date"}
                           is24Hour={true}
                           display="calendar"
-                          onChange={onChange}
+                          onChange= {() => (selectedDate: Date) => {
+                            const currentDate = selectedDate || date;
+                            setShow(Platform.OS === "ios");
+                            setDate(currentDate);
+                          }}
                         />
                       )}
                     </View>
