@@ -1,14 +1,14 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useRef, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput,ScrollView } from "react-native"
-import { ActivityIndicator, Button,  Divider } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ScrollView } from "react-native"
+import { ActivityIndicator, Button, Divider } from 'react-native-paper';
 import { LifeLineBlue, LifeLineDarkBlue, MediaEntry, VaultStackParamList } from '../../../types';
 import VaultItemsMenu from './VaultItemsMenu';
 import { User } from '../../../interfaces/User';
 import * as DocumentPicker from 'expo-document-picker';
 import { FirebaseController } from '../../../firebase/FirebaseController';
-import { Video,Audio } from 'expo-av';
+import { Video, Audio } from 'expo-av';
 import { AddUserData } from '../../../firebase/UserDataHandler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -21,7 +21,7 @@ export default (props: StackScreenProps<VaultStackParamList, 'Manage'>) => {
         photos: [],
         videos: [],
         quotes: [],
-        audio:[],
+        audio: [],
     }
     const [option, setOption] = useState<number>(0)
     return (
@@ -59,68 +59,67 @@ const Content = (props: { option: number, user: User }) => {
     const [loading, setLoading] = useState(false);
     const videoRef = useRef(null);
     const [fileInfo, setFileInfo] = useState<{ filePath: string, type: string, }>()
-    const [quote, setQuote] = useState<{quote:string,author:string}>();
-    const [audioSource,setAudioSource] = useState<AVPlaybackSource>();
-    const [playback,setPlayback] = useState<{sound:Audio.Sound,status:AVPlaybackStatus}>();
-    const [audioIsPlaying,setAudioIsPlaying] = useState<boolean>(false);
+    const [quote, setQuote] = useState<{ quote: string, author: string }>();
+    const [audioSource, setAudioSource] = useState<AVPlaybackSource>();
+    const [playback, setPlayback] = useState<{ sound: Audio.Sound, status: AVPlaybackStatus }>();
+    const [audioIsPlaying, setAudioIsPlaying] = useState<boolean>(false);
 
-    const [audio,setAudio] = useState(props.user.vaultItems?.audio);
-    const [quotes,setQuotes] = useState(props.user.vaultItems?.quotes);
-    const [photos,setPhotos] = useState(props.user.vaultItems?.photos);
-    const [videos,setVideos] = useState(props.user.vaultItems?.videos);
+    const [audio, setAudio] = useState(props.user.vaultItems?.audio);
+    const [quotes, setQuotes] = useState(props.user.vaultItems?.quotes);
+    const [photos, setPhotos] = useState(props.user.vaultItems?.photos);
+    const [videos, setVideos] = useState(props.user.vaultItems?.videos);
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log('syncing')
-        if(props.user.vaultItems)
+        if (props.user.vaultItems) {
+            if (audio) props.user.vaultItems.audio = audio;
+            if (videos) props.user.vaultItems.videos = videos;
+            if (photos) props.user.vaultItems.photos = photos;
+            if (quotes) props.user.vaultItems.quotes = quotes;
+        try{
+            (async()=>{await AddUserData(props.user)})();
+            
+        }catch(e)
         {
-            if(audio) props.user.vaultItems.audio = audio;
-            if(videos) props.user.vaultItems.videos = videos;
-            if(photos) props.user.vaultItems.photos = photos;
-            if(quotes) props.user.vaultItems.quotes = quotes;
-            AddUserData(props.user);
+            alert("Could not connect to server, please try again")
         }
-        
-    },[audio,videos,photos,quotes])
+        }
 
-    const removeQuoteFromVault = async (quote:{quote:string,author:string})=>{
-        if(quotes)
-        {
-            setQuotes(prev=>{
-                if(prev)
-                {
+    }, [audio, videos, photos, quotes])
+
+    const removeQuoteFromVault = async (quote: { quote: string, author: string }) => {
+        if (quotes) {
+            setQuotes(prev => {
+                if (prev) {
                     const index = prev.indexOf(quote);
                     const newArr = [...prev];
-                    newArr.splice(index,1);
+                    newArr.splice(index, 1);
                     return newArr;
                 }
             })
 
         }
-        
+
     }
 
-    const addQuoteToVault = async ()=>{
+    const addQuoteToVault = async () => {
         setLoading(true)
-        if(!quote)
-        {
+        if (!quote) {
             alert('Please add a quote')
             setLoading(false);
         }
-        else if(quote.quote.trim()=='')
-        {
+        else if (quote.quote.trim() == '') {
             alert('Please do not leave quote blank')
             setLoading(false)
         }
-        else{
+        else {
 
-            if(props.user.vaultItems)
-            {
-                if(props.user.vaultItems.quotes) props.user.vaultItems.quotes.push(quote)
-                else
-                {
-                    props.user.vaultItems.quotes=[];
+            if (props.user.vaultItems) {
+                if (props.user.vaultItems.quotes) props.user.vaultItems.quotes.push(quote)
+                else {
+                    props.user.vaultItems.quotes = [];
                     props.user.vaultItems.quotes.push(quote);
-                  
+
 
                 }
                 await AddUserData(props.user);
@@ -130,65 +129,64 @@ const Content = (props: { option: number, user: User }) => {
             setLoading(false);
             setQuote(undefined);
             alert(`Quote has been added to the vault!`)
-            
+
         }
     }
 
-    const removeMediaFromVault = async(entry:MediaEntry)=>{
+    const removeMediaFromVault = async (entry: MediaEntry) => {
         const success = await FirebaseController.RemoveMediaFromVault(entry.path);
-        if(success)
-        {
-            if(entry.type=='audio')
-            {
-                
-                setAudio(prev=>{
-                   
-                    if(prev)
-                    {
+        if (success) {
+            if (entry.type == 'audio') {
+
+                setAudio(prev => {
+
+                    if (prev) {
                         const newArr = [...prev]
                         const index = newArr.indexOf(entry);
-                        newArr.splice(index,1);
+                        newArr.splice(index, 1);
                         return newArr;
                     }
 
                 })
 
             }
-            else if(entry.type=='image')
-            {
-                setPhotos(prev=>{
-                   
-                    if(prev)
-                    {
+            else if (entry.type == 'image') {
+                setPhotos(prev => {
+
+                    if (prev) {
                         const newArr = [...prev]
                         const index = newArr.indexOf(entry);
-                        newArr.splice(index,1);
+                        newArr.splice(index, 1);
                         return newArr;
                     }
 
                 })
 
             }
-            else if(entry.type=='video')
-            {
-                setVideos(prev=>{
-                   
-                    if(prev)
-                    {
+            else if (entry.type == 'video') {
+                setVideos(prev => {
+
+                    if (prev) {
                         const newArr = [...prev]
                         const index = newArr.indexOf(entry);
-                        console.log("index:",index);
-                        newArr.splice(index,1);
+                        console.log("index:", index);
+                        newArr.splice(index, 1);
                         return newArr;
                     }
 
                 })
 
             }
-            else{
-               return;
+            else {
+                return;
             }
         }
+    }
+
+    const isValidFilename = (filename: string, files: MediaEntry[]|undefined) => {
+        if(files)
+        return files.filter(file => file.title == filename).length == 0;
+        else return true;
     }
 
     const addMediaToVault = async () => {
@@ -198,94 +196,138 @@ const Content = (props: { option: number, user: User }) => {
             setLoading(false);
             return;
         }
-        if (fileInfo) {
-            
+        if (fileInfo) 
+        {
 
-            const entry = await FirebaseController.AddMediaToVault(props.user, fileInfo, fileName)
-            switch (entry?.type) {
+            switch(fileInfo.type)
+            {
                 case 'image':
                     {
-                        if(props.user.vaultItems)
+                        if(!isValidFilename(fileName,photos))
                         {
-                            if(props.user.vaultItems.photos) props.user.vaultItems.photos.push(entry)
-                            else
-                            {
-                                props.user.vaultItems.photos=[];
-                                props.user.vaultItems.photos.push(entry);
-
-                            }
+                            alert(`You already have a ${fileInfo.type} with the name ${fileName}`);
+                            setLoading(false);
+                            return;
 
                         }
-                        break;
+                        break; 
 
                     }
                 case 'video':
                     {
-                        if(props.user.vaultItems)
+                        if(!isValidFilename(fileName,videos))
                         {
-                            if(props.user.vaultItems.videos) props.user.vaultItems.videos.push(entry)
-                            else
-                            {
-                                props.user.vaultItems.videos=[];
-                                props.user.vaultItems.videos.push(entry);
-
-                            }
+                            alert(`You already have a ${fileInfo.type} with the name ${fileName}`);
+                            setLoading(false)
+                            return;
 
                         }
-                        break;
+                        break; 
+
+
                     }
                 case 'audio':
+                {
+                    if(!isValidFilename(fileName,audio))
                     {
-                        if(props.user.vaultItems)
+                        alert(`You already have an ${fileInfo.type} with the name ${fileName}`);
+                        setLoading(false);
+                        return;
+
+                    }
+                    break; 
+
+                }
+            }
+
+            try {
+                console.log('entering try catch')
+
+                const entry = await FirebaseController.AddMediaToVault(props.user, fileInfo, fileName)
+                switch (entry?.type) {
+                    case 'image':
                         {
-                            if(props.user.vaultItems.audio) props.user.vaultItems.audio.push(entry)
-                            else
-                            {
-                                props.user.vaultItems.audio=[];
-                                props.user.vaultItems.audio.push(entry);
+                            if (props.user.vaultItems) {
+                                if (props.user.vaultItems.photos) props.user.vaultItems.photos.push(entry)
+                                else {
+                                    props.user.vaultItems.photos = [];
+                                    props.user.vaultItems.photos.push(entry);
+
+                                }
+
+                            }
+                            break;
+
+                        }
+                    case 'video':
+                        {
+                            if (props.user.vaultItems) {
+                                if (props.user.vaultItems.videos) props.user.vaultItems.videos.push(entry)
+                                else {
+                                    props.user.vaultItems.videos = [];
+                                    props.user.vaultItems.videos.push(entry);
+
+                                }
+
+                            }
+                            break;
+                        }
+                    case 'audio':
+                        {
+                            if (props.user.vaultItems) {
+                                if (props.user.vaultItems.audio) props.user.vaultItems.audio.push(entry)
+                                else {
+                                    props.user.vaultItems.audio = [];
+                                    props.user.vaultItems.audio.push(entry);
+
+                                }
 
                             }
 
+                            break;
                         }
-                       
-                        break;
-                    }
+                }
+                await AddUserData(props.user);
+
+
+                setLoading(false);
+                alert("You file has been added to the vault");
+                setFileName("")
+                setFileInfo(undefined)
+                setImage(undefined)
+                setVideo(undefined)
+                setAudioSource(undefined)
+                setPlayback(undefined)
+
+            } catch (e) {
+                alert("Could not add file, please try again")
             }
-            await AddUserData(props.user);
+
+        }else alert("Please select a file")
+        setLoading(false);
 
 
-            setLoading(false);
-            alert("You file has been added to the vault");
-            setFileName("")
-            setFileInfo(undefined)
-            setImage(undefined)
-            setVideo(undefined)
-            setAudioSource(undefined)
-            setPlayback(undefined)
-        }
     }
 
-    useEffect(()=>{
-        const initPlayback = async ()=>{
-            if(audioSource)setPlayback( await Audio.Sound.createAsync(audioSource))
+    useEffect(() => {
+        const initPlayback = async () => {
+            if (audioSource) setPlayback(await Audio.Sound.createAsync(audioSource))
         }
         initPlayback();
-      
-    },[audioSource])
 
-    const playPauseAudio = async ()=>{
-        if(audioIsPlaying)
-        {
-           if(playback) await playback.sound.pauseAsync();
-              
+    }, [audioSource])
+
+    const playPauseAudio = async () => {
+        if (audioIsPlaying) {
+            if (playback) await playback.sound.pauseAsync();
+
         }
-        else
-        {
-            if(playback) await playback.sound.playAsync();
-            
+        else {
+            if (playback) await playback.sound.playAsync();
+
         }
 
-      setAudioIsPlaying(!audioIsPlaying)
+        setAudioIsPlaying(!audioIsPlaying)
     }
 
     const pickAudio = async () => {
@@ -297,8 +339,8 @@ const Content = (props: { option: number, user: User }) => {
                 filePath: result.uri,
                 type: 'audio'
             })
-            setAudioSource({uri:result.uri})
-            
+            setAudioSource({ uri: result.uri })
+
         }
     }
 
@@ -349,8 +391,8 @@ const Content = (props: { option: number, user: User }) => {
 
                     <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
                         <Button mode='contained' color={LifeLineDarkBlue} onPress={pickImage}><Text>Choose Photo/Video</Text></Button>
-                        {fileInfo?.filePath && <>
-                            <TextInput style={{ backgroundColor: LifeLineBlue, color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} placeholder={'Enter file name'} onChangeText={(text) => setFileName(text)}></TextInput>
+                        {fileInfo?.type == 'audio' || 'video' && <>
+                            <TextInput defaultValue={fileName} style={{ backgroundColor: LifeLineBlue, color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} placeholder={'Enter file name'} onChangeText={(text) => setFileName(text)}></TextInput>
                             <Button mode='contained' color={LifeLineDarkBlue} onPress={() => { addMediaToVault(); }}>Add to Vault</Button>
                         </>}
                         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
@@ -375,23 +417,23 @@ const Content = (props: { option: number, user: User }) => {
             {
                 return (
                     <View>
-                             <TextInput multiline style={{ backgroundColor: LifeLineBlue, marginTop:10,color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} placeholder={'Enter quote'} defaultValue={quote?.quote} onChangeText={(text) => 
-                             setQuote(prev=>{
-                                 return {
-                                    quote:text,
-                                    author:prev?.author||'',
-                                 }
+                        <TextInput multiline style={{ backgroundColor: LifeLineBlue, marginTop: 10, color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} placeholder={'Enter quote'} defaultValue={quote?.quote} onChangeText={(text) =>
+                            setQuote(prev => {
+                                return {
+                                    quote: text,
+                                    author: prev?.author || '',
+                                }
 
-                             })}></TextInput>
-                              <TextInput textAlign='center' style={{ backgroundColor: LifeLineBlue, marginTop:10,color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} defaultValue={quote?.author} placeholder={'Enter author or leave blank'} onChangeText={(text) => 
-                             setQuote(prev=>{
-                                 return {
-                                    quote:prev?.quote ||'',
-                                    author:text
-                                 }
+                            })}></TextInput>
+                        <TextInput textAlign='center' style={{ backgroundColor: LifeLineBlue, marginTop: 10, color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} defaultValue={quote?.author} placeholder={'Enter author or leave blank'} onChangeText={(text) =>
+                            setQuote(prev => {
+                                return {
+                                    quote: prev?.quote || '',
+                                    author: text
+                                }
 
-                             })}></TextInput>
-                                <Button mode='contained' color={LifeLineDarkBlue} onPress={addQuoteToVault}><Text>Add to vault</Text></Button>
+                            })}></TextInput>
+                        <Button mode='contained' color={LifeLineDarkBlue} onPress={addQuoteToVault}><Text>Add to vault</Text></Button>
 
                     </View>
                 )
@@ -403,12 +445,12 @@ const Content = (props: { option: number, user: User }) => {
                 return (
                     <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
                         <Button mode='contained' color={LifeLineDarkBlue} onPress={pickAudio}><Text>Choose Audio</Text></Button>
-                        {fileInfo?.filePath && <>
-                            <TextInput style={{ backgroundColor: LifeLineBlue, color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} placeholder={'Enter file name'} onChangeText={(text) => setFileName(text)}></TextInput>
+                        {fileInfo?.type == 'audio' && <>
+                            <TextInput defaultValue={fileName} style={{ backgroundColor: LifeLineBlue, color: 'white', fontSize: 20, borderColor: LifeLineDarkBlue, borderWidth: 5, alignSelf: 'stretch', textAlign: 'center' }} placeholder={'Enter file name'} onChangeText={(text) => setFileName(text)}></TextInput>
                             <Button mode='contained' color={LifeLineDarkBlue} onPress={() => { addMediaToVault(); }}>Add to Vault</Button>
-                            {audioSource?<Button style={{margin:5}} mode='contained' color={LifeLineDarkBlue} onPress={()=>{playPauseAudio()}} ><MaterialCommunityIcons  name="play" color={LifeLineBlue} size={30} >
-                                <Text>{audioIsPlaying?'Pause':'Play'}</Text>
-                                </MaterialCommunityIcons></Button>:<></>}
+                            {audioSource ? <Button style={{ margin: 5 }} mode='contained' color={LifeLineDarkBlue} onPress={() => { playPauseAudio() }} ><MaterialCommunityIcons name="play" color={LifeLineBlue} size={30} >
+                                <Text>{audioIsPlaying ? 'Pause' : 'Play'}</Text>
+                            </MaterialCommunityIcons></Button> : <></>}
                         </>}
                     </View>
                 )
@@ -417,71 +459,71 @@ const Content = (props: { option: number, user: User }) => {
             {
                 return (
                     <ScrollView>
-                        <View style={{flex:1}}>
-                        <Divider style={{borderColor:'white',borderWidth:1}}/>
-                        <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Quotes</Text>
-                        {quotes?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Quotes</Text>:<>
-                        {
-                            quotes?.map(item=><View style={{flexDirection:'row',borderWidth:2,margin:1,borderColor:LifeLineDarkBlue}} key={Math.random()*quotes.indexOf(item)+1}>
-                            <Text style={{flex:1,fontSize:20,textAlignVertical:'center'}}>"{item.quote}" -{item.author==''?"Unknown":item.author}</Text>
-                           <TouchableOpacity onPress={async()=>{
-                               await removeQuoteFromVault(item);
-                           }} style={{alignSelf:'center'}}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
-                        </View>)
-                        }
-                        </>}
-                        <Divider style={{borderColor:'white',borderWidth:1}}/>
-                        <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Photos</Text>
-                        {photos?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Photos</Text>:<>
-                        {
-                            photos?.map(item=><View style={{flexDirection:'row',borderWidth:2,margin:1,borderColor:LifeLineDarkBlue}} key={item.url}>
-                            <Image source={{ uri: item.url }} style={{ width: 250,flex:1, height: 200 }} />
-                           <TouchableOpacity
-                           onPress={async()=>{
-                               await removeMediaFromVault(item);
-                           }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
-                        </View>)
-                        }</>}
-                        <Divider style={{borderColor:'white',borderWidth:1}}/>
-                        <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Videos</Text>
-                        {videos?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Videos</Text>:<>
-                        {
-                            videos?.map(item=><View style={{flexDirection:'row',margin:3,justifyContent:'space-around',borderBottomWidth:1,borderBottomColor:LifeLineDarkBlue}} key={item.url}>
-                            <Video
-                            style={{ height: 250, width: 250 }}
-                            ref={videoRef}
-                            source={{
-                                uri: item.url?item.url:"",
-                            }}
-                            resizeMode="contain"
-                            useNativeControls
-                            usePoster
+                        <View style={{ flex: 1 }}>
+                            <Divider style={{ borderColor: 'white', borderWidth: 1 }} />
+                            <Text style={{ color: 'white', fontSize: 15, alignSelf: 'center' }}>Quotes</Text>
+                            {quotes?.length == 0 ? <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20 }}>No Quotes</Text> : <>
+                                {
+                                    quotes?.map(item => <View style={{ flexDirection: 'row', borderWidth: 2, margin: 1, borderColor: LifeLineDarkBlue }} key={Math.random() * quotes.indexOf(item) + 1}>
+                                        <Text style={{ flex: 1, fontSize: 20, textAlignVertical: 'center' }}>"{item.quote}" -{item.author == '' ? "Unknown" : item.author}</Text>
+                                        <TouchableOpacity onPress={async () => {
+                                            await removeQuoteFromVault(item);
+                                        }} style={{ alignSelf: 'center' }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity>
+                                    </View>)
+                                }
+                            </>}
+                            <Divider style={{ borderColor: 'white', borderWidth: 1 }} />
+                            <Text style={{ color: 'white', fontSize: 15, alignSelf: 'center' }}>Photos</Text>
+                            {photos?.length == 0 ? <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20 }}>No Photos</Text> : <>
+                                {
+                                    photos?.map(item => <View style={{ flexDirection: 'row', borderWidth: 2, margin: 1, borderColor: LifeLineDarkBlue }} key={item.url}>
+                                        <Image source={{ uri: item.url }} style={{ width: 250, flex: 1, height: 200 }} />
+                                        <TouchableOpacity
+                                            onPress={async () => {
+                                                await removeMediaFromVault(item);
+                                            }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity>
+                                    </View>)
+                                }</>}
+                            <Divider style={{ borderColor: 'white', borderWidth: 1 }} />
+                            <Text style={{ color: 'white', fontSize: 15, alignSelf: 'center' }}>Videos</Text>
+                            {videos?.length == 0 ? <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20 }}>No Videos</Text> : <>
+                                {
+                                    videos?.map(item => <View style={{ flexDirection: 'row', margin: 3, justifyContent: 'space-around', borderBottomWidth: 1, borderBottomColor: LifeLineDarkBlue }} key={item.url}>
+                                        <Video
+                                            style={{ height: 250, width: 250 }}
+                                            ref={videoRef}
+                                            source={{
+                                                uri: item.url ? item.url : "",
+                                            }}
+                                            resizeMode="contain"
+                                            useNativeControls
+                                            usePoster
 
-                        />
+                                        />
 
-                           <TouchableOpacity
-                           onPress={async()=>{
-                               await removeMediaFromVault(item);
-                           }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
-                        </View>)
+                                        <TouchableOpacity
+                                            onPress={async () => {
+                                                await removeMediaFromVault(item);
+                                            }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity>
+                                    </View>)
 
-                        }
-                        </>}
-                          <Divider style={{borderColor:'white',borderWidth:1}}/>
-                          <Text style={{color:'white',fontSize:15,alignSelf:'center'}}>Audio</Text>
-                        {audio?.length==0?<Text style={{alignSelf:'center',color:'white',fontSize:20}}>No Audio</Text>:<>
-                        {
-                            audio?.map(item=><View style={{flexDirection:'row',borderWidth:2,margin:1,borderColor:LifeLineDarkBlue}} key={item.url}>
-                                <Text style={{fontSize:25,flex:1}}>{item.title}</Text>
-                               <TouchableOpacity style={{marginRight:10}} onPress={async()=>{
-                                   await removeMediaFromVault(item);
-                               }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity> 
-                            </View>)
-                        }</>}
-                        <Divider style={{borderColor:'white',borderWidth:1}}/>
+                                }
+                            </>}
+                            <Divider style={{ borderColor: 'white', borderWidth: 1 }} />
+                            <Text style={{ color: 'white', fontSize: 15, alignSelf: 'center' }}>Audio</Text>
+                            {audio?.length == 0 ? <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20 }}>No Audio</Text> : <>
+                                {
+                                    audio?.map(item => <View style={{ flexDirection: 'row', borderWidth: 2, margin: 1, borderColor: LifeLineDarkBlue }} key={item.url}>
+                                        <Text style={{ fontSize: 25, flex: 1 }}>{item.title}</Text>
+                                        <TouchableOpacity style={{ marginRight: 10 }} onPress={async () => {
+                                            await removeMediaFromVault(item);
+                                        }}><MaterialCommunityIcons size={40} name='trash-can'></MaterialCommunityIcons></TouchableOpacity>
+                                    </View>)
+                                }</>}
+                            <Divider style={{ borderColor: 'white', borderWidth: 1 }} />
                         </View>
-                       
-                     
+
+
                     </ScrollView>
                 )
 
@@ -498,18 +540,18 @@ const Content = (props: { option: number, user: User }) => {
 }
 
 const styles = StyleSheet.create({
-    menuItem:{
-        backgroundColor:LifeLineDarkBlue
+    menuItem: {
+        backgroundColor: LifeLineDarkBlue
     },
-    menuIcon:{
-        alignSelf:'center',
-        fontSize:20,
-        color:LifeLineBlue
+    menuIcon: {
+        alignSelf: 'center',
+        fontSize: 20,
+        color: LifeLineBlue
 
     },
-    menuTitle:{
-        fontSize:15,
-        color:LifeLineBlue
+    menuTitle: {
+        fontSize: 15,
+        color: LifeLineBlue
     },
     button: {
         backgroundColor: LifeLineBlue,

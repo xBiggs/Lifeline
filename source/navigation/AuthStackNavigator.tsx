@@ -10,7 +10,10 @@ import { LoginScreen, SignupScreen } from '../screens';
 const Stack = createStackNavigator<AuthStackParamList>();
 export default ()=>{
     return(
-        <Stack.Navigator>
+        <Stack.Navigator
+         screenOptions={{
+             headerTitleAlign:'center'
+         }}>
             <Stack.Screen name='Login' component={LoginScreen}></Stack.Screen>
             <Stack.Screen name='Signup' component={SignupScreen}></Stack.Screen>
         </Stack.Navigator>

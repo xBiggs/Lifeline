@@ -37,6 +37,7 @@ export default (props: StackScreenProps<SafetyPlanStackParamList, 'Home'>) => {
     return(
         <View style={{flex:1,backgroundColor:LifeLineDarkBlue}}>
             <View style={{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-around',alignContent:'center',flex:1,backgroundColor:LifeLineDarkBlue}}>
+                
             <TouchableOpacity onPress={()=>{props.navigation.navigate('WarningSigns',{user})}}>
                 <Card style={styles.menuItem} >
                     <MaterialCommunityIcons style={styles.menuIcon} name='sign-caution'></MaterialCommunityIcons>
