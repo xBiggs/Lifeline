@@ -66,11 +66,19 @@ export default function MedicationForm(
     nextApointment: [],
   };
   const schema = yup.object().shape({
-    name: yup.string().required(),
-    dose: yup.string().required(),
-    numTimesDay: yup.number().required(),
-    usageInstructions: yup.string().required(),
-    timeInBetween: yup.number().required(),
+    name: yup.string().required("Name is required"),
+    dose: yup.string().required("Dose is required"),
+    numTimesDay: yup
+      .number()
+      .required("Number of times per day is required")
+      .typeError("Number of times per day must be a number")
+      .positive("Value must be greated than 0"),
+    usageInstructions: yup.string().required("Usage instructions is required"),
+    timeInBetween: yup
+      .number()
+      .required("Time in Between is required")
+      .typeError("Time in between must be a number")
+      .positive("Value must be greated than 0"),
   });
   const initialValues = {
     dose: "",
@@ -109,8 +117,6 @@ export default function MedicationForm(
   const formal = useFormal(initialValues, {
     schema,
     onSubmit: (values) => {
-      console.log(values);
-      // TODO: Don't use keyword var, user keywords let or const instead
       var medication: Medication = {
         name: values.name,
         dose: values.dose,
@@ -155,6 +161,12 @@ export default function MedicationForm(
 
       if (user.medInfo) user.medInfo.medication.push(medication);
       if (user.medInfo) AddMedicalData(user, user.medInfo);
+
+      values.dose = "";
+      values.name = "";
+      values.numTimesDay = "";
+      values.timeInBetween = "";
+      values.usageInstructions = "";
     },
   });
 
@@ -352,12 +364,7 @@ export default function MedicationForm(
                           mode={"date"}
                           is24Hour={true}
                           display="calendar"
-                        onChange= {onChange
-                            /*() => (selectedDate: Date) => {
-                            const currentDate = selectedDate || date;
-                            setShow(Platform.OS === "ios");
-                            setDate(currentDate);
-                          }*/}
+                          onChange={onChange}
                         />
                       )}
                     </View>

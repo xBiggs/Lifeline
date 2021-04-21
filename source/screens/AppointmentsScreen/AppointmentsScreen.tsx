@@ -62,7 +62,7 @@ export default function AppointmentScreen(
   //STATE VARIABLES END////////////////////////////
   //////////////////////////Formal Data////////////////
   const schema = yup.object().shape({
-    reason: yup.string().required(),
+    reason: yup.string().required("Reason is required"),
   });
   const initialValues = {
     reason: "",
@@ -104,6 +104,8 @@ export default function AppointmentScreen(
 
       if (userNotifications) AddNotification(user, notification);
       setModalVisible(!modalVisible);
+
+      values.reason = "";
     },
   });
 
@@ -169,8 +171,8 @@ export default function AppointmentScreen(
   });
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{flexGrow:1}}>
-      <View style={{ backgroundColor: "#219ebc",flexGrow:1}}>
+    <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={{ backgroundColor: "#219ebc", flexGrow: 1 }}>
         {info
           ? info.map((l, i) => (
               <ListItem key={i * Math.random()} bottomDivider>
