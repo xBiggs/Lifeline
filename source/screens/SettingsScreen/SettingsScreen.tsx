@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Switch, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-elements";
 import {
+  askPermissions,
   cancelNotifications,
   getSecondsBetweenDates,
   schedulePushNotification,
@@ -109,6 +110,7 @@ export default function Settings(
   async function save() {
     if (!user.settings?.notificationsOn) cancelNotifications();
     else {
+      await askPermissions();
       updateNotifications(user);
     }
     await AddUserData(user);

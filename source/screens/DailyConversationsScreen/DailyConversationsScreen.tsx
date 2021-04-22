@@ -60,7 +60,7 @@ export default function DailyConversationsScreen(props: DrawerScreenProps<HomeDr
             }
 
             if (risk > 0 ) {
-                alert("You seem to down, here is your vault full of encouragement");
+                alert("You seem to be down, here is your vault full of encouragement");
                 props.navigation.navigate("Vault", {user});
             } else {
                 alert("Thank you");

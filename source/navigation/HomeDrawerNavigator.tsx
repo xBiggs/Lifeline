@@ -11,7 +11,7 @@ import AppointmentsScreen from "../screens/AppointmentsScreen/AppointmentsScreen
 import HomeDrawer from "./HomeDrawer";
 import VaultStackNavigator from "./VaultStackNavigator";
 import * as Notifications from "expo-notifications";
-import { registerForPushNotificationsAsync } from "../Controllers/notificationsController";
+import { askPermissions } from "../Controllers/notificationsController";
 import { Subscription } from '@unimodules/core';
 
 /**
@@ -19,7 +19,7 @@ import { Subscription } from '@unimodules/core';
  */
 const Drawer = createDrawerNavigator<HomeDrawerParamList>();
 
-export default (props: StackScreenProps<UserStackParamList, "Home">) => {
+export default (props: StackScreenProps<UserStackParamList,'Home'>) => {
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState<Notifications.Notification>();
@@ -29,22 +29,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
 
   useEffect(() => {
     (async () => {
-     try {
-        //console.log('token')
-        const token = await registerForPushNotificationsAsync();
-     //  if(token) setExpoPushToken(token);
-      } catch(e) {
-        alert("Failed to register for push notifications, please try again");
-        }
-/*
-      // This listener is fired whenever a notification is received while the app is foregrounded
-      notificationListener.current = Notifications.addNotificationReceivedListener(
-        (notification) => {
-        //  console.log('setting notification')
-       //   setNotification(notification);
-        }
-      );
-*/
+
       // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
       responseListener.current = Notifications.addNotificationResponseReceivedListener(
         (response) => {
@@ -65,7 +50,7 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
 
       return () => {
         if (notificationListener && notificationListener.current) {
-          console.log("in if statement")
+
           Notifications.removeNotificationSubscription(notificationListener.current);
         }
         if (responseListener && responseListener.current) {

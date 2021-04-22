@@ -63,7 +63,6 @@ const Content = (props: { option: number, user: User }) => {
     const [audioSource, setAudioSource] = useState<AVPlaybackSource>();
     const [playback, setPlayback] = useState<{ sound: Audio.Sound, status: AVPlaybackStatus }>();
     const [audioIsPlaying, setAudioIsPlaying] = useState<boolean>(false);
-
     const [audio, setAudio] = useState(props.user.vaultItems?.audio);
     const [quotes, setQuotes] = useState(props.user.vaultItems?.quotes);
     const [photos, setPhotos] = useState(props.user.vaultItems?.photos);

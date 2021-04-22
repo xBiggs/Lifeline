@@ -11,6 +11,8 @@ import { User } from "../interfaces/User";
 import { FirebaseController } from "../firebase/FirebaseController";
 import { HomeDrawerParamList, LifeLineBlue, LifeLineDarkBlue, LifeLineOrange } from "../types";
 import { Text } from "react-native-elements";
+import { cancelNotifications } from "../Controllers/notificationsController";
+import { AddUserData } from "../firebase/UserDataHandler";
 
 export default (props: {
   drawerProps: DrawerContentComponentProps;
@@ -200,7 +202,20 @@ export default (props: {
             )}
             label="Logout"
             onPress={async () => {
-              await FirebaseController.Logout();
+              try{
+
+                
+                await cancelNotifications();
+                if(user.settings)user.settings.notificationsOn= false;
+                await AddUserData(user);
+                await FirebaseController.Logout();
+                
+
+              }catch(e)
+              {
+                alert("Failed to logout, please try again")
+              }
+              
             }}
           />
         </Drawer.Section>
