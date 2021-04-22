@@ -13,10 +13,7 @@ export type AuthStackParamList = {
 // type to define route : params for User navigator and screens
 export type UserStackParamList = {
   Home: { user: User };
-  DailyConversations:{user:User},
-  Medication:{user:User}
-  Vault:{user:User},
- 
+  
 };
 
 
