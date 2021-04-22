@@ -29,26 +29,29 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
 
   useEffect(() => {
     (async () => {
-      try {
+     try {
+        //console.log('token')
         const token = await registerForPushNotificationsAsync();
-        setExpoPushToken(token);
+     //  if(token) setExpoPushToken(token);
       } catch(e) {
         alert("Failed to register for push notifications, please try again");
         }
-
+/*
       // This listener is fired whenever a notification is received while the app is foregrounded
       notificationListener.current = Notifications.addNotificationReceivedListener(
         (notification) => {
-          setNotification(notification);
+        //  console.log('setting notification')
+       //   setNotification(notification);
         }
       );
-
+*/
       // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
       responseListener.current = Notifications.addNotificationResponseReceivedListener(
         (response) => {
           switch (response.notification.request.content.data.data) {
             case "DailyConversations":
               props.navigation.navigate("DailyConversations", { user });
+            
               break;
             case "MedicationScreen":
               props.navigation.navigate("Medication", { user });
@@ -62,13 +65,14 @@ export default (props: StackScreenProps<UserStackParamList, "Home">) => {
 
       return () => {
         if (notificationListener && notificationListener.current) {
+          console.log("in if statement")
           Notifications.removeNotificationSubscription(notificationListener.current);
         }
         if (responseListener && responseListener.current) {
           Notifications.removeNotificationSubscription(responseListener.current);
         }
       }
-    })()
+    })();
   }, []);
 
   // Keyboard.dismiss();

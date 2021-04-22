@@ -70,47 +70,31 @@ export function getSecondsBetweenDates(t1: Date, t2: Date) {
   var Seconds_Between_Dates = Math.abs(Seconds_from_T1_to_T2);
   return Seconds_Between_Dates;
 }
-export async function registerForPushNotificationsAsync():Promise<string> {
-  let token: string|undefined;
-
+export async function registerForPushNotificationsAsync(){
   if (Constants.isDevice) {
-    const {
-      status: existingStatus,
-    } = await Notifications.getPermissionsAsync();
-
-
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
+    if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-
-
-    if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
-      token = undefined;
-      
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
     }
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    return token;
+  } 
+  // else {
+  //   alert('Must use physical device for Push Notifications');
+  // }
 
-  token = (await Notifications.getExpoPushTokenAsync()).data;
-  
- 
-  }
-  if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("default", {
-      name: "default",
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#FF231F7C",
+      lightColor: '#FF231F7C',
     });
   }
-  
-  if(token) return token;
-  else throw new Error("Failed to get push token for push notification!")
-
-
-  
-  
-
-  
-}
+  };
