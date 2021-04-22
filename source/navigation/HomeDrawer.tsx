@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   DrawerItem,
@@ -13,11 +13,50 @@ import { HomeDrawerParamList, LifeLineBlue, LifeLineDarkBlue, LifeLineOrange } f
 import { Text } from "react-native-elements";
 import { cancelNotifications } from "../Controllers/notificationsController";
 import { AddUserData } from "../firebase/UserDataHandler";
-
+import { Subscription } from '@unimodules/core';
+import * as Notifications from "expo-notifications";
 export default (props: {
   drawerProps: DrawerContentComponentProps;
   user: User;
 }) => {
+
+
+  
+  const notificationListener= useRef<Subscription>();
+  const responseListener = useRef<Subscription>();
+
+  useEffect(() => {
+    (async () => {
+
+      // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(
+        (response) => {
+          switch (response.notification.request.content.data.data) {
+            case "DailyConversations":
+              props.drawerProps.navigation.navigate("DailyConversations", { user });
+            
+              break;
+            case "MedicationScreen":
+              props.drawerProps.navigation.navigate("Medication", { user });
+              break;
+            case "Vault":
+              props.drawerProps.navigation.navigate("Vault", { user });
+              break;
+          }
+        }
+      );
+
+      return () => {
+        if (notificationListener && notificationListener.current) {
+
+          Notifications.removeNotificationSubscription(notificationListener.current);
+        }
+        if (responseListener && responseListener.current) {
+          Notifications.removeNotificationSubscription(responseListener.current);
+        }
+      }
+    })();
+  }, []);
 
   // TODO: Not sure the point of using these variables like objects here
   const { user } = props;
@@ -204,10 +243,6 @@ export default (props: {
             onPress={async () => {
               try{
 
-                
-                await cancelNotifications();
-                if(user.settings)user.settings.notificationsOn= false;
-                await AddUserData(user);
                 await FirebaseController.Logout();
                 
 

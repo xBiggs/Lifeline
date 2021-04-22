@@ -24,41 +24,6 @@ export default (props: StackScreenProps<UserStackParamList,'Home'>) => {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState<Notifications.Notification>();
 
-  const notificationListener= useRef<Subscription>();
-  const responseListener = useRef<Subscription>();
-
-  useEffect(() => {
-    (async () => {
-
-      // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(
-        (response) => {
-          switch (response.notification.request.content.data.data) {
-            case "DailyConversations":
-              props.navigation.navigate("DailyConversations", { user });
-            
-              break;
-            case "MedicationScreen":
-              props.navigation.navigate("Medication", { user });
-              break;
-            case "Vault":
-              props.navigation.navigate("Vault", { user });
-              break;
-          }
-        }
-      );
-
-      return () => {
-        if (notificationListener && notificationListener.current) {
-
-          Notifications.removeNotificationSubscription(notificationListener.current);
-        }
-        if (responseListener && responseListener.current) {
-          Notifications.removeNotificationSubscription(responseListener.current);
-        }
-      }
-    })();
-  }, []);
 
   // Keyboard.dismiss();
   const user = props.route.params.user;

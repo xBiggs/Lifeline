@@ -16,9 +16,9 @@ import { User } from "../../interfaces/User";
 import { HomeDrawerParamList } from "../../types";
 
 export async function resetNotifications(user: User) {
-  cancelNotifications();
-  updateNotifications(user);
-  AddUserData(user);
+ await cancelNotifications();
+  await updateNotifications(user);
+  await AddUserData(user);
 }
 
 async function updateNotifications(user: User) {
@@ -110,13 +110,13 @@ export default function Settings(
   async function save() {
     if (!user.settings?.notificationsOn) cancelNotifications();
     else {
-      await askPermissions();
       updateNotifications(user);
     }
     await AddUserData(user);
     saved = true;
     alert("Settings have been saved");
   }
+
 
   return (
     <View style={{ padding: 30 }}>
